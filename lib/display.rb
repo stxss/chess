@@ -21,11 +21,11 @@ class Display
 
     puts <<~HEREDOC
 
-                    player1 - score
+                      player1 - score
 
-    #{display}
+      #{display}
 
-                    player2 - score
+                      player2 - score
 
     HEREDOC
   end
