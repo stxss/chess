@@ -1,9 +1,9 @@
 require_relative "./text_styles"
 
 class Display
-    using TextStyles
+  using TextStyles
 
-    attr_accessor :board, :moves
+  attr_accessor :board, :moves
 
   def initialize(board)
     @board = board
@@ -33,22 +33,22 @@ class Display
   def display
     output = ""
     @board.each_with_index do |i, row|
-        output += " " * 9 + "#{((row - 8).abs).to_s.bold}" + " "
-        i.each_with_index do |j, column|
-            if (row + column).odd?
-                output += j.bg_color(:red)
-            else
-                output += j.bg_color(:pink)
-            end
+      output += " " * 9 + "#{(row - 8).abs.to_s.bold}" + " "
+      i.each_with_index do |j, column|
+        output += if (row + column).odd?
+          j.bg_color(:red)
+        else
+          j.bg_color(:pink)
         end
-        # system("tput cup 3 40")
-        # puts "1. e4 e2 "
-        # system("tput cup 4 40")
-        # puts "2. e3 e1"
-        # system("tput cup 5 40")
-        # puts "3. d6 h5"
-        # system("tput cup 0 0")
-        output += "\n"
+      end
+      # system("tput cup 3 40")
+      # puts "1. e4 e2 "
+      # system("tput cup 4 40")
+      # puts "2. e3 e1"
+      # system("tput cup 5 40")
+      # puts "3. d6 h5"
+      # system("tput cup 0 0")
+      output += "\n"
     end
     output += "            a  b  c  d  e  f  g  h".bold
     output
