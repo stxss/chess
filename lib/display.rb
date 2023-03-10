@@ -3,10 +3,11 @@ require_relative "text_styles"
 class Display
   using TextStyles
 
-  attr_accessor :board, :moves
+  attr_accessor :board, :moves, :cursor
 
   def initialize(board)
     @board = board
+    @cursor = Cursor.new([0, 0], @board)
     @moves = []
     add_move
     show
@@ -35,7 +36,9 @@ class Display
     @board.each_with_index do |i, row|
       output += " " * 9 + (row - 8).abs.to_s.bold.to_s + " "
       i.each_with_index do |piece, column|
-        output += if (row + column).odd?
+        output += if @cursor.cursor_pos == [row, column]
+          piece.bg_color(:blue)
+        elsif (row + column).odd?
           piece.bg_color(:red)
         else
           piece.to_s.bg_color(:pink)
