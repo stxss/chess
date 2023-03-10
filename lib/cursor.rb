@@ -91,9 +91,15 @@ class Cursor
   end
 
   def update_cursor(move)
-    p new_pos = [@cursor_pos[0] + move[0], @cursor_pos[1] + move[1]]
-    @cursor_pos = new_pos
+    new_pos = [@cursor_pos[0] + move[0], @cursor_pos[1] + move[1]]
+    @cursor_pos = new_pos if in_range?(new_pos)
   end
+
+  def in_range?(position)
+    position[0].between?(0, 7) && position[1].between?(0, 7)
+  end
+
 end
 
 # very valuable info from https://www.alecjacobson.com/weblog/?p=75 and https://gist.github.com/acook/4190379
+
