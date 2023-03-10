@@ -6,5 +6,8 @@ require_relative("intro")
 require_relative("player")
 require_relative("prompts")
 
-p board = Board.new.grid
-display = Display.new(board)
+board = Board.new
+p grid = board.grid
+display = Display.new(grid)
+board.populate
+display.show

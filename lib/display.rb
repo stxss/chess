@@ -33,12 +33,12 @@ class Display
   def display
     output = ""
     @board.each_with_index do |i, row|
-      output += " " * 9 + "#{(row - 8).abs.to_s.bold}" + " "
-      i.each_with_index do |j, column|
+      output += " " * 9 + (row - 8).abs.to_s.bold.to_s + " "
+      i.each_with_index do |piece, column|
         output += if (row + column).odd?
-          j.bg_color(:red)
+          piece.bg_color(:red)
         else
-          j.bg_color(:pink)
+          piece.to_s.bg_color(:pink)
         end
       end
       # system("tput cup 3 40")
