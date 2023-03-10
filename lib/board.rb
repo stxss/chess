@@ -15,10 +15,10 @@ class Board
   end
 
   def populate
-    pieces_row(0, :white)
-    pawn_row(1, :white)
-    pawn_row(6, :black)
-    pieces_row(7, :black)
+    pieces_row(0, :black)
+    pawn_row(1, :black)
+    pawn_row(6, :white)
+    pieces_row(7, :white)
   end
 
   def pawn_row(row, color)
