@@ -1,4 +1,4 @@
-require_relative "./text_styles"
+require_relative "text_styles"
 
 class Display
   using TextStyles
