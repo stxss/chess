@@ -1,3 +1,5 @@
+require_relative("./pieces/empty_square")
+
 require_relative "text_styles"
 
 class Display

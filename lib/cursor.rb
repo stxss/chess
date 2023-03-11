@@ -1,6 +1,4 @@
 require("io/console")
-require_relative("board")
-require_relative("display")
 
 KEYS = {
   "w"      => :up,
