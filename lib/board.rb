@@ -6,12 +6,13 @@ require_relative("./pieces/bishop")
 require_relative("./pieces/king")
 require_relative("./pieces/knight")
 require_relative("./pieces/pawn")
+require_relative("./pieces/empty_square")
 
 class Board
   attr_accessor :grid
 
   def initialize
-    @grid = Array.new(8) { Array.new(8, "   ") }
+    @grid = Array.new(8) { Array.new(8, EmptySquare.new.symbol) }
   end
 
   def populate
