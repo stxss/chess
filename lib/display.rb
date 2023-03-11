@@ -9,7 +9,7 @@ class Display
 
   def initialize(board)
     @board = board
-    @cursor = Cursor.new([0, 0], @board)
+    @cursor = Cursor.new([5, 4], @board) # Starting at [5, 4], to ease the navigation for the first play (with 1. e4 being the most common in chess)
     @moves = []
     add_move
     show
