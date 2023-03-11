@@ -83,12 +83,10 @@ class Cursor
     when :up, :down, :left, :right
       update_cursor(MOVE[key])
     when :ctrl_c
-      puts "CONTROL-C"
-      puts "Thank you for playing Chess! See you next time :D"
+      puts "\nThank you for playing Chess! See you next time :D"
       exit
     when :save
-      puts "SAVE"
-      puts "Your game was saved as {}. Do you want to create a new game? [Y/n]"
+      puts "\nYour game was saved as {}. Do you want to create a new game? [Y/n]"
       exit
     end
   end
