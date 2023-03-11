@@ -35,10 +35,10 @@ MOVE = {
 class Cursor
   attr_accessor :cursor_pos, :selected, :board
 
-  def initialize(cursor_pos, board, selected = false)
+  def initialize(cursor_pos, board)
     @cursor_pos = cursor_pos
     @board = board
-    @selected = selected
+    @selected = false
   end
 
   def ask_input
