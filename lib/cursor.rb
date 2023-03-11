@@ -4,23 +4,25 @@ require_relative("display")
 
 KEYS = {
   "w"      => :up,
-  "a"      => :left,
   "s"      => :down,
+  "a"      => :left,
   "d"      => :right,
-  "h"      => :left,
-  "j"      => :down,
   "k"      => :up,
+  "j"      => :down,
+  "h"      => :left,
   "l"      => :right,
-  "g"      => :save,
   "\e[A"   => :up,
   "\e[B"   => :down,
-  "\e[C"   => :right,
   "\e[D"   => :left,
-  "\004"   => :delete,
-  "\177"   => :backspace,
-  "\t"     => :tab,
-  "\e"     => :escape,
+  "\e[C"   => :right,
+  "e"      => :return,
   "\r"     => :return,
+  "q"      => :ctrl_c,
+  "\e"     => :escape,
+  "g"      => :save,
+  "\177"   => :backspace,
+  "\004"   => :delete,
+  "\t"     => :tab,
   "\n"     => :newline,
   "\u0003" => :ctrl_c
 }.freeze
@@ -77,15 +79,18 @@ class Cursor
     case key
     when :return
       puts "RETURN"
+      @selected = !@selected
     when :escape
       puts "ESCAPE"
     when :up, :down, :left, :right
       update_cursor(MOVE[key])
     when :ctrl_c
       puts "CONTROL-C"
+      puts "Thank you for playing Chess! See you next time :D"
       exit
     when :save
       puts "SAVE"
+      puts "Your game was saved as {}. Do you want to create a new game? [Y/n]"
       exit
     end
   end
@@ -98,8 +103,6 @@ class Cursor
   def in_range?(position)
     position[0].between?(0, 7) && position[1].between?(0, 7)
   end
-
 end
 
 # very valuable info from https://www.alecjacobson.com/weblog/?p=75 and https://gist.github.com/acook/4190379
-
