@@ -30,8 +30,8 @@ class Board
 
   def pieces_row(row, color)
     @grid[row][0] = Piece.new(:rook, color).symbol
-    @grid[row][1] = Piece.new(:bishop, color).symbol
-    @grid[row][2] = Piece.new(:knight, color).symbol
+    @grid[row][1] = Piece.new(:knight, color).symbol
+    @grid[row][2] = Piece.new(:bishop, color).symbol
     @grid[row][3] = Piece.new(:queen, color).symbol
     @grid[row][4] = Piece.new(:king, color).symbol
     @grid[row][5] = Piece.new(:bishop, color).symbol
