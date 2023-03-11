@@ -22,18 +22,20 @@ class Board
     pieces_row(7, :white)
   end
 
+  private
+
   def pawn_row(row, color)
-    @grid[row].map! { Pawn.new(color).symbol }
+    @grid[row].map! { Piece.new(:pawn, color).symbol }
   end
 
   def pieces_row(row, color)
-    @grid[row][0] = Rook.new(color).symbol
-    @grid[row][1] = Bishop.new(color).symbol
-    @grid[row][2] = Knight.new(color).symbol
-    @grid[row][3] = Queen.new(color).symbol
-    @grid[row][4] = King.new(color).symbol
-    @grid[row][5] = Bishop.new(color).symbol
-    @grid[row][6] = Knight.new(color).symbol
-    @grid[row][7] = Rook.new(color).symbol
+    @grid[row][0] = Piece.new(:rook, color).symbol
+    @grid[row][1] = Piece.new(:bishop, color).symbol
+    @grid[row][2] = Piece.new(:knight, color).symbol
+    @grid[row][3] = Piece.new(:queen, color).symbol
+    @grid[row][4] = Piece.new(:king, color).symbol
+    @grid[row][5] = Piece.new(:bishop, color).symbol
+    @grid[row][6] = Piece.new(:knight, color).symbol
+    @grid[row][7] = Piece.new(:rook, color).symbol
   end
 end
