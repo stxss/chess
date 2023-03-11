@@ -38,11 +38,13 @@ class Display
       - After selecting a piece, move to a square where you can place a piece (i.e, do a valid move) and press the selection key again.
 
       - If you want to quit without saving your game, press #{"CTRL-C".fg_color(:dark_red)} or #{"q".fg_color(:dark_red)}.
-      - If you want to quit and save your progress, press #{"G".fg_color(:dark_green)}.
+      - If you want to quit and save your progress, press #{"g".fg_color(:dark_green)}.
 
       - That's pretty much it! Good luck!
     HEREDOC
   end
+
+  private
 
   def display
     output = ""
