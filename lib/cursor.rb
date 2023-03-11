@@ -99,6 +99,11 @@ class Cursor
   def in_range?(position)
     position[0].between?(0, 7) && position[1].between?(0, 7)
   end
+
+  def has_piece?(cell)
+    cell = @board[cell[0]][cell[1]]
+    cell != "   "
+  end
 end
 
 # very valuable info from https://www.alecjacobson.com/weblog/?p=75 and https://gist.github.com/acook/4190379
