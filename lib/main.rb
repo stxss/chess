@@ -7,12 +7,4 @@ require_relative("intro")
 require_relative("player")
 require_relative("prompts")
 
-board = Board.new
-grid = board.grid
-display = Display.new(grid)
-board.populate
-loop do
-  display.show
-  display.cursor.ask_input
-end
-
+game = Game.new
