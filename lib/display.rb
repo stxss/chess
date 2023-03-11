@@ -49,8 +49,10 @@ class Display
     @board.each_with_index do |i, row|
       output += " " * 9 + (row - 8).abs.to_s.bold.to_s + " "
       i.each_with_index do |piece, column|
-        output += if @cursor.cursor_pos == [row, column]
-          piece.bg_color(:blue)
+        output += if @cursor.cursor_pos == [row, column] && !@cursor.selected
+          piece.bg_color(:light_blue)
+        elsif @cursor.cursor_pos == [row, column] && @cursor.selected
+          piece.bg_color(:light_green)
         elsif (row + column).odd?
           piece.bg_color(:red)
         else
