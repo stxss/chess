@@ -9,10 +9,12 @@ require_relative("./pieces/pawn")
 require_relative("./pieces/empty_square")
 
 class Board
-  attr_accessor :grid
+  attr_accessor :grid, :white, :black
 
   def initialize
     @grid = Array.new(8) { Array.new(8, EmptySquare.new.symbol) }
+    @black = []
+    @white = []
   end
 
   def populate
