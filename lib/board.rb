@@ -27,17 +27,34 @@ class Board
   private
 
   def pawn_row(row, color)
-    @grid[row].map! { Piece.new(:pawn, color).symbol }
+    pawn = Piece.new(:pawn, color).symbol
+    @grid[row].map! { pawn }
+
+    distribute(pawn, color)
   end
 
   def pieces_row(row, color)
-    @grid[row][0] = Piece.new(:rook, color).symbol
-    @grid[row][1] = Piece.new(:knight, color).symbol
-    @grid[row][2] = Piece.new(:bishop, color).symbol
-    @grid[row][3] = Piece.new(:queen, color).symbol
-    @grid[row][4] = Piece.new(:king, color).symbol
-    @grid[row][5] = Piece.new(:bishop, color).symbol
-    @grid[row][6] = Piece.new(:knight, color).symbol
-    @grid[row][7] = Piece.new(:rook, color).symbol
+    rook = Piece.new(:rook, color).symbol
+    knight = Piece.new(:knight, color).symbol
+    bishop = Piece.new(:bishop, color).symbol
+    queen = Piece.new(:queen, color).symbol
+    king = Piece.new(:king, color).symbol
+
+    pieces = [rook, knight, bishop, queen, king]
+
+    @grid[row][0] = rook
+    @grid[row][1] = knight
+    @grid[row][2] = bishop
+    @grid[row][3] = queen
+    @grid[row][4] = king
+    @grid[row][5] = bishop
+    @grid[row][6] = knight
+    @grid[row][7] = rook
+
+    pieces.each { |piece| distribute(piece, color) }
+  end
+
+  def distribute(piece, color)
+    (color == :white) ? @white << piece : @black << piece
   end
 end
