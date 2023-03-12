@@ -113,22 +113,4 @@ class Cursor
     cell = @board.grid[cell[0]][cell[1]]
     cell != "   "
   end
-
-  def can_move?
-    curr_piece = @piece
-    curr_color = @board.white.any?(curr_piece) ? "white" : "black"
-
-    next_piece = @board.grid[@cursor_pos[0]][@cursor_pos[1]]
-    next_color = if @board.white.any?(next_piece)
-      "white"
-    elsif @board.black.any?(next_piece)
-      "black"
-    else
-      "empty"
-    end
-
-    (curr_color != next_color || next_color == "empty") && @cursor_pos != @initial_pos
-  end
 end
-
-# very valuable info from https://www.alecjacobson.com/weblog/?p=75 and https://gist.github.com/acook/4190379
