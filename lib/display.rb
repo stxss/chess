@@ -1,5 +1,4 @@
 require_relative("./pieces/empty_square")
-
 require_relative "text_styles"
 
 class Display
@@ -8,8 +7,8 @@ class Display
   attr_accessor :board, :moves, :cursor
 
   def initialize(board)
-    @board = board
-    @cursor = Cursor.new([5, 4], @board) # Starting at [5, 4], to ease the navigation for the first play (with 1. e4 being the most common in chess)
+    @board = board.grid
+    @cursor = Cursor.new([5, 4], board) # Starting at [5, 4], to ease the navigation for the first play (with 1. e4 being the most common in chess)
     @moves = []
     add_move
     show
@@ -24,11 +23,11 @@ class Display
 
     puts <<~HEREDOC
 
-                        player1 - score
+                    player1 - score
 
       #{display}
 
-                        player2 - score
+                    player2 - score
 
       +-----------------------------
       - To #{"move around".bold.underlined.fg_color(:light_blue)} the board, you can use #{"WASD".fg_color(:light_blue)}, #{"\u{2191}\u{2193}\u{2190}\u{2192}".fg_color(:light_blue)} and, if you are a VIM enjoyer, you can also use your precious #{"HJKL".fg_color(:light_blue)} keys.

@@ -8,4 +8,4 @@ require_relative("player")
 require_relative("game")
 require_relative("movement")
 
-game = Game.new
+Game.new
