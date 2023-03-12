@@ -68,29 +68,24 @@ class Cursor
     end
 
     $stdin.echo = true
-    $stdin.cooked! # return to the normal input mode, reverse of raw!, as using only raw can "break" the terminal
+    $stdin.cooked! # return to the normal input mode, reverse of raw!, as using only raw can "break" the CLI
 
     input
   end
 
   def interpret(key)
     case key
+    when :up, :down, :left, :right
+      update_cursor(MOVE[key])
     when :return
-      if @selected == false
+      if !@selected
         @selected = has_piece?(@cursor_pos)
         @initial_pos = @cursor_pos
         @piece = @board.grid[@initial_pos[0]][@initial_pos[1]]
-        moving_piece = Movement.new(@piece)
-      elsif @selected == true && can_move?
-
-        @board.grid[@initial_pos[0]][@initial_pos[1]] = EmptySquare.new.symbol
-        @board.grid[@cursor_pos[0]][@cursor_pos[1]] = @piece
+      elsif @selected && @board.can_move?(@piece, @cursor_pos)
+        @board.move(@initial_pos, @piece, @cursor_pos)
         @selected = false
       end
-    when :escape
-      puts "ESCAPE"
-    when :up, :down, :left, :right
-      update_cursor(MOVE[key])
     when :ctrl_c
       puts "\nThank you for playing Chess! See you next time :D"
       exit
