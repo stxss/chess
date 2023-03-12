@@ -76,8 +76,17 @@ class Cursor
   def interpret(key)
     case key
     when :return
-      puts "RETURN"
-      @selected = !@selected
+      if @selected == false
+        @selected = has_piece?(@cursor_pos)
+        @initial_pos = @cursor_pos
+        @piece = @board.grid[@initial_pos[0]][@initial_pos[1]]
+        moving_piece = Movement.new(@piece)
+      elsif @selected == true && can_move?
+
+        @board.grid[@initial_pos[0]][@initial_pos[1]] = EmptySquare.new.symbol
+        @board.grid[@cursor_pos[0]][@cursor_pos[1]] = @piece
+        @selected = false
+      end
     when :escape
       puts "ESCAPE"
     when :up, :down, :left, :right
