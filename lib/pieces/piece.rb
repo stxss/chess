@@ -1,11 +1,12 @@
 require_relative("./../text_styles")
+require_relative("./../movement/movement")
 
 PIECES = {
+  king:   " \u{265A} ",
+  queen:  " \u{265B} ",
   rook:   " \u{265C} ",
   bishop: " \u{265D} ",
   knight: " \u{265E} ",
-  queen:  " \u{265B} ",
-  king:   " \u{265A} ",
   pawn:   " \u{265F} "
 }.freeze
 

@@ -1,4 +1,7 @@
-require_relative("piece")
+require_relative("./../movement/directions")
 
-class Queen < Piece
+class Queen
+    include Directions
+
+
 end

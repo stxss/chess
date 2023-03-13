@@ -33,7 +33,7 @@ MOVE = {
 }.freeze
 
 class Cursor
-  attr_accessor :cursor_pos, :selected, :board
+  attr_accessor :cursor_pos, :selected, :board, :available_moves
 
   def initialize(cursor_pos, board)
     @cursor_pos = cursor_pos
@@ -82,7 +82,8 @@ class Cursor
         @selected = has_piece?(@cursor_pos)
         @initial_pos = @cursor_pos
         @piece = @board.grid[@initial_pos[0]][@initial_pos[1]]
-      elsif @selected && @board.can_move?(@piece, @cursor_pos)
+        @available_moves = @board.available_moves(@board, @piece, @cursor_pos)
+      elsif @selected && @board.can_move?(@initial_pos, @piece, @cursor_pos)
         @board.move(@initial_pos, @piece, @cursor_pos)
         @selected = false
       end

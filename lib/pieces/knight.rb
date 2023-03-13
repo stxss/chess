@@ -1,4 +1,4 @@
-require_relative("piece")
+require_relative("./../movement/directions")
 
-class Knight < Piece
+class Knight
 end

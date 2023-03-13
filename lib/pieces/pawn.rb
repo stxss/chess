@@ -1,4 +1,5 @@
-require_relative("piece")
+require_relative("./../movement/directions")
 
-class Pawn < Piece
+class Pawn
+
 end

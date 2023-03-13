@@ -6,6 +6,6 @@ require_relative("display")
 require_relative("board")
 require_relative("player")
 require_relative("game")
-require_relative("movement")
+require_relative("./movement/movement")
 
 Game.new
