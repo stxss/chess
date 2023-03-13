@@ -7,12 +7,14 @@ require_relative("./pieces/king")
 require_relative("./pieces/knight")
 require_relative("./pieces/pawn")
 require_relative("./pieces/empty_square")
+require_relative("./movement/movement")
 
 class Board
-  attr_accessor :grid, :white, :black
+  include Movement
+  attr_accessor :grid, :white, :black, :pieces, :chosen, :moves
 
   def initialize
-    @grid = Array.new(8) { Array.new(8, EmptySquare.new.symbol) }
+    @grid = Array.new(8) { Array.new(8, EmptySquare.new) }
     @black = []
     @white = []
   end
@@ -27,20 +29,20 @@ class Board
   private
 
   def pawn_row(row, color)
-    pawn = Piece.new(:pawn, color).symbol
+    pawn = Piece.new(:pawn, color)
     @grid[row].map! { pawn }
 
     distribute(pawn, color)
   end
 
   def pieces_row(row, color)
-    rook = Piece.new(:rook, color).symbol
-    knight = Piece.new(:knight, color).symbol
-    bishop = Piece.new(:bishop, color).symbol
-    queen = Piece.new(:queen, color).symbol
-    king = Piece.new(:king, color).symbol
+    rook = Piece.new(:rook, color)
+    knight = Piece.new(:knight, color)
+    bishop = Piece.new(:bishop, color)
+    queen = Piece.new(:queen, color)
+    king = Piece.new(:king, color)
 
-    pieces = [rook, knight, bishop, queen, king]
+    @pieces = [rook, knight, bishop, queen, king]
 
     @grid[row][0] = rook
     @grid[row][1] = knight

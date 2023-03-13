@@ -106,6 +106,6 @@ class Cursor
 
   def has_piece?(cell)
     cell = @board.grid[cell[0]][cell[1]]
-    cell != "   "
+    cell.symbol != "   "
   end
 end

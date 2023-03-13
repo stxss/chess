@@ -7,7 +7,7 @@ class Display
   attr_accessor :board, :moves, :cursor
 
   def initialize(board)
-    @board = board.grid
+    @board = board
     @cursor = Cursor.new([5, 4], board) # Starting at [5, 4], to ease the navigation for the first play (with 1. e4 being the most common in chess)
     @moves = []
     add_move
@@ -47,17 +47,18 @@ class Display
 
   def display
     output = ""
-    @board.each_with_index do |i, row|
+    @board.grid.each_with_index do |i, row|
       output += " " * 9 + (row - 8).abs.to_s.bold.to_s + " "
       i.each_with_index do |piece, column|
+        to_display = piece.symbol
         output += if @cursor.cursor_pos == [row, column] && !@cursor.selected
-          piece.bg_color(:light_blue)
+          to_display.bg_color(:light_blue)
         elsif @cursor.cursor_pos == [row, column] && @cursor.selected
-          piece.bg_color(:light_green)
+          to_display.bg_color(:light_green)
         elsif (row + column).odd?
-          piece.bg_color(:red)
+          to_display.bg_color(:red)
         else
-          piece.to_s.bg_color(:pink)
+          to_display.bg_color(:pink)
         end
       end
       # system("tput cup 3 40")
