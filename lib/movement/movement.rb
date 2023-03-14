@@ -21,21 +21,22 @@ module Movement
   end
 
   def available_moves(grid, chosen, start_position)
-    @moves = possible_moves(grid, start_position, chosen.piece)
+    @moves = possible_moves(grid, start_position, chosen)
   end
 
   def possible_moves(board, start_position, piece)
-    if piece == PIECES[:king]
+    case piece.piece
+    when PIECES[:king]
       King.new.movement(board, start_position, piece)
-    elsif piece == PIECES[:queen]
+    when PIECES[:queen]
       Queen.new.movement(board, start_position, piece)
-    elsif piece == PIECES[:rook]
+    when PIECES[:rook]
       Rook.new.movement(board, start_position, piece)
-    elsif piece == PIECES[:bishop]
+    when PIECES[:bishop]
       Bishop.new.movement(board, start_position, piece)
-    elsif piece == PIECES[:knight]
+    when PIECES[:knight]
       Knight.new.movement(board, start_position, piece)
-    elsif piece == PIECES[:pawn]
+    when PIECES[:pawn]
       Pawn.new.movement(board, start_position, piece)
     end
   end
