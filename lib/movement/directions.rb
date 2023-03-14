@@ -38,6 +38,7 @@ module Directions
     @board.grid[square[0]][square[1]].color == color && !empty?(square)
   end
 
-    # up_left + up_right + down_left + down_right
+  def empty?(square)
+    @board.grid[square[0]][square[1]].instance_of?(EmptySquare)
   end
 end
