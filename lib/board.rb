@@ -53,7 +53,7 @@ class Board
     @grid[row][6] = knight
     @grid[row][7] = rook
 
-    pieces.each { |piece| distribute(piece, color) }
+    @pieces.each { |piece| distribute(piece, color) }
   end
 
   def distribute(piece, color)

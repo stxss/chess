@@ -48,9 +48,11 @@ class Cursor
 
   private
 
+  # very valuable info from https://www.alecjacobson.com/weblog/?p=75 and https://gist.github.com/acook/4190379
+
   def ask_key
-    $stdin.echo = false # because the keys are not to be shown when playing
-    $stdin.raw! # because the user should be able to navigate without having to press enter
+    $stdin.echo = false # because the keys are not to be shown in CLI when playing
+    $stdin.raw! # because the user should be able to navigate CLI without having to press enter
     input = $stdin.getc.chr
 
     if input == "\e"

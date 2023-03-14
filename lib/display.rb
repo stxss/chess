@@ -53,7 +53,7 @@ class Display
         to_display = piece.symbol
 
         if @cursor.available_moves&.any?([row, column]) && @board.grid[row][column].instance_of?(EmptySquare)
-            to_display = " \u{25cb} ".fg_color(:dark_green)
+          to_display = " \u{25cb} ".fg_color(:dark_green)
         end
 
         output += if @cursor.cursor_pos == [row, column] && !@cursor.selected
@@ -76,7 +76,6 @@ class Display
       output += "\n"
     end
     output += "            a  b  c  d  e  f  g  h".bold
-    output
   end
 
   def add_move
