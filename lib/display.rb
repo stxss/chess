@@ -51,6 +51,11 @@ class Display
       output += " " * 9 + (row - 8).abs.to_s.bold.to_s + " "
       i.each_with_index do |piece, column|
         to_display = piece.symbol
+
+        if @cursor.available_moves&.any?([row, column]) && @board.grid[row][column].instance_of?(EmptySquare)
+            to_display = " \u{25cb} ".fg_color(:dark_green)
+        end
+
         output += if @cursor.cursor_pos == [row, column] && !@cursor.selected
           to_display.bg_color(:light_blue)
         elsif @cursor.cursor_pos == [row, column] && @cursor.selected

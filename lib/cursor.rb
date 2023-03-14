@@ -85,6 +85,7 @@ class Cursor
         @available_moves = @board.available_moves(@board, @piece, @cursor_pos)
       elsif @selected && @board.can_move?(@initial_pos, @piece, @cursor_pos)
         @board.move(@initial_pos, @piece, @cursor_pos)
+        @available_moves = nil
         @selected = false
       end
     when :ctrl_c
