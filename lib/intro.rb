@@ -18,7 +18,7 @@ class Intro
           - Two knights
           - Eight pawns
 
-      The player controlling the #{"white".bold.fg_color(:white)} pieces moves first, followed by the player controlling the #{"black".bold.fg_color(:black)} pieces.
+      The player controlling the #{"white".bold.underlined} pieces moves first, followed by the player controlling the #{"black".bold.underlined} pieces.
 
       The object of the game is to #{"checkmate".bold.italic} the opponent's king, whereby the king is under immediate attack (in "check") and there is no way for it to escape. There are also several ways a game can end in a draw.
     HEREDOC
