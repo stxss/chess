@@ -8,7 +8,12 @@ class Pawn
     @start_position = start_position
     @piece = piece.piece
     @color = piece.color
-    directions = [[-1, 0], [-2, 0]] # up, down, left, right
+    case @color
+    when :white
+      directions = [[-1, 0], [-2, 0]] # up, down, left, right
+    when :black
+      directions = [[1, 0], [2, 0]]
+    end
     find_moves(:pawn, directions)
   end
 end
