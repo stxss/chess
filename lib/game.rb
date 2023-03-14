@@ -58,6 +58,18 @@ class Game
   #   @board.show_board
   # end
 
+  def restart
+    loop do
+      puts "\nDo you want to play again? Please enter a valid option. [Y/N]"
+      answer = gets.chomp
+      case answer
+      when "Y", "y", "yes".downcase
+        new_game = Game.new(@player1, @player2)
+        new_game.play
+      when "N", "n", "no".downcase
+        puts "Thank you for playing Chess!"
+        exit
+      end
     end
   end
 end
