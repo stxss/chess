@@ -3,13 +3,13 @@
 module TextStyles
   RGB_COLOR_MAP = {
     black:       "0;0;0",
-    white:       "211;215;207",
+    white:       "255;255;255",
     cyan:        "139;233;253",
     teal:        "20;72;69",
     green:       "47;70;27",
     light_green: "158;206;106",
     dark_green:  "38;156;90",
-    pink:        "247;118;142",
+    pink:        "234;125;107",
     red:         "129;19;9",
     dark_red:    "190;28;40",
     light_blue:  "122;162;247",
