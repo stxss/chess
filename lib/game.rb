@@ -19,7 +19,8 @@ class Game
     @display = Display.new(@board, @player1, @player2)
   end
 
-    loop do
+  def play
+    until @is_winner || @draw
       @display.show
       @display.cursor.ask_input
       @turn += 1
