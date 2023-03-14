@@ -1,5 +1,5 @@
 module Movement
-  def can_move?(previous, piece, following)
+  def can_move?(previous, piece, following, available)
     @start_position = previous
     curr_color = @white.any?(piece) ? "white" : "black"
 
@@ -12,7 +12,7 @@ module Movement
       "empty"
     end
 
-    (curr_color != next_color || next_color == "empty") && following != @initial_pos
+    (curr_color != next_color || next_color == "empty") && following != @initial_pos && available.include?(following)
   end
 
   def move(prev_pos, piece, following)

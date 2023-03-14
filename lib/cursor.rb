@@ -85,11 +85,14 @@ class Cursor
         @initial_pos = @cursor_pos
         @piece = @board.grid[@initial_pos[0]][@initial_pos[1]]
         @available_moves = @board.available_moves(@board, @piece, @cursor_pos)
-      elsif @selected && @board.can_move?(@initial_pos, @piece, @cursor_pos)
+      elsif @selected && @board.can_move?(@initial_pos, @piece, @cursor_pos, @available_moves)
         @board.move(@initial_pos, @piece, @cursor_pos)
         @available_moves = nil
         @selected = false
       end
+    when :escape
+      @selected = false if @selected == true
+      @available_moves = nil
     when :ctrl_c
       puts "\nThank you for playing Chess! See you next time :D"
       exit
