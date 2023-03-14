@@ -30,6 +30,8 @@ module Directions
     empties + enemies
   end
 
+  def enemy?(color, square)
+    @board.grid[square[0]][square[1]].color != color && !empty?(square)
   end
 
 
