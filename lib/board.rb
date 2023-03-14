@@ -11,7 +11,7 @@ require_relative("./movement/movement")
 
 class Board
   include Movement
-  attr_accessor :grid, :white, :black, :pieces, :chosen, :moves
+  attr_accessor :grid, :white, :black, :pieces, :chosen, :moves, :player1, :player2
 
   def initialize
     @grid = Array.new(8) { Array.new(8, EmptySquare.new) }
@@ -24,6 +24,11 @@ class Board
     pawn_row(1, :black)
     pawn_row(6, :white)
     pieces_row(7, :white)
+  end
+
+  def create_scoreboard(player1, player2)
+    @player1 = player1
+    @player2 = player2
   end
 
   private
