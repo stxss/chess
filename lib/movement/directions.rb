@@ -34,6 +34,9 @@ module Directions
     @board.grid[square[0]][square[1]].color != color && !empty?(square)
   end
 
+  def ally?(color, square)
+    @board.grid[square[0]][square[1]].color == color && !empty?(square)
+  end
 
     # up_left + up_right + down_left + down_right
   end
