@@ -85,7 +85,7 @@ class Cursor
         @initial_pos = @cursor_pos
         @piece = @board.grid[@initial_pos[0]][@initial_pos[1]]
         @available_moves = @board.available_moves(@board, @piece, @cursor_pos)
-      elsif @selected && @board.can_move?(@initial_pos, @piece, @cursor_pos, @available_moves)
+      elsif @selected && @board.can_move?(@initial_pos, @cursor_pos, @available_moves)
         @board.move(@initial_pos, @piece, @cursor_pos)
         @available_moves = nil
         @selected = false

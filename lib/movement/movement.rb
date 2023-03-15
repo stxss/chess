@@ -1,18 +1,10 @@
 module Movement
-  def can_move?(previous, piece, following, available)
+  def can_move?(previous, following, available)
     @start_position = previous
-    curr_color = @white.any?(piece) ? "white" : "black"
 
     next_slot = @grid[following[0]][following[1]]
-    next_color = if @white.any?(next_slot)
-      "white"
-    elsif @black.any?(next_slot)
-      "black"
-    else
-      "empty"
-    end
 
-    (curr_color != next_color || next_color == "empty") && following != @initial_pos && available.include?(following)
+    valid_move?(available, following) && not_king?(next_slot.piece)
   end
 
   def move(prev_pos, piece, following)
@@ -39,5 +31,13 @@ module Movement
     when PIECES[:pawn]
       Pawn.new.movement(board, start_position, piece)
     end
+  end
+
+  def not_king?(piece)
+    piece != PIECES[:king]
+  end
+
+  def valid_move?(available, following)
+    available.include?(following)
   end
 end
