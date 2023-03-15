@@ -11,12 +11,21 @@ class Pawn
 
     case @color
     when :white
-      directions = moved_once?(@color) ? [[-1, 0]] : [[-1, 0], [-2, 0]]
+      jump1, jump2 = [-1, 0], [-2, 0]
       enemy_directions = [[-1, -1], [-1, 1]]
     when :black
-      directions = moved_once?(@color) ? [[1, 0]] : [[1, 0], [2, 0]]
+      jump1, jump2 = [1, 0], [2, 0]
       enemy_directions = [[1, -1], [1, 1]]
     end
+
+    directions = if !has_immediate_enemy?(@color) && moved_once?(@color)
+      [jump1]
+    elsif !has_immediate_enemy?(@color) && !moved_once?(@color)
+      [jump1, jump2]
+    else
+      []
+    end
+
     find_moves(:pawn, directions) + pawn_enemies(@color, enemy_directions)
   end
 
@@ -35,6 +44,18 @@ class Pawn
     end
   end
 
+  def has_immediate_enemy?(color)
+    row = @start_position[0]
+    col = @start_position[1]
+
+    case color
+    when :white
+      enemy?(color, [row - 1, col])
+    when :black
+      enemy?(color, [row + 1, col])
+    end
+  end
+
   def pawn_enemies(color, directions)
     row = @start_position[0]
     col = @start_position[1]
@@ -44,7 +65,9 @@ class Pawn
       next_row = row + direction[0]
       next_col = col + direction[1]
 
-      enemies << [next_row, next_col] if enemy?(color, [next_row, next_col])
+      unless next_col == 8
+        enemies << [next_row, next_col] if enemy?(color, [next_row, next_col])
+      end
     end
     enemies
   end

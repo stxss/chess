@@ -40,4 +40,8 @@ module Movement
   def valid_move?(available, following)
     available.include?(following)
   end
+
+  def in_range?(position)
+    position[0].between?(0, 7) && position[1].between?(0, 7)
+  end
 end

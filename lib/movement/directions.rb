@@ -9,11 +9,10 @@ module Directions
       next_row = row + direction[0]
       next_col = col + direction[1]
 
-      while next_row.between?(0, 7) && next_col.between?(0, 7)
+      while @board.in_range?([next_row, next_col])
         if ally?(@color, [next_row, next_col])
           break
         elsif enemy?(@color, [next_row, next_col])
-          break if piece == :pawn
           enemies << [next_row, next_col]
           break
         elsif empty?([next_row, next_col])
@@ -24,7 +23,7 @@ module Directions
         when :pawn, :knight, :king
           break
         end
-        
+
         next_row += direction[0]
         next_col += direction[1]
       end

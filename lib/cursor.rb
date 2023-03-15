@@ -104,11 +104,7 @@ class Cursor
 
   def update_cursor(move)
     new_pos = [@cursor_pos[0] + move[0], @cursor_pos[1] + move[1]]
-    @cursor_pos = new_pos if in_range?(new_pos)
-  end
-
-  def in_range?(position)
-    position[0].between?(0, 7) && position[1].between?(0, 7)
+    @cursor_pos = new_pos if @board.in_range?(new_pos)
   end
 
   def has_piece?(cell)
