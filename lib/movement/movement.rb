@@ -8,6 +8,9 @@ module Movement
   end
 
   def move(prev_pos, piece, following)
+    if piece.piece == PIECES[:pawn]
+      piece = promote(piece.color) if (piece.color == :white && following[0] == 0) || (piece.color == :black && following[0] == 7)
+    end
     @grid[following[0]][following[1]] = piece
     @grid[prev_pos[0]][prev_pos[1]] = EmptySquare.new
   end
@@ -43,5 +46,17 @@ module Movement
 
   def in_range?(position)
     position[0].between?(0, 7) && position[1].between?(0, 7)
+  end
+
+  def promote(color)
+    piece = gets.chomp
+    piece = case piece
+    in "1" then :queen
+    in "2" then :rook
+    in "3" then :knight
+    in "4" then :bishop
+    end
+
+    Piece.new(piece, color)
   end
 end
