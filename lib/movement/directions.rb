@@ -13,6 +13,7 @@ module Directions
         if ally?(@color, [next_row, next_col])
           break
         elsif enemy?(@color, [next_row, next_col])
+          break if piece == :pawn
           enemies << [next_row, next_col]
           break
         elsif empty?([next_row, next_col])
