@@ -19,6 +19,12 @@ module Movement
     @moves = possible_moves(grid, start_position, chosen)
   end
 
+  def in_range?(position)
+    position[0].between?(0, 7) && position[1].between?(0, 7)
+  end
+
+  private
+
   def possible_moves(board, start_position, piece)
     case piece.piece
     when PIECES[:king]
@@ -42,10 +48,6 @@ module Movement
 
   def valid_move?(available, following)
     available.include?(following)
-  end
-
-  def in_range?(position)
-    position[0].between?(0, 7) && position[1].between?(0, 7)
   end
 
   def promote(color)
