@@ -24,6 +24,7 @@ module Directions
         when :pawn, :knight, :king
           break
         end
+        
         next_row += direction[0]
         next_col += direction[1]
       end
