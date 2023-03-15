@@ -42,7 +42,11 @@ class Game
 
   def create(prev_name = nil)
     loop do
-      puts "\nPlease, enter a valid name: "
+      if !prev_name
+        puts "\nPlease, enter a valid name for the first player: "
+      else
+        puts "\nPlease, enter a valid name for the second player: "
+      end
       input = gets.chomp
       verified = verify_name(prev_name, input)
       return verified if verified
