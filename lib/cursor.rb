@@ -83,15 +83,14 @@ class Cursor
       if !@selected
         @selected = has_piece?(@cursor_pos) && correct_turn?
         @initial_pos = @cursor_pos
-        @piece = @board.grid[@initial_pos[0]][@initial_pos[1]]
+        @piece = select_piece(@initial_pos)
         @available_moves = @board.available_moves(@board, @piece, @cursor_pos)
       elsif @selected && @board.can_move?(@initial_pos, @cursor_pos, @available_moves)
         @board.move(@initial_pos, @piece, @cursor_pos)
-        @available_moves = nil
-        @selected = false
+        reset_relevant
       end
     when :escape
-      @selected = false if @selected == true
+      @selected = false if @selected
       @available_moves = nil
     when :ctrl_c
       puts "\nThank you for playing Chess! See you next time :D"
@@ -116,5 +115,14 @@ class Cursor
     counter = @board.turn
     color_turn = counter.even? ? :white : :black
     @board.grid[@cursor_pos[0]][@cursor_pos[1]].color == color_turn
+  end
+
+  def select_piece(position)
+    @board.grid[position[0]][position[1]]
+  end
+
+  def reset_relevant
+    @available_moves = nil
+    @selected = false
   end
 end
