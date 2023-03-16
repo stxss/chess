@@ -9,16 +9,13 @@ module Movement
 
   def move(prev_pos, piece, following)
     if piece.piece == PIECES[:pawn]
-      piece = promote(piece.color) if (piece.color == :white && following[0] == 0) || (piece.color == :black && following[0] == 7)
+      piece = promote(piece.color) if to_be_promoted(piece.color, following[0])
     end
 
-    @grid[following[0]][following[1]].instance_of?(EmptySquare) ? @half_counter += 1 : @half_counter = 0
-    @full_counter += 1 if @grid[prev_pos[0]][prev_pos[1]].color == :black
-    @turn += 1
-
-    @grid[following[0]][following[1]] = piece
-    @grid[prev_pos[0]][prev_pos[1]] = EmptySquare.new
-
+    update_half(following[0], following[1])
+    update_full(@grid[prev_pos[0]][prev_pos[1]].color)
+    update_turn
+    update_piece(piece, prev_pos, following)
   end
 
   def available_moves(grid, chosen, start_position)
@@ -29,7 +26,53 @@ module Movement
     position[0].between?(0, 7) && position[1].between?(0, 7)
   end
 
+  def is_empty?(row, column)
+    @grid[row][column].instance_of?(EmptySquare)
+  end
+
   private
+
+  def valid_move?(available, following)
+    available.include?(following)
+  end
+
+  def not_king?(piece)
+    piece != PIECES[:king]
+  end
+
+  def to_be_promoted(color, row)
+    color == :white && row == 0 || color == :black && row == 7
+  end
+
+  def promote(color)
+    # TODO add prompt for piece promotion
+    piece = gets.chomp
+    piece = case piece
+    in "1" then :queen
+    in "2" then :rook
+    in "3" then :knight
+    in "4" then :bishop
+    end
+
+    Piece.new(piece, color)
+  end
+
+  def update_half(row, col)
+    is_empty?(row, col) ? @half_counter += 1 : @half_counter = 0
+  end
+
+  def update_full(color)
+    @full_counter += 1 if color == :black
+  end
+
+  def update_turn
+    @turn += 1
+  end
+
+  def update_piece(piece, previous, following)
+    @grid[following[0]][following[1]] = piece
+    @grid[previous[0]][previous[1]] = EmptySquare.new
+  end
 
   def possible_moves(board, start_position, piece)
     case piece.piece
@@ -46,25 +89,5 @@ module Movement
     when PIECES[:pawn]
       Pawn.new.movement(board, start_position, piece)
     end
-  end
-
-  def not_king?(piece)
-    piece != PIECES[:king]
-  end
-
-  def valid_move?(available, following)
-    available.include?(following)
-  end
-
-  def promote(color)
-    piece = gets.chomp
-    piece = case piece
-    in "1" then :queen
-    in "2" then :rook
-    in "3" then :knight
-    in "4" then :bishop
-    end
-
-    Piece.new(piece, color)
   end
 end

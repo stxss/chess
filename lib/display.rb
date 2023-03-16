@@ -86,10 +86,6 @@ class Display
     @cursor.available_moves&.any?([row, column])
   end
 
-  def is_empty?(row, column)
-    @board.grid[row][column].instance_of?(EmptySquare)
-  end
-
   def paint(square, color)
     square.bg_color(color)
   end
