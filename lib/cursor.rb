@@ -81,7 +81,7 @@ class Cursor
       update_cursor(MOVE[key])
     when :return
       if !@selected
-        @selected = has_piece?(@cursor_pos)
+        @selected = has_piece?(@cursor_pos) && correct_turn?
         @initial_pos = @cursor_pos
         @piece = @board.grid[@initial_pos[0]][@initial_pos[1]]
         @available_moves = @board.available_moves(@board, @piece, @cursor_pos)
@@ -110,5 +110,11 @@ class Cursor
   def has_piece?(cell)
     cell = @board.grid[cell[0]][cell[1]]
     cell.symbol != "   "
+  end
+
+  def correct_turn?
+    counter = @board.turn
+    color_turn = counter.even? ? :white : :black
+    @board.grid[@cursor_pos[0]][@cursor_pos[1]].color == color_turn
   end
 end

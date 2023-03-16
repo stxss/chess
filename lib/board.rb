@@ -11,7 +11,7 @@ require_relative("./movement/movement")
 
 class Board
   include Movement
-  attr_accessor :grid, :white, :black, :pieces, :chosen, :moves, :player1, :player2, :half_counter, :full_counter
+  attr_accessor :grid, :white, :black, :pieces, :chosen, :moves, :player1, :player2, :half_counter, :full_counter, :turn
 
   def initialize
     @grid = Array.new(8) { Array.new(8, EmptySquare.new) }
@@ -19,6 +19,7 @@ class Board
     @white = []
     @half_counter = 0
     @full_counter = 0
+    @turn = 0
   end
 
   def populate
