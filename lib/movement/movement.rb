@@ -11,6 +11,11 @@ module Movement
     if piece.piece == PIECES[:pawn]
       piece = promote(piece.color) if (piece.color == :white && following[0] == 0) || (piece.color == :black && following[0] == 7)
     end
+
+    @grid[following[0]][following[1]].instance_of?(EmptySquare) ? @half_counter += 1 : @half_counter = 0
+
+    @full_counter += 1 if @grid[prev_pos[0]][prev_pos[1]].color == :black
+
     @grid[following[0]][following[1]] = piece
     @grid[prev_pos[0]][prev_pos[1]] = EmptySquare.new
   end

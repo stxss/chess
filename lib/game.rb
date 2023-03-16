@@ -20,15 +20,20 @@ class Game
   end
 
   def play
-    until @is_winner || @draw
+    until has_winner? || draw?
       @display.show
       @display.cursor.ask_input
-      @turn += 1
     end
     # update_score
     # @current_player = @turn.odd? ? @player1 : @player2
     # puts "Congratulations! #{@current_player.name} won the game!"
-    # restart
+    if draw?
+      puts "\nIt's a draw!"
+      restart
+    elsif has_winner?
+      puts "There's a winner!"
+      restart
+    end
   end
 
   def create_players
@@ -61,6 +66,13 @@ class Game
   #   @current_player.score += 1
   #   @board.show_board
   # end
+
+  def has_winner?
+  end
+
+  def draw?
+    @board.half_counter >= 50
+  end
 
   def restart
     loop do
