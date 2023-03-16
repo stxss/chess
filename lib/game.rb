@@ -19,23 +19,6 @@ class Game
     @display = Display.new(@board, @player1, @player2)
   end
 
-  def play
-    until has_winner? || draw?
-      @display.show
-      @display.cursor.ask_input
-    end
-    # update_score
-    # @current_player = @turn.odd? ? @player1 : @player2
-    # puts "Congratulations! #{@current_player.name} won the game!"
-    if draw?
-      puts "\nIt's a draw!"
-      restart
-    elsif has_winner?
-      puts "There's a winner!"
-      restart
-    end
-  end
-
   def create_players
     if @player1.nil? && @player2.nil?
       name1 = create
@@ -57,6 +40,24 @@ class Game
       return verified if verified
     end
   end
+
+  def play
+    until has_winner? || draw?
+      @display.show
+      @display.cursor.ask_input
+    end
+    # update_score
+    # @current_player = @turn.odd? ? @player1 : @player2
+    # puts "Congratulations! #{@current_player.name} won the game!"
+    if draw?
+      puts "\nIt's a draw!"
+    elsif has_winner?
+      puts "\nThere's a winner!"
+    end
+    restart
+  end
+
+  private
 
   def verify_name(prev_name, input)
     input if /^[a-zA-Z]+$/.match?(input) && input != prev_name
