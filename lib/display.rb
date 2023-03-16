@@ -1,48 +1,36 @@
 require_relative("./pieces/empty_square")
-require_relative "text_styles"
+require_relative("text_styles")
+require_relative("prompts")
 
 class Display
   using TextStyles
 
-  attr_accessor :board, :moves, :cursor
+  attr_accessor :board, :cursor
 
   def initialize(board, player1, player2)
     @board = board
     @player1 = player1
     @player2 = player2
-    @cursor = Cursor.new([5, 4], board) # Starting at [5, 4], to ease the navigation for the first play (with 1. e4 being the most common in chess)
-    @moves = []
-    add_move
+
+    # Starting at [5, 4], to ease the navigation for the first play (with 1. e4 being the most common in chess)
+    @cursor = Cursor.new([5, 4], board)
   end
 
   def show
-    if RUBY_PLATFORM =~ /win32/ || RUBY_PLATFORM =~ /mingw/
-      system("cls")
-    else
-      system("clear")
-    end
-
+    clear
     puts <<~HEREDOC
 
-                          #{@player1.name} - #{@player1.score}
+      #{@player1.name.rjust(22)} - #{@player1.score}
 
       #{display}
 
-                          #{@player2.name} - #{@player2.score}
+      #{@player2.name.rjust(22)} - #{@player2.score}
 
-      +-----------------------------
-      - To #{"move around".bold.underlined.fg_color(:light_blue)} the board, you can use #{"WASD".fg_color(:light_blue)}, #{"\u{2191}\u{2193}\u{2190}\u{2192}".fg_color(:light_blue)} and, if you are a VIM enjoyer, you can also use your precious #{"HJKL".fg_color(:light_blue)} keys.
 
-      - To #{"select".bold.underlined.fg_color(:light_green)} a piece, press #{"Enter".fg_color(:light_green)} or #{"e".fg_color(:light_green)}. You know you have a piece selected when the square is colored with #{"light green".fg_color(:light_green)}.
-
-      - After selecting a piece, move to a square where you can place a piece (i.e, do a valid move) and press the selection key again.
-
-      - If you selected a piece that has no valid moves or simply by mistake, press #{"Esc".fg_color(:pink)} on your keyboard to de-select the piece
-
-      - If you want to quit without saving your game, press #{"CTRL-C".fg_color(:dark_red)} or #{"q".fg_color(:dark_red)}.
-      - If you want to quit and save your progress, press #{"g".fg_color(:dark_green)}.
-
-      - That's pretty much it! Good luck!
+      #{Prompts.new.play_guide}
+      #{@board.half_counter}
+      #{@board.full_counter}
+      #{@board.turn}
     HEREDOC
   end
 
