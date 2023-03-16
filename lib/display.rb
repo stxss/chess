@@ -43,35 +43,64 @@ class Display
       i.each_with_index do |piece, column|
         to_display = piece.symbol
 
-        if @cursor.available_moves&.any?([row, column]) && @board.grid[row][column].instance_of?(EmptySquare)
+        if valid_move(row, column) && is_empty?(row, column)
           to_display = " \u{25cb} ".fg_color(:dark_green)
         end
 
-        output += if @cursor.cursor_pos == [row, column] && !@cursor.selected
-          to_display.bg_color(:light_blue)
-        elsif @cursor.cursor_pos == [row, column] && @cursor.selected
-          to_display.bg_color(:light_green)
+        square_color = if cursor_deselected?(row, column)
+          :light_blue
+        elsif cursor_selected?(row, column)
+          :light_green
         elsif (row + column).odd?
-          to_display.bg_color(:red)
+          :red
         else
-          to_display.bg_color(:pink)
+          :pink
         end
+
+        bg_color = paint(to_display, square_color)
+        output += bg_color
       end
-      # system("tput cup 3 40")
-      # puts "1. e4 e2 "
-      # system("tput cup 4 40")
-      # puts "2. e3 e1"
-      # system("tput cup 5 40")
-      # puts "3. d6 h5"
-      # system("tput cup 0 0")
+      # moves
       output += "\n"
     end
     output += "            a  b  c  d  e  f  g  h".bold
   end
 
-  def add_move
-    output = ""
+  def clear
+    if RUBY_PLATFORM =~ /win32/ || RUBY_PLATFORM =~ /mingw/
+      system("cls")
+    else
+      system("clear")
+    end
+  end
 
-    @moves << output
+  def cursor_selected?(row, column)
+    @cursor.cursor_pos == [row, column] && @cursor.selected
+  end
+
+  def cursor_deselected?(row, column)
+    @cursor.cursor_pos == [row, column] && !@cursor.selected
+  end
+
+  def valid_move(row, column)
+    @cursor.available_moves&.any?([row, column])
+  end
+
+  def is_empty?(row, column)
+    @board.grid[row][column].instance_of?(EmptySquare)
+  end
+
+  def paint(square, color)
+    square.bg_color(color)
+  end
+
+  def moves
+    system("tput cup 3 40")
+    puts "1. e4 e2 "
+    system("tput cup 4 40")
+    puts "2. e3 e1"
+    system("tput cup 5 40")
+    puts "3. d6 h5"
+    system("tput cup 0 0")
   end
 end
