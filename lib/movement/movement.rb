@@ -18,16 +18,29 @@ module Movement
     update_piece(piece, prev_pos, following)
   end
 
-  def available_moves(grid, chosen, start_position)
-    @moves = possible_moves(grid, start_position, chosen)
-  end
-
   def in_range?(position)
     position[0].between?(0, 7) && position[1].between?(0, 7)
   end
 
   def is_empty?(row, column)
     @grid[row][column].instance_of?(EmptySquare)
+  end
+
+  def possible_moves(board, start_position, piece)
+    case piece.piece
+    when PIECES[:king]
+      King.new.movement(board, start_position, piece)
+    when PIECES[:queen]
+      Queen.new.movement(board, start_position, piece)
+    when PIECES[:rook]
+      Rook.new.movement(board, start_position, piece)
+    when PIECES[:bishop]
+      Bishop.new.movement(board, start_position, piece)
+    when PIECES[:knight]
+      Knight.new.movement(board, start_position, piece)
+    when PIECES[:pawn]
+      Pawn.new.movement(board, start_position, piece)
+    end
   end
 
   private
@@ -72,22 +85,5 @@ module Movement
   def update_piece(piece, previous, following)
     @grid[following[0]][following[1]] = piece
     @grid[previous[0]][previous[1]] = EmptySquare.new
-  end
-
-  def possible_moves(board, start_position, piece)
-    case piece.piece
-    when PIECES[:king]
-      King.new.movement(board, start_position, piece)
-    when PIECES[:queen]
-      Queen.new.movement(board, start_position, piece)
-    when PIECES[:rook]
-      Rook.new.movement(board, start_position, piece)
-    when PIECES[:bishop]
-      Bishop.new.movement(board, start_position, piece)
-    when PIECES[:knight]
-      Knight.new.movement(board, start_position, piece)
-    when PIECES[:pawn]
-      Pawn.new.movement(board, start_position, piece)
-    end
   end
 end

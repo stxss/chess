@@ -84,7 +84,7 @@ class Cursor
         @selected = has_piece?(@cursor_pos) && correct_turn?
         @initial_pos = @cursor_pos
         @piece = select_piece(@initial_pos)
-        @available_moves = @board.available_moves(@board, @piece, @cursor_pos)
+        @available_moves = @board.possible_moves(@board, @cursor_pos, @piece)
       elsif @selected && @board.can_move?(@initial_pos, @cursor_pos, @available_moves)
         @board.move(@initial_pos, @piece, @cursor_pos)
         reset_relevant
