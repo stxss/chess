@@ -14,8 +14,6 @@ class Cursor
     interpret(key)
   end
 
-  private
-
   # very valuable info from https://www.alecjacobson.com/weblog/?p=75 and https://gist.github.com/acook/4190379
 
   def ask_key
@@ -68,6 +66,8 @@ class Cursor
       exit
     end
   end
+
+  private
 
   def update_cursor(move)
     new_pos = [@cursor_pos[0] + move[0], @cursor_pos[1] + move[1]]
