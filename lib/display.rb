@@ -43,8 +43,8 @@ class Display
       i.each_with_index do |piece, column|
         to_display = piece.symbol
 
-        if valid_move(row, column) && is_empty?(row, column)
-          to_display = " \u{25cb} ".fg_color(:dark_green)
+        if valid_move(row, column) && @board.is_empty?(row, column)
+          to_display = " \u{25cb} ".fg_color(:dark_green) # Circle symbol
         end
 
         square_color = if cursor_deselected?(row, column)

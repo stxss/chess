@@ -9,4 +9,6 @@ require_relative("player")
 require_relative("game")
 require_relative("./movement/movement")
 
-Game.new
+game = Game.new
+game.setup
+game.play
