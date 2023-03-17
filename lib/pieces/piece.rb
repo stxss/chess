@@ -4,7 +4,7 @@ require_relative("./../movement/movement")
 class Piece
   using TextStyles
 
-  attr_accessor :valid_moves, :symbol, :color, :piece, :made_moves, :when_jumped
+  attr_accessor :valid_moves, :symbol, :color, :piece, :made_moves, :when_jumped, :ep_flag
 
   def initialize(piece, color)
     @valid_moves = []
@@ -13,6 +13,7 @@ class Piece
     @symbol = paint(color)
     @made_moves = [] # specifically made for en_passant
     @when_jumped = []
+    @ep_flag = false
   end
 
   def paint(color)

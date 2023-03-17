@@ -111,11 +111,8 @@ class Pawn
     current_turn = @board.turn
     enemy_last_turn = @board.grid[square.first][square.last].when_jumped[0]
 
-    if current_turn - enemy_last_turn <= 1
-      @ep_flag = true
-    else
-      @ep_flag = false
-    end
+    @ep_flag = current_turn - enemy_last_turn <= 1
+    @board.grid[square.first][square.last].ep_flag = @ep_flag
 
     case color
     when :white
