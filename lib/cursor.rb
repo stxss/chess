@@ -51,7 +51,7 @@ class Cursor
         @initial_pos = @cursor_pos
         @piece = select_piece(@initial_pos)
         @available_moves = @board.possible_moves(@board, @cursor_pos, @piece)
-      elsif @selected && @board.can_move?(@initial_pos, @cursor_pos, @available_moves)
+      elsif @selected && @board.can_move?(@cursor_pos, @available_moves)
         @board.move(@initial_pos, @piece, @cursor_pos)
         reset_relevant
       end
@@ -70,23 +70,23 @@ class Cursor
   private
 
   def update_cursor(move)
-    new_pos = [@cursor_pos[0] + move[0], @cursor_pos[1] + move[1]]
+    new_pos = [@cursor_pos.first + move.first, @cursor_pos.last + move.last]
     @cursor_pos = new_pos if @board.in_range?(new_pos)
   end
 
   def has_piece?(cell)
-    cell = @board.grid[cell[0]][cell[1]]
+    cell = @board.grid[cell.first][cell.last]
     cell.symbol != "   "
   end
 
   def correct_turn?
     counter = @board.turn
     color_turn = counter.even? ? :white : :black
-    @board.grid[@cursor_pos[0]][@cursor_pos[1]].color == color_turn
+    @board.grid[@cursor_pos.first][@cursor_pos.last].color == color_turn
   end
 
   def select_piece(position)
-    @board.grid[position[0]][position[1]]
+    @board.grid[position.first][position.last]
   end
 
   def reset_relevant

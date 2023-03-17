@@ -1,29 +1,26 @@
 module Movement
-  def can_move?(previous, following, available)
-    @start_position = previous
-
-    next_slot = @grid[following[0]][following[1]]
-
+  def can_move?(following, available)
+    next_slot = @grid[following.first][following.last]
     valid_move?(available, following) && not_king?(next_slot.piece)
   end
 
   def move(prev_pos, piece, following)
     if piece.piece == PIECES[:pawn]
-      piece = promote(piece.color) if to_be_promoted(piece.color, following[0])
+      piece = promote(piece.color) if to_be_promoted(piece.color, following.first)
     end
 
-    update_half(following[0], following[1])
-    update_full(@grid[prev_pos[0]][prev_pos[1]].color)
+    update_half(following)
+    update_full(@grid[prev_pos.first][prev_pos.last].color)
     update_turn
     update_piece(piece, prev_pos, following)
   end
 
   def in_range?(position)
-    position[0].between?(0, 7) && position[1].between?(0, 7)
+    position.first.between?(0, 7) && position.last.between?(0, 7)
   end
 
-  def is_empty?(row, column)
-    @grid[row][column].instance_of?(EmptySquare)
+  def is_empty?(position)
+    @grid[position.first][position.last].instance_of?(EmptySquare)
   end
 
   def possible_moves(board, start_position, piece)
@@ -70,8 +67,8 @@ module Movement
     Piece.new(piece, color)
   end
 
-  def update_half(row, col)
-    is_empty?(row, col) ? @half_counter += 1 : @half_counter = 0
+  def update_half(position)
+    is_empty?(position) ? @half_counter += 1 : @half_counter = 0
   end
 
   def update_full(color)
@@ -83,7 +80,7 @@ module Movement
   end
 
   def update_piece(piece, previous, following)
-    @grid[following[0]][following[1]] = piece
-    @grid[previous[0]][previous[1]] = EmptySquare.new
+    @grid[following.first][following.last] = piece
+    @grid[previous.first][previous.last] = EmptySquare.new
   end
 end
