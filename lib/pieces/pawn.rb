@@ -3,19 +3,31 @@ require_relative("./../movement/directions")
 class Pawn
   include Directions
 
+  attr_accessor :moves
+
   def movement(board, start_position, piece)
     @board = board
     @start_position = start_position
     @piece = piece.piece
     @color = piece.color
+    @jumps_done = piece.made_moves
+
+    @row = @start_position[0]
+    @col = @start_position[1]
+
+    @moves = []
+    @moves_w_passant = @moves
+    @ep_flag = false
 
     case @color
     when :white
       jump1, jump2 = MOVE[:up], [-2, 0]
       enemy_directions = [MOVE[:up_left], MOVE[:up_right]]
+      en_passant?(@color) if empty?([@row - 1, @col])
     when :black
       jump1, jump2 = MOVE[:down], [2, 0]
       enemy_directions = [MOVE[:down_left], MOVE[:down_right]]
+      en_passant?(@color) if empty?([@row + 1, @col])
     end
 
     directions = if !has_immediate_enemy?(@color) && moved_once?(@color)
@@ -26,7 +38,17 @@ class Pawn
       []
     end
 
-    find_moves(:pawn, directions) + pawn_enemies(@color, enemy_directions)
+    @moves = find_moves(:pawn, directions) + pawn_enemies(@color, enemy_directions)
+
+    if @ep_flag
+      @moves_w_passant + @moves
+    else
+      @moves - @moves_w_passant
+    end
+  end
+
+  def en_passant?(color)
+    passant_enemies(color) if color == :white && @row == 3 || color == :black && @row == 4
   end
 
   private
@@ -38,37 +60,68 @@ class Pawn
 
     case color
     when :white
-      @start_position[0] != w_pawn_start
+      @row != w_pawn_start
     when :black
-      @start_position[0] != b_pawn_start
+      @row != b_pawn_start
     end
   end
 
   def has_immediate_enemy?(color)
-    row = @start_position[0]
-    col = @start_position[1]
-
     case color
     when :white
-      enemy?(color, [row - 1, col])
+      enemy?(color, [@row - 1, @col])
     when :black
-      enemy?(color, [row + 1, col])
+      enemy?(color, [@row + 1, @col])
     end
   end
 
   def pawn_enemies(color, directions)
-    row = @start_position[0]
-    col = @start_position[1]
     enemies = []
 
     directions.each do |direction|
-      next_row = row + direction[0]
-      next_col = col + direction[1]
+      next_row = @row + direction[0]
+      next_col = @col + direction[1]
 
       unless next_col == 8
         enemies << [next_row, next_col] if enemy?(color, [next_row, next_col])
       end
     end
     enemies
+  end
+
+  def passant_enemies(color)
+    col_to_check = nil
+    if enemy?(color, [@row, @col - 1])
+      col_to_check = @col - 1
+    elsif enemy?(color, [@row, @col + 1])
+      col_to_check = @col + 1
+    end
+
+    enemy_jumps = @board.grid[@row][col_to_check].made_moves
+
+    case color
+    when :white
+      @moves_w_passant << [@row - 1, col_to_check] if valid_passant?(color, enemy_jumps, [@row, col_to_check])
+    when :black
+      @moves_w_passant << [@row + 1, col_to_check] if valid_passant?(color, enemy_jumps, [@row, col_to_check])
+    end
+  end
+
+  def valid_passant?(color, jumps, square)
+    current_turn = @board.turn
+    enemy_last_turn = @board.grid[square.first][square.last].when_jumped[0]
+
+    if current_turn - enemy_last_turn <= 1
+      @ep_flag = true
+    else
+      @ep_flag = false
+    end
+
+    case color
+    when :white
+      jumps.size == 1 && jumps.first == [2, 0]
+    when :black
+      jumps.size == 1 && jumps.first == [-2, 0]
+    end
   end
 end

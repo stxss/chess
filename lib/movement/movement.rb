@@ -12,6 +12,10 @@ module Movement
     update_half(following)
     update_full(@grid[prev_pos.first][prev_pos.last].color)
     update_turn
+    if piece.piece == PIECES[:pawn]
+      piece.made_moves << [following.first - prev_pos.first, following.last - prev_pos.last]
+    end
+    piece.when_jumped << @turn
     update_piece(piece, prev_pos, following)
   end
 
