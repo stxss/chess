@@ -1,37 +1,5 @@
 require("io/console")
 
-KEYS = {
-  "w"      => :up,
-  "s"      => :down,
-  "a"      => :left,
-  "d"      => :right,
-  "k"      => :up,
-  "j"      => :down,
-  "h"      => :left,
-  "l"      => :right,
-  "\e[A"   => :up,
-  "\e[B"   => :down,
-  "\e[D"   => :left,
-  "\e[C"   => :right,
-  "e"      => :return,
-  "\r"     => :return,
-  "q"      => :ctrl_c,
-  "\e"     => :escape,
-  "g"      => :save,
-  "\177"   => :backspace,
-  "\004"   => :delete,
-  "\t"     => :tab,
-  "\n"     => :newline,
-  "\u0003" => :ctrl_c
-}.freeze
-
-MOVE = {
-  up:    [-1, 0],
-  down:  [1, 0],
-  left:  [0, -1],
-  right: [0, 1]
-}.freeze
-
 class Cursor
   attr_accessor :cursor_pos, :selected, :board, :available_moves
 

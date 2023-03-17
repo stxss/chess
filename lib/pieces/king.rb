@@ -8,9 +8,8 @@ class King
     @start_position = start_position
     @piece = piece.piece
     @color = piece.color
-    directions = [[-1, -1], [-1, 0], [-1, 1],
-      [0, -1], [0, 1],
-      [1, -1], [1, 0], [1, 1]] # up, down, left, right
+    directions = [MOVE[:up], MOVE[:down], MOVE[:left], MOVE[:right], MOVE[:up_left], MOVE[:up_right], MOVE[:down_left],
+      MOVE[:down_right]]
     find_moves(:king, directions)
   end
 end

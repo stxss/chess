@@ -8,7 +8,7 @@ class Bishop
     @start_position = start_position
     @piece = piece.piece
     @color = piece.color
-    directions = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
+    directions = [MOVE[:up_left], MOVE[:up_right], MOVE[:down_left], MOVE[:down_right]]
     find_moves(:bishop, directions)
   end
 end

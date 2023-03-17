@@ -11,11 +11,11 @@ class Pawn
 
     case @color
     when :white
-      jump1, jump2 = [-1, 0], [-2, 0]
-      enemy_directions = [[-1, -1], [-1, 1]]
+      jump1, jump2 = MOVE[:up], [-2, 0]
+      enemy_directions = [MOVE[:up_left], MOVE[:up_right]]
     when :black
-      jump1, jump2 = [1, 0], [2, 0]
-      enemy_directions = [[1, -1], [1, 1]]
+      jump1, jump2 = MOVE[:down], [2, 0]
+      enemy_directions = [MOVE[:down_left], MOVE[:down_right]]
     end
 
     directions = if !has_immediate_enemy?(@color) && moved_once?(@color)

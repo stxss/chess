@@ -9,7 +9,7 @@ class Rook
     @start_position = start_position
     @piece = piece.piece
     @color = piece.color
-    directions = [[-1, 0], [1, 0], [0, -1], [0, 1]] # up, down, left, right
+    directions = [MOVE[:up], MOVE[:down], MOVE[:left], MOVE[:right]]
     find_moves(:rook, directions)
   end
 end
