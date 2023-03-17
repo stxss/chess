@@ -1,5 +1,4 @@
 require_relative("./../lib/constants")
-require_relative("./../lib/pieces/piece")
 require_relative("./../lib/board")
 
 describe Board do

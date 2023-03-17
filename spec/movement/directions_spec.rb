@@ -1,7 +1,3 @@
-require_relative("./../../lib/board")
-require_relative("./../../lib/pieces/piece")
-require_relative("./../../lib/movement/directions")
-
 describe Directions do
   let(:wpawn) { Piece.new(:pawn, :white) { extend Directions } }
   let(:bqueen) { Piece.new(:queen, :black) { extend Directions } }
