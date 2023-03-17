@@ -33,8 +33,7 @@ class Board
   private
 
   def pawn_row(row, color)
-    pawn = Piece.new(:pawn, color)
-    @grid[row].map! { pawn }
+    @grid[row].map! { Piece.new(:pawn, color) }
   end
 
   def pieces_row(row, color)
