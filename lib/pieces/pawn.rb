@@ -3,7 +3,7 @@ require_relative("./../movement/directions")
 class Pawn
   include Directions
 
-  attr_accessor :moves
+  attr_accessor :moves, :ep_flag
 
   def movement(board, start_position, piece)
     @board = board
@@ -16,18 +16,18 @@ class Pawn
     @col = @start_position[1]
 
     @moves = []
-    @moves_w_passant = @moves
+    @moves_w_passant = []
     @ep_flag = false
 
     case @color
     when :white
       jump1, jump2 = MOVE[:up], [-2, 0]
       enemy_directions = [MOVE[:up_left], MOVE[:up_right]]
-      en_passant?(@color) if empty?([@row - 1, @col])
+      en_passant?(@color) if empty?([@row - 1, @col - 1]) || empty?([@row - 1, @col + 1])
     when :black
       jump1, jump2 = MOVE[:down], [2, 0]
       enemy_directions = [MOVE[:down_left], MOVE[:down_right]]
-      en_passant?(@color) if empty?([@row + 1, @col])
+      en_passant?(@color) if empty?([@row + 1, @col - 1]) || empty?([@row + 1, @col + 1])
     end
 
     directions = if !has_immediate_enemy?(@color) && moved_once?(@color)
@@ -40,11 +40,7 @@ class Pawn
 
     @moves = find_moves(:pawn, directions) + pawn_enemies(@color, enemy_directions)
 
-    if @ep_flag
-      @moves_w_passant + @moves
-    else
-      @moves - @moves_w_passant
-    end
+    @ep_flag ? @moves_w_passant + @moves : @moves
   end
 
   def en_passant?(color)
@@ -90,11 +86,12 @@ class Pawn
   end
 
   def passant_enemies(color)
-    col_to_check = nil
-    if enemy?(color, [@row, @col - 1])
-      col_to_check = @col - 1
-    elsif enemy?(color, [@row, @col + 1])
-      col_to_check = @col + 1
+    col_to_check = @col - 1 if enemy?(color, [@row, @col - 1])
+    col_to_check = @col + 1 if enemy?(color, [@row, @col + 1])
+    if enemy?(color, [@row, @col - 1]) && enemy?(color, [@row, @col + 1])
+      jump_left = @board.grid[@row][@col - 1].when_jumped[0]
+      jump_right = @board.grid[@row][@col + 1].when_jumped[0]
+      col_to_check = (jump_left > jump_right) ? @col - 1 : @col + 1
     end
 
     enemy_jumps = @board.grid[@row][col_to_check].made_moves
