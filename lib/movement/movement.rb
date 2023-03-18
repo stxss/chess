@@ -44,6 +44,25 @@ module Movement
     end
   end
 
+  def update_piece(piece, previous, following)
+    if piece.piece == PIECES[:pawn]
+      handle_ep(piece, previous, following)
+    end
+
+    @grid[following.first][following.last] = piece
+    @grid[previous.first][previous.last] = EmptySquare.new
+  end
+
+  def handle_ep(piece, previous, following)
+    case piece.color
+    when :white
+      @grid[following.first + 1][following.last] = EmptySquare.new if @grid[following.first + 1][following.last].ep_flag
+    when :black
+      @grid[following.first - 1][following.last] = EmptySquare.new if @grid[following.first - 1][following.last].ep_flag
+    end
+    @grid[following.first][following.last] = piece
+  end
+
   private
 
   def valid_move?(available, following)
@@ -81,24 +100,5 @@ module Movement
 
   def update_turn
     @turn += 1
-  end
-
-  def update_piece(piece, previous, following)
-    if piece.piece == PIECES[:pawn]
-      handle_ep(piece, previous, following)
-    end
-
-    @grid[following.first][following.last] = piece
-    @grid[previous.first][previous.last] = EmptySquare.new
-  end
-
-  def handle_ep(piece, previous, following)
-    case piece.color
-    when :white
-      @grid[following.first + 1][following.last] = EmptySquare.new if @grid[following.first + 1][following.last].ep_flag
-    when :black
-      @grid[following.first - 1][following.last] = EmptySquare.new if @grid[following.first - 1][following.last].ep_flag
-    end
-    @grid[following.first][following.last] = piece
   end
 end
