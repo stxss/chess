@@ -45,6 +45,8 @@ class Game
     until has_winner? || draw?
       @display.show
       @display.cursor.ask_input
+      @display.show
+      restart if @display.cursor.checkmate
     end
     # update_score
     # @current_player = @turn.odd? ? @player1 : @player2
