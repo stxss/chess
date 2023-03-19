@@ -23,11 +23,13 @@ class Pawn
     when :white
       jump1, jump2 = MOVE[:up], [-2, 0]
       enemy_directions = [MOVE[:up_left], MOVE[:up_right]]
-      en_passant?(@color) if empty?([@row - 1, @col - 1]) || empty?([@row - 1, @col + 1])
+      # en_passant?(@color) if (empty?([@row - 1, @col - 1]) || empty?([@row - 1, @col + 1])) && ((@col - 1).between?(0, 7) && (@col + 1).between?(0, 7)) && (is_pawn?([@row, @col - 1]) || is_pawn?([@row, @col + 1]))
+      en_passant?(@color) if conditions_passant?(@color)
     when :black
       jump1, jump2 = MOVE[:down], [2, 0]
       enemy_directions = [MOVE[:down_left], MOVE[:down_right]]
-      en_passant?(@color) if empty?([@row + 1, @col - 1]) || empty?([@row + 1, @col + 1])
+      # en_passant?(@color) if empty?([@row + 1, @col - 1]) || empty?([@row + 1, @col + 1]) && ((@col - 1).between?(0, 7) && (@col + 1).between?(0, 7)) && (is_pawn?([@row, @col - 1]) || is_pawn?([@row, @col + 1]))
+      en_passant?(@color) if conditions_passant?(@color)
     end
 
     directions = if !has_immediate_enemy?(@color) && moved_once?(@color)
@@ -40,7 +42,7 @@ class Pawn
 
     @moves = find_moves(:pawn, directions) + pawn_enemies(@color, enemy_directions)
 
-    @ep_flag ? @moves_w_passant + @moves : @moves
+    piece.valid_moves = @ep_flag ? @moves_w_passant + @moves : @moves
   end
 
   def en_passant?(color)
@@ -85,9 +87,29 @@ class Pawn
     enemies
   end
 
+  def conditions_passant?(color)
+    # return false if !(@col - 1).between?(0, 7) || !(@col + 1).between?(0, 7)
+
+    case color
+    when :white
+      cond1 = empty?([@row - 1, @col - 1]) || empty?([@row - 1, @col + 1])
+    when :black
+      cond1 = empty?([@row + 1, @col - 1]) || empty?([@row + 1, @col + 1])
+    end
+
+    if cond1
+      if @col.between?(0, 7)
+        is_pawn?([@row, @col - 1]) || is_pawn?([@row, @col + 1])
+      end
+    end
+  end
+
   def passant_enemies(color)
+    # return false if !(@col - 1).between?(0, 7) || !(@col + 1).between?(0, 7)
+
     col_to_check = @col - 1 if enemy?(color, [@row, @col - 1])
     col_to_check = @col + 1 if enemy?(color, [@row, @col + 1])
+
     if enemy?(color, [@row, @col - 1]) && enemy?(color, [@row, @col + 1])
       jump_left = @board.grid[@row][@col - 1].when_jumped[0]
       jump_right = @board.grid[@row][@col + 1].when_jumped[0]
@@ -117,5 +139,11 @@ class Pawn
     when :black
       jumps.size == 1 && jumps.first == [-2, 0]
     end
+  end
+
+  def is_pawn?(position)
+    return false if !(position[1] - 1).between?(0, 7) || !(position[1] + 1).between?(0, 7)
+
+    @board.grid[position[0]][position[1]].piece == PIECES[:pawn]
   end
 end

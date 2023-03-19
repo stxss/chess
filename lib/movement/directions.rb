@@ -32,6 +32,8 @@ module Directions
   end
 
   def enemy?(color, square)
+    return if @board.grid[square[0]][square[1]].nil?
+
     @board.grid[square[0]][square[1]].color != color && !empty?(square)
   end
 

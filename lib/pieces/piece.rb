@@ -2,6 +2,7 @@ require_relative("./../text_styles")
 require_relative("./../movement/movement")
 
 class Piece
+  include Movement
   using TextStyles
 
   attr_accessor :valid_moves, :symbol, :color, :piece, :made_moves, :when_jumped, :ep_flag
