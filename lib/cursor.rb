@@ -55,6 +55,7 @@ class Cursor
       elsif @selected && @board.can_move?(@cursor_pos, @available_moves)
         @board.move(@initial_pos, @piece, @cursor_pos)
         reset_relevant
+        update_all_moves
         is_check?(@piece)
         is_checkmate?(@enemy_king_pos)
       end
@@ -68,6 +69,11 @@ class Cursor
       puts "\nYour game was saved as {}. Do you want to create a new game? [Y/n]"
       exit
     end
+  end
+
+  def update_all_moves
+    @white_moves = all_moves(:white)
+    @black_moves = all_moves(:black)
   end
 
   def is_check?(piece)
@@ -119,5 +125,14 @@ class Cursor
   def reset_relevant
     @available_moves = nil
     @selected = false
+  end
+  def all_moves(color)
+    arr = []
+    @board.grid.each_with_index do |i, row|
+      i.each_with_index do |piece, column|
+        arr += @board.possible_moves(@board, [row, column], piece) if piece.color == color
+      end
+    end
+    arr
   end
 end
