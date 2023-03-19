@@ -126,6 +126,16 @@ class Cursor
     @available_moves = nil
     @selected = false
   end
+
+  def find_king(color)
+    @board.grid.each_with_index do |i, row|
+      i.each_with_index do |piece, column|
+        character = piece.piece
+        return [row, column] if character == PIECES[:king] && piece.color == color
+      end
+    end
+  end
+
   def all_moves(color)
     arr = []
     @board.grid.each_with_index do |i, row|
