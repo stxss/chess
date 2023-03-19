@@ -1,7 +1,7 @@
 require("io/console")
 
 class Cursor
-  attr_accessor :cursor_pos, :selected, :board, :available_moves
+  attr_accessor :cursor_pos, :selected, :board, :available_moves, :king_pos, :enemy_king_pos, :white_moves, :black_moves, :piece, :check, :king_options, :checkmate
 
   def initialize(cursor_pos, board)
     @cursor_pos = cursor_pos
@@ -54,6 +54,7 @@ class Cursor
       elsif @selected && @board.can_move?(@cursor_pos, @available_moves)
         @board.move(@initial_pos, @piece, @cursor_pos)
         reset_relevant
+        is_check?(@piece)
       end
     when :escape
       @selected = false if @selected
@@ -67,6 +68,9 @@ class Cursor
     end
   end
 
+  def is_check?(piece)
+    @check = piece.enemies.include?(@enemy_king_pos)
+  end
   private
 
   def update_cursor(move)
