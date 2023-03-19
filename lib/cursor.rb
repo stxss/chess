@@ -107,6 +107,27 @@ class Cursor
     @cursor_pos = new_pos if @board.in_range?(new_pos)
   end
 
+  def set_initial
+    @initial_pos = @cursor_pos
+  end
+
+  def set_piece
+    @piece = select_piece(@initial_pos)
+  end
+
+  def set_available_moves
+    @available_moves = @board.possible_moves(@board, @cursor_pos, @piece)
+  end
+
+  def set_king_pos(color)
+    @king_pos = find_king(color)
+    @enemy_king_pos = (color == :white) ? find_king(:black) : find_king(:white)
+  end
+
+  def set_selected
+    @selected = has_piece?(@cursor_pos) && correct_turn?
+  end
+
   def has_piece?(cell)
     cell = @board.grid[cell.first][cell.last]
     cell.symbol != "   "
