@@ -10,6 +10,8 @@ class Queen
     @color = piece.color
     directions = [MOVE[:up], MOVE[:down], MOVE[:left], MOVE[:right], MOVE[:up_left], MOVE[:up_right], MOVE[:down_left],
       MOVE[:down_right]]
-    find_moves(:queen, directions)
+
+    piece.enemies = find_moves(:queen, directions, :captures)
+    piece.valid_moves = find_moves(:queen, directions, :empty) + piece.enemies
   end
 end

@@ -1,5 +1,5 @@
 module Directions
-  def find_moves(piece, directions)
+  def find_moves(piece, directions, goal)
     row = @start_position[0]
     col = @start_position[1]
     enemies = []
@@ -19,16 +19,19 @@ module Directions
           empties << [next_row, next_col]
         end
 
-        case piece
-        when :pawn, :knight, :king
-          break
-        end
+        break if piece == :pawn || piece == :king || piece == :knight
 
         next_row += direction[0]
         next_col += direction[1]
       end
     end
-    empties + enemies
+
+    case goal
+    when :captures
+      enemies
+    when :empty
+      empties
+    end
   end
 
   def enemy?(color, square)

@@ -23,12 +23,10 @@ class Pawn
     when :white
       jump1, jump2 = MOVE[:up], [-2, 0]
       enemy_directions = [MOVE[:up_left], MOVE[:up_right]]
-      # en_passant?(@color) if (empty?([@row - 1, @col - 1]) || empty?([@row - 1, @col + 1])) && ((@col - 1).between?(0, 7) && (@col + 1).between?(0, 7)) && (is_pawn?([@row, @col - 1]) || is_pawn?([@row, @col + 1]))
       en_passant?(@color) if conditions_passant?(@color)
     when :black
       jump1, jump2 = MOVE[:down], [2, 0]
       enemy_directions = [MOVE[:down_left], MOVE[:down_right]]
-      # en_passant?(@color) if empty?([@row + 1, @col - 1]) || empty?([@row + 1, @col + 1]) && ((@col - 1).between?(0, 7) && (@col + 1).between?(0, 7)) && (is_pawn?([@row, @col - 1]) || is_pawn?([@row, @col + 1]))
       en_passant?(@color) if conditions_passant?(@color)
     end
 
@@ -40,7 +38,8 @@ class Pawn
       []
     end
 
-    @moves = find_moves(:pawn, directions) + pawn_enemies(@color, enemy_directions)
+    piece.enemies = find_moves(:pawn, enemy_directions, :captures)
+    @moves = find_moves(:pawn, directions, :empty) + piece.enemies
 
     piece.valid_moves = @ep_flag ? @moves_w_passant + @moves : @moves
   end
@@ -73,23 +72,7 @@ class Pawn
     end
   end
 
-  def pawn_enemies(color, directions)
-    enemies = []
-
-    directions.each do |direction|
-      next_row = @row + direction[0]
-      next_col = @col + direction[1]
-
-      unless next_col == 8
-        enemies << [next_row, next_col] if enemy?(color, [next_row, next_col])
-      end
-    end
-    enemies
-  end
-
   def conditions_passant?(color)
-    # return false if !(@col - 1).between?(0, 7) || !(@col + 1).between?(0, 7)
-
     case color
     when :white
       cond1 = empty?([@row - 1, @col - 1]) || empty?([@row - 1, @col + 1])
@@ -105,8 +88,6 @@ class Pawn
   end
 
   def passant_enemies(color)
-    # return false if !(@col - 1).between?(0, 7) || !(@col + 1).between?(0, 7)
-
     col_to_check = @col - 1 if enemy?(color, [@row, @col - 1])
     col_to_check = @col + 1 if enemy?(color, [@row, @col + 1])
 

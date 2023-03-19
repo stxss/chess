@@ -9,6 +9,8 @@ class Bishop
     @piece = piece.piece
     @color = piece.color
     directions = [MOVE[:up_left], MOVE[:up_right], MOVE[:down_left], MOVE[:down_right]]
-    find_moves(:bishop, directions)
+
+    piece.enemies = find_moves(:bishop, directions, :captures)
+    piece.valid_moves = find_moves(:bishop, directions, :empty) + piece.enemies
   end
 end

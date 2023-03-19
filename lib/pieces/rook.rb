@@ -10,6 +10,8 @@ class Rook
     @piece = piece.piece
     @color = piece.color
     directions = [MOVE[:up], MOVE[:down], MOVE[:left], MOVE[:right]]
-    find_moves(:rook, directions)
+
+    piece.enemies = find_moves(:rook, directions, :captures)
+    piece.valid_moves = find_moves(:rook, directions, :empty) + piece.enemies
   end
 end

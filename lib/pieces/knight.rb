@@ -9,6 +9,8 @@ class Knight
     @piece = piece.piece
     @color = piece.color
     directions = [[-2, -1], [-2, 1], [-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1]]
-    find_moves(:knight, directions)
+
+    piece.enemies = find_moves(:knight, directions, :captures)
+    piece.valid_moves = find_moves(:knight, directions, :empty) + piece.enemies
   end
 end
