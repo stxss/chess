@@ -11,12 +11,11 @@ require_relative("./movement/movement")
 
 class Board
   include Movement
-  attr_accessor :grid, :player1, :player2, :half_counter, :full_counter, :turn, :check
+  attr_accessor :grid, :player1, :player2, :half_counter, :full_counter, :turn
 
   def initialize
     @grid = Array.new(8) { Array.new(8, EmptySquare.new) }
     @half_counter, @full_counter, @turn = 0, 0, 0
-    @check = false
   end
 
   def create_scoreboard(player1, player2)

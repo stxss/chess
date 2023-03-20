@@ -1,7 +1,7 @@
 require("io/console")
 
 class Cursor
-  attr_accessor :cursor_pos, :selected, :board, :available_moves, :king_pos, :enemy_king_pos, :white_moves, :black_moves, :piece, :check, :checkmate, :king_valid_moves
+  attr_accessor :cursor_pos, :selected, :board, :available_moves, :king_pos, :enemy_king, :white_moves, :black_moves, :piece, :check, :checkmate, :king_valid_moves, :white_king, :black_king
 
   def initialize(cursor_pos, board)
     @cursor_pos = cursor_pos
@@ -50,7 +50,7 @@ class Cursor
         set_initial
         set_piece
         set_available_moves
-        set_king_pos(@piece.color)
+        set_king_pos
         set_selected
       elsif @selected && @board.can_move?(@cursor_pos, @available_moves)
         @board.move(@initial_pos, @piece, @cursor_pos)
@@ -71,27 +71,6 @@ class Cursor
     end
   end
 
-  def update_all_moves
-    @white_moves = all_moves(:white)
-    @black_moves = all_moves(:black)
-  end
-
-  def is_check?
-    @check = @white_moves.include?(@enemy_king_pos) || @black_moves.include?(@enemy_king_pos)
-
-    @king_valid_moves = @board.grid[@enemy_king_pos[0]][@enemy_king_pos[1]].valid_moves - @piece.valid_moves
-
-    @board.grid[@enemy_king_pos[0]][@enemy_king_pos[1]].valid_moves = @king_valid_moves
-
-    @board.grid[@enemy_king_pos[0]][@enemy_king_pos[1]].valid_moves = @king_valid_moves
-  end
-
-  def is_checkmate?
-    return unless @check
-
-    @checkmate = @board.grid[@enemy_king_pos[0]][@enemy_king_pos[1]].valid_moves.size < 1
-  end
-
   private
 
   def update_cursor(move)
@@ -108,14 +87,12 @@ class Cursor
   end
 
   def set_available_moves
-    return @available_moves = @king_valid_moves if @check
-
     @available_moves = @board.possible_moves(@board, @cursor_pos, @piece)
   end
 
-  def set_king_pos(color)
-    @king_pos = find_king(color)
-    @enemy_king_pos = (color == :white) ? find_king(:black) : find_king(:white)
+  def set_king_pos
+    @white_king = find_king(:white)
+    @black_king = find_king(:black)
   end
 
   def set_selected
@@ -135,6 +112,25 @@ class Cursor
 
   def select_piece(position)
     @board.grid[position.first][position.last]
+  end
+
+  def update_all_moves
+    @white_moves = all_moves(:white)
+    @black_moves = all_moves(:black)
+  end
+
+  def is_check?
+    @check = @white_moves.include?(@black_king) || @black_moves.include?(@white_king)
+
+    @enemy_king = (@piece.color == :white) ? @black_king : @white_king
+
+    @board.grid[@enemy_king[0]][@enemy_king[1]].valid_moves -= @piece.valid_moves
+  end
+
+  def is_checkmate?
+    return unless @check
+
+    @checkmate = @board.grid[@enemy_king[0]][@enemy_king[1]].valid_moves.size < 1
   end
 
   def reset_relevant
