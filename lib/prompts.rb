@@ -49,4 +49,35 @@ class Prompts
       - #{"Quit and save progress".fg_color(:dark_green)}: #{"[g]".fg_color(:dark_green)}
     HEREDOC
   end
+
+  def game_end(winner)
+    <<~HEREDOC
+
+      #{"Congratulations! #{winner} won the game!".rjust(42)}
+    HEREDOC
+  end
+
+  def check(color, player_to_move)
+    <<~HEREDOC
+      #{"#{color} is in check, #{player_to_move}, please make a valid move.".rjust(42)}
+    HEREDOC
+  end
+
+  def to_move(player)
+    <<~HEREDOC
+      #{player}, please make a valid move.
+    HEREDOC
+  end
+
+  def empty
+    <<~HEREDOC
+    HEREDOC
+  end
+
+  def draw
+    <<~HEREDOC
+
+      #{"Oops! No winner this time, it's a draw!".rjust(42)}
+    HEREDOC
+  end
 end

@@ -43,20 +43,27 @@ class Game
 
   def play
     until has_winner? || draw?
+      @current_player = @board.turn.odd? ? @display.player1 : @display.player2
+      @other_player = @board.turn.odd? ? @display.player2 : @display.player1
+
+      @display.change_prompt(@color, @other_player.name, :to_move)
+
       @display.show
       @display.cursor.ask_input
-      @display.show
-      restart if @display.cursor.checkmate
+
+      @color = @board.turn.odd? ? "black" : "white"
+      @display.change_prompt(@color, @other_player.name, :check) if @display.cursor.check
+      if @display.cursor.checkmate
+        update_score
+        restart
+      end
     end
-    # update_score
-    # @current_player = @turn.odd? ? @player1 : @player2
-    # puts "Congratulations! #{@current_player.name} won the game!"
+
     if draw?
-      puts "\nIt's a draw!"
-    elsif has_winner?
-      puts "\nThere's a winner!"
+      @display.change_prompt(@color, @current_player.name, :draw)
+      @display.show
+      restart
     end
-    restart
   end
 
   private
@@ -65,10 +72,11 @@ class Game
     input if /^[a-zA-Z]+$/.match?(input) && input != prev_name
   end
 
-  # def update_score
-  #   @current_player.score += 1
-  #   @board.show_board
-  # end
+  def update_score
+    @other_player.score += 1
+    @display.change_prompt(@color, @other_player.name, :game_end)
+    @display.show
+  end
 
   def has_winner?
   end

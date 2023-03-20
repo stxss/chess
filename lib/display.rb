@@ -5,7 +5,7 @@ require_relative("prompts")
 class Display
   using TextStyles
 
-  attr_accessor :board, :cursor
+  attr_accessor :board, :cursor, :player1, :player2, :game_instructions, :current_prompt
 
   def initialize(board, player1, player2)
     @board = board
@@ -14,24 +14,40 @@ class Display
 
     # Starting at [5, 4], to ease the navigation for the first play (with 1. e4 being the most common in chess)
     @cursor = Cursor.new([5, 4], board)
+    @game_instructions = Prompts.new.play_guide_in_game
+    @current_prompt = Prompts.new.empty
   end
 
   def show
     clear
     puts <<~HEREDOC
 
-      #{@player1.name.rjust(22)} - #{@player1.score}
+      #{@player2.name.rjust(22)} - #{@player2.score}
 
       #{display}
 
-      #{@player2.name.rjust(22)} - #{@player2.score}
+      #{@player1.name.rjust(22)} - #{@player1.score}
+      #{moves}
 
-
-      #{Prompts.new.play_guide}
-      #{@board.half_counter}
-      #{@board.full_counter}
-      #{@board.turn}
+      #{@current_prompt}
+      #{@game_instructions}
     HEREDOC
+    # pp @board
+  end
+
+  def change_prompt(color, player, status)
+    case status
+    when :to_move
+      @current_prompt = Prompts.new.to_move(player)
+    when :check
+      @current_prompt = Prompts.new.check(color, player)
+    when :draw
+      @game_instructions = Prompts.new.empty
+      @current_prompt = Prompts.new.draw
+    when :game_end
+      @game_instructions = Prompts.new.empty
+      @current_prompt = Prompts.new.game_end(player)
+    end
   end
 
   private
