@@ -1,7 +1,8 @@
 require("io/console")
 
 class Cursor
-  attr_accessor :cursor_pos, :selected, :board, :available_moves, :king_pos, :enemy_king, :white_moves, :black_moves, :piece, :check, :checkmate, :king_valid_moves, :white_king, :black_king
+  attr_accessor :cursor_pos, :selected, :board, :available_moves, :enemy_king, :white_moves, :black_moves,
+    :piece, :check, :checkmate, :king_valid_moves, :white_king, :black_king
 
   def initialize(cursor_pos, board)
     @cursor_pos = cursor_pos
@@ -59,6 +60,12 @@ class Cursor
         is_check?
         is_checkmate?
       end
+    when :king_side
+      color = @current_player = @board.turn.odd? ? :black : :white
+      @board.castle_handler(color, :king, @check, @white_moves, @black_moves)
+    when :queen_side
+      color = @current_player = @board.turn.odd? ? :black : :white
+      @board.castle_handler(color, :queen, @check, @white_moves, @black_moves)
     when :escape
       @selected = false if @selected
       @available_moves = nil

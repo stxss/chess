@@ -62,6 +62,65 @@ module Movement
     @grid[following.first][following.last] = piece
   end
 
+  def castle_handler(color, side, check, white_moves, black_moves)
+    w_king, b_king = [7, 4], [0, 4]
+
+    w_rook = (side == :king) ? [7, 7] : [7, 0]
+    b_rook = (side == :king) ? [0, 7] : [0, 0]
+    case color
+    when :white
+      castle(w_king, w_rook, side) if no_moves?(w_king, w_rook) && not_under_attack?(:white, side, black_moves) && !check && @castles_white < 1
+    when :black
+      castle(b_king, b_rook, side) if no_moves?(b_king, b_rook) && not_under_attack?(:black, side, white_moves) && !check && @castles_black < 1
+    end
+  end
+
+  def no_moves?(k, r)
+    @grid[k.first][k.last].piece == PIECES[:king] && @grid[r.first][r.last].piece == PIECES[:rook] && @grid[k.first][k.last].made_moves.empty? && @grid[r.first][r.last].made_moves.empty?
+  end
+
+  def not_under_attack?(color, side, opponent_moves)
+    if color == :white && side == :king
+      to_verify = [[7, 5], [7, 6]]
+    elsif color == :white && side == :queen
+      to_verify = [[7, 3], [7, 2], [7, 1]]
+    elsif color == :black && side == :king
+      to_verify = [[0, 5], [0, 6]]
+    elsif color == :black && side == :queen
+      to_verify = [[0, 3], [0, 2], [0, 1]]
+    end
+    no_castle_checks?(opponent_moves, to_verify)
+  end
+
+  def no_castle_checks?(opponent, to_verify)
+    castle_checks = []
+    to_verify.each do |square|
+      castle_checks << (is_empty?(square) && opponent.none?(square))
+    end
+    castle_checks.all?(true)
+  end
+
+  def castle(k, r, side)
+    case side
+    when :king
+      @grid[k.first][k.last + 2] = @grid[k.first][k.last]
+      @grid[r.first][r.last - 2] = @grid[r.first][r.last]
+    when :queen
+      @grid[k.first][k.last - 2] = @grid[k.first][k.last]
+      @grid[r.first][r.last + 3] = @grid[r.first][r.last]
+    end
+
+    castled_color = @grid[k.first][k.last].color
+    update_full(castled_color)
+
+    @grid[k.first][k.last] = EmptySquare.new
+    @grid[r.first][r.last] = EmptySquare.new
+
+    @half_counter += 1
+    update_turn
+    (castled_color == :white) ? @castles_white += 1 : @castles_black += 1
+  end
+
   private
 
   def valid_move?(available, following)
