@@ -1,7 +1,7 @@
 require("io/console")
 
 class Cursor
-  attr_accessor :cursor_pos, :selected, :board, :available_moves, :king_pos, :enemy_king_pos, :white_moves, :black_moves, :piece, :check, :king_options, :checkmate
+  attr_accessor :cursor_pos, :selected, :board, :available_moves, :king_pos, :enemy_king_pos, :white_moves, :black_moves, :piece, :check, :checkmate, :king_valid_moves
 
   def initialize(cursor_pos, board)
     @cursor_pos = cursor_pos
@@ -54,10 +54,10 @@ class Cursor
         set_selected
       elsif @selected && @board.can_move?(@cursor_pos, @available_moves)
         @board.move(@initial_pos, @piece, @cursor_pos)
-        reset_relevant
         update_all_moves
-        is_check?(@piece)
-        is_checkmate?(@enemy_king_pos)
+        reset_relevant
+        is_check?
+        is_checkmate?
       end
     when :escape
       @selected = false if @selected
@@ -76,31 +76,23 @@ class Cursor
     @black_moves = all_moves(:black)
   end
 
-  def is_check?(piece)
-    @check = piece.enemies.include?(@enemy_king_pos)
+  def is_check?
+    @check = @white_moves.include?(@enemy_king_pos) || @black_moves.include?(@enemy_king_pos)
+
+    @king_valid_moves = @board.grid[@enemy_king_pos[0]][@enemy_king_pos[1]].valid_moves - @piece.valid_moves
+
+    @board.grid[@enemy_king_pos[0]][@enemy_king_pos[1]].valid_moves = @king_valid_moves
+
+    @board.grid[@enemy_king_pos[0]][@enemy_king_pos[1]].valid_moves = @king_valid_moves
   end
 
-  def is_checkmate?(king_square)
+  def is_checkmate?
     return unless @check
 
-    @king_options = @board.grid[king_square[0]][king_square[1]].valid_moves
-    @checkmate = !sets_king_free?(@king_options) # need to add all other moves
+    @checkmate = @board.grid[@enemy_king_pos[0]][@enemy_king_pos[1]].valid_moves.size < 1
   end
 
   private
-
-  def sets_king_free?(moves)
-    possibilities = []
-    row = @enemy_king_pos[0]
-    col = @enemy_king_pos[1]
-    king = @board.grid[@enemy_king_pos[0]][@enemy_king_pos[1]]
-    moves.each do |move|
-      @board.move([row, col], king, move)
-      possibilities << is_check?(@board.grid[move[0]][move[1]])
-      @board.move(move, king, [row, col])
-    end
-    possibilities.any?(true)
-  end
 
   def update_cursor(move)
     new_pos = [@cursor_pos.first + move.first, @cursor_pos.last + move.last]
@@ -116,6 +108,8 @@ class Cursor
   end
 
   def set_available_moves
+    return @available_moves = @king_valid_moves if @check
+
     @available_moves = @board.possible_moves(@board, @cursor_pos, @piece)
   end
 
