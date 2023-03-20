@@ -30,9 +30,9 @@ class Pawn
       en_passant?(@color) if conditions_passant?(@color)
     end
 
-    directions = if !has_immediate_enemy?(@color) && moved_once?(@color)
+    directions = if no_immediate_piece?(@color) && moved_once?(@color)
       [jump1]
-    elsif !has_immediate_enemy?(@color) && !moved_once?(@color)
+    elsif no_immediate_piece?(@color) && !moved_once?(@color)
       [jump1, jump2]
     else
       []
@@ -63,12 +63,12 @@ class Pawn
     end
   end
 
-  def has_immediate_enemy?(color)
+  def no_immediate_piece?(color)
     case color
     when :white
-      enemy?(color, [@row - 1, @col])
+      empty?([@row - 1, @col])
     when :black
-      enemy?(color, [@row + 1, @col])
+      empty?([@row + 1, @col])
     end
   end
 
