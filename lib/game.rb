@@ -47,12 +47,13 @@ class Game
       @other_player = @board.turn.odd? ? @display.player2 : @display.player1
 
       @display.change_prompt(@color, @other_player.name, :to_move)
+      @display.change_prompt(@color, @other_player.name, :check) if @display.cursor.check
 
       @display.show
       @display.cursor.ask_input
 
       @color = @board.turn.odd? ? "black" : "white"
-      @display.change_prompt(@color, @other_player.name, :check) if @display.cursor.check
+
       if @display.cursor.checkmate
         update_score
         restart
