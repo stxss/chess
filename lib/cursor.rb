@@ -8,6 +8,7 @@ class Cursor
     @cursor_pos = cursor_pos
     @board = board
     @selected = false
+    @check = false
   end
 
   def ask_input
@@ -78,7 +79,28 @@ class Cursor
     end
   end
 
-  private
+  ######################
+  def checkmates?(color)
+    return unless @board.check
+
+    target_color = (color == :white?) ? :black : :white
+
+    arr = []
+    @board.grid.each_with_index do |i, row|
+      i.each_with_index do |piece, col|
+        next if piece.color != target_color
+
+        piece.valid_moves.each do |move|
+          arr += into_check?(@board, [row, col], piece)
+        end
+      end
+    end
+    @verify_moves = arr.uniq.flatten
+    @checkmate = arr.uniq.flatten.empty?
+  end
+  ######################
+
+  # private
 
   def update_cursor(move)
     new_pos = [@cursor_pos.first + move.first, @cursor_pos.last + move.last]
