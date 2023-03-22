@@ -97,6 +97,8 @@ class Pawn
       col_to_check = (jump_left > jump_right) ? @col - 1 : @col + 1
     end
 
+    return if col_to_check.nil?
+
     enemy_jumps = @board.grid[@row][col_to_check].made_moves
 
     case color

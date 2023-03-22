@@ -43,6 +43,51 @@ module Movement
     end
   end
 
+  #######################################################
+
+  def is_check?(white_moves, black_moves, white_king, black_king, color)
+    case color
+    when :white
+      @check = black_moves&.include?(white_king)
+    when :black
+      @check = white_moves&.include?(black_king)
+    end
+  end
+
+  def is_checkmate?(moves)
+    return unless @check
+
+    @checkmate = @grid[@enemy_king[0]][@enemy_king[1]].valid_moves.size < 1
+  end
+
+  def update_all_moves(board)
+    @white_moves = all_moves(:white, board)
+    @white_king = find_king(:white)
+    @black_moves = all_moves(:black, board)
+    @black_king = find_king(:black)
+  end
+
+  def find_king(color)
+    @grid.each_with_index do |i, row|
+      i.each_with_index do |piece, column|
+        character = piece.piece
+        return [row, column] if character == PIECES[:king] && piece.color == color
+      end
+    end
+  end
+
+  def all_moves(color, board)
+    arr = []
+    @grid.each_with_index do |i, row|
+      i.each_with_index do |piece, column|
+        arr += possible_moves(board, [row, column], piece) if piece.color == color
+      end
+    end
+    arr
+  end
+
+  ######################################################
+
   def update_piece(piece, previous, following)
     if piece.piece == PIECES[:pawn]
       handle_ep(piece, previous, following)

@@ -1,8 +1,8 @@
 require("io/console")
 
 class Cursor
-  attr_accessor :cursor_pos, :selected, :board, :available_moves, :enemy_king, :white_moves, :black_moves,
-    :piece, :check, :checkmate, :king_valid_moves, :white_king, :black_king
+  attr_accessor :cursor_pos, :selected, :board, :available_moves, :enemy_king, :white_moves, :black_moves, :piece,
+    :check, :checkmate, :white_king, :black_king
 
   def initialize(cursor_pos, board)
     @cursor_pos = cursor_pos
@@ -55,10 +55,10 @@ class Cursor
         set_selected
       elsif @selected && @board.can_move?(@cursor_pos, @available_moves)
         @board.move(@initial_pos, @piece, @cursor_pos)
-        update_all_moves
+        @board.update_all_moves(@board)
         reset_relevant
-        is_check?
-        is_checkmate?
+        @board.is_check?(@white_moves, @black_moves, @white_king, @black_king, @piece.color)
+        @board.is_checkmate?(@available_moves)
       end
     when :king_side
       color = @current_player = @board.turn.odd? ? :black : :white
@@ -94,7 +94,8 @@ class Cursor
   end
 
   def set_available_moves
-    @available_moves = @board.possible_moves(@board, @cursor_pos, @piece)
+    @available_moves = @board.possible_moves(@board, @cursor_pos,
+      @piece)&.intersection(into_check?(@board, @initial_pos, @piece))
   end
 
   def set_king_pos
@@ -121,25 +122,6 @@ class Cursor
     @board.grid[position.first][position.last]
   end
 
-  def update_all_moves
-    @white_moves = all_moves(:white)
-    @black_moves = all_moves(:black)
-  end
-
-  def is_check?
-    @check = @white_moves.include?(@black_king) || @black_moves.include?(@white_king)
-
-    @enemy_king = (@piece.color == :white) ? @black_king : @white_king
-
-    @board.grid[@enemy_king[0]][@enemy_king[1]].valid_moves -= @piece.valid_moves
-  end
-
-  def is_checkmate?
-    return unless @check
-
-    @checkmate = @board.grid[@enemy_king[0]][@enemy_king[1]].valid_moves.size < 1
-  end
-
   def reset_relevant
     @available_moves = nil
     @selected = false
@@ -162,5 +144,26 @@ class Cursor
       end
     end
     arr
+  end
+
+  def into_check?(game, initial, piece)
+    testing = Marshal.load(Marshal.dump(game))
+
+    piece_to_move = testing.grid[initial.first][initial.last]
+
+    protecting = []
+
+    piece_to_move&.valid_moves&.each do |move|
+      testing.move(initial, piece_to_move, move)
+      testing.update_all_moves(testing)
+
+      protecting << move if !testing.is_check?(testing.white_moves, testing.black_moves, testing.white_king,
+        testing.black_king, piece_to_move.color)
+
+      testing.move(move, piece_to_move, initial)
+      testing.update_all_moves(testing)
+    end
+
+    protecting
   end
 end
