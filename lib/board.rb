@@ -11,13 +11,17 @@ require_relative("./movement/movement")
 
 class Board
   include Movement
-  attr_accessor :grid, :player1, :player2, :half_counter, :full_counter, :turn, :castles_white, :castles_black, :castle_checks
+  attr_accessor :grid, :player1, :player2, :half_counter, :full_counter, :turn, :castles_white, :castles_black, :white_king, :white_moves, :black_king, :black_moves, :check
 
   def initialize
     @grid = Array.new(8) { Array.new(8, EmptySquare.new) }
     @half_counter, @full_counter, @turn = 0, 0, 0
     @castles_white = 0
     @castles_black = 0
+  end
+
+  def copy(board)
+    Marshal.load(Marshal.dump(board))
   end
 
   def create_scoreboard(player1, player2)

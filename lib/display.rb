@@ -99,7 +99,7 @@ class Display
   end
 
   def valid_move(row, column)
-    @cursor.available_moves&.any?([row, column])
+    @cursor.valid_moves&.any?([row, column])
   end
 
   def paint(square, color)

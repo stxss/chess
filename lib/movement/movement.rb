@@ -4,11 +4,10 @@ module Movement
     valid_move?(available, following) && not_king?(next_slot.piece)
   end
 
-  def move(prev_pos, piece, following)
+  def move(prev_pos, piece, following, goal)
     if piece.piece == PIECES[:pawn]
-      piece = promote(piece.color) if to_be_promoted(piece.color, following.first)
+      piece = promote(piece.color) if to_be_promoted(piece.color, following.first) && goal != :test
     end
-
     update_half(following)
     update_full(@grid[prev_pos.first][prev_pos.last].color)
     update_turn
@@ -43,8 +42,6 @@ module Movement
     end
   end
 
-  #######################################################
-
   def is_check?(white_moves, black_moves, white_king, black_king, color)
     case color
     when :white
@@ -54,10 +51,8 @@ module Movement
     end
   end
 
-  def is_checkmate?(moves)
-    return unless @check
-
-    @checkmate = @grid[@enemy_king[0]][@enemy_king[1]].valid_moves.size < 1
+  def checks?
+    @check = @black_moves&.include?(@white_king) || @white_moves&.include?(@black_king)
   end
 
   def update_all_moves(board)
@@ -86,8 +81,6 @@ module Movement
     arr
   end
 
-  ######################################################
-
   def update_piece(piece, previous, following)
     if piece.piece == PIECES[:pawn]
       handle_ep(piece, previous, following)
@@ -107,16 +100,18 @@ module Movement
     @grid[following.first][following.last] = piece
   end
 
-  def castle_handler(color, side, check, white_moves, black_moves)
+  def castle_handler(color, side, white_moves, black_moves)
     w_king, b_king = [7, 4], [0, 4]
 
     w_rook = (side == :king) ? [7, 7] : [7, 0]
     b_rook = (side == :king) ? [0, 7] : [0, 0]
     case color
     when :white
-      castle(w_king, w_rook, side) if no_moves?(w_king, w_rook) && not_under_attack?(:white, side, black_moves) && !check && @castles_white < 1
+      castle(w_king, w_rook, side) if no_moves?(w_king,
+        w_rook) && not_under_attack?(:white, side, black_moves) && !@check && @castles_white < 1
     when :black
-      castle(b_king, b_rook, side) if no_moves?(b_king, b_rook) && not_under_attack?(:black, side, white_moves) && !check && @castles_black < 1
+      castle(b_king, b_rook, side) if no_moves?(b_king,
+        b_rook) && not_under_attack?(:black, side, white_moves) && !@check && @castles_black < 1
     end
   end
 
@@ -181,8 +176,11 @@ module Movement
   end
 
   def promote(color)
-    # TODO add prompt for piece promotion
-    piece = gets.chomp
+    puts "Please select the piece you want to replace your pawn with:"
+    until (piece = gets.chomp) =~ /[1-4]/
+      puts "\nRemember that you must select a number from 1-4, as stipulated by the rules above.\nPlease select the piece you want to replace your pawn with:"
+    end
+
     piece = case piece
     in "1" then :queen
     in "2" then :rook

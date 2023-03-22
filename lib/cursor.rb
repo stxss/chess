@@ -1,14 +1,12 @@
 require("io/console")
 
 class Cursor
-  attr_accessor :cursor_pos, :selected, :board, :available_moves, :enemy_king, :white_moves, :black_moves, :piece,
-    :check, :checkmate, :white_king, :black_king
+  attr_accessor :cursor_pos, :selected, :board, :valid_moves, :piece, :checkmate
 
   def initialize(cursor_pos, board)
     @cursor_pos = cursor_pos
     @board = board
     @selected = false
-    @check = false
   end
 
   def ask_input
@@ -50,26 +48,23 @@ class Cursor
     when :return
       if !@selected
         set_initial
-        set_piece
-        set_available_moves
-        set_king_pos
+        set_playing_piece
+        set_valid_moves
         set_selected
-      elsif @selected && @board.can_move?(@cursor_pos, @available_moves)
-        @board.move(@initial_pos, @piece, @cursor_pos)
-        @board.update_all_moves(@board)
+      elsif @selected && @board.can_move?(@cursor_pos, @valid_moves)
+        move_piece
+        update_movement
         reset_relevant
-        @board.is_check?(@white_moves, @black_moves, @white_king, @black_king, @piece.color)
-        @board.is_checkmate?(@available_moves)
+        @board.checks?
+        checkmates?(@piece.color)
       end
     when :king_side
-      color = @current_player = @board.turn.odd? ? :black : :white
-      @board.castle_handler(color, :king, @check, @white_moves, @black_moves)
+      @board.castle_handler(current_color, :king, @board.white_moves, @board.black_moves)
     when :queen_side
-      color = @current_player = @board.turn.odd? ? :black : :white
-      @board.castle_handler(color, :queen, @check, @white_moves, @black_moves)
+      @board.castle_handler(current_color, :queen, @board.white_moves, @board.black_moves)
     when :escape
       @selected = false if @selected
-      @available_moves = nil
+      @valid_moves = nil
     when :ctrl_c
       puts "\nThank you for playing Chess! See you next time :D"
       exit
@@ -79,28 +74,7 @@ class Cursor
     end
   end
 
-  ######################
-  def checkmates?(color)
-    return unless @board.check
-
-    target_color = (color == :white?) ? :black : :white
-
-    arr = []
-    @board.grid.each_with_index do |i, row|
-      i.each_with_index do |piece, col|
-        next if piece.color != target_color
-
-        piece.valid_moves.each do |move|
-          arr += into_check?(@board, [row, col], piece)
-        end
-      end
-    end
-    @verify_moves = arr.uniq.flatten
-    @checkmate = arr.uniq.flatten.empty?
-  end
-  ######################
-
-  # private
+  private
 
   def update_cursor(move)
     new_pos = [@cursor_pos.first + move.first, @cursor_pos.last + move.last]
@@ -111,18 +85,37 @@ class Cursor
     @initial_pos = @cursor_pos
   end
 
-  def set_piece
+  def set_playing_piece
     @piece = select_piece(@initial_pos)
   end
 
-  def set_available_moves
-    @available_moves = @board.possible_moves(@board, @cursor_pos,
-      @piece)&.intersection(into_check?(@board, @initial_pos, @piece))
+  def select_piece(position)
+    @board.grid[position.first][position.last]
   end
 
-  def set_king_pos
-    @white_king = find_king(:white)
-    @black_king = find_king(:black)
+  def set_valid_moves
+    @valid_moves = @board.possible_moves(@board, @cursor_pos,
+      @piece)&.intersection(safe_from_check?(@board, @initial_pos, @piece))
+  end
+
+  def safe_from_check?(game, initial, piece)
+    ghost_board = Board.new.copy(game)
+
+    test_piece = ghost_board.grid[initial.first][initial.last]
+
+    safe = []
+
+    test_piece&.valid_moves&.each do |move|
+      ghost_board.move(initial, test_piece, move, :test)
+      ghost_board.update_all_moves(ghost_board)
+
+      safe << move if !ghost_board.is_check?(ghost_board.white_moves, ghost_board.black_moves, ghost_board.white_king,
+        ghost_board.black_king, test_piece.color)
+
+      ghost_board.move(move, test_piece, initial, :test)
+      ghost_board.update_all_moves(ghost_board)
+    end
+    safe
   end
 
   def set_selected
@@ -135,57 +128,41 @@ class Cursor
   end
 
   def correct_turn?
-    counter = @board.turn
-    color_turn = counter.even? ? :white : :black
-    @board.grid[@cursor_pos.first][@cursor_pos.last].color == color_turn
+    @board.grid[@cursor_pos.first][@cursor_pos.last].color == current_color
   end
 
-  def select_piece(position)
-    @board.grid[position.first][position.last]
+  def current_color
+    @board.turn.even? ? :white : :black
+  end
+
+  def move_piece
+    @board.move(@initial_pos, @piece, @cursor_pos, :actual)
+  end
+
+  def update_movement
+    @board.update_all_moves(@board)
   end
 
   def reset_relevant
-    @available_moves = nil
+    @valid_moves = nil
     @selected = false
   end
 
-  def find_king(color)
+  def checkmates?(color)
+    return unless @board.check
+
+    target_color = (color == :white?) ? :black : :white
+
+    safe_moves = []
     @board.grid.each_with_index do |i, row|
-      i.each_with_index do |piece, column|
-        character = piece.piece
-        return [row, column] if character == PIECES[:king] && piece.color == color
+      i.each_with_index do |piece, col|
+        next if piece.color != target_color
+
+        piece.valid_moves.each do |move|
+          safe_moves += safe_from_check?(@board, [row, col], piece)
+        end
       end
     end
-  end
-
-  def all_moves(color)
-    arr = []
-    @board.grid.each_with_index do |i, row|
-      i.each_with_index do |piece, column|
-        arr += @board.possible_moves(@board, [row, column], piece) if piece.color == color
-      end
-    end
-    arr
-  end
-
-  def into_check?(game, initial, piece)
-    testing = Marshal.load(Marshal.dump(game))
-
-    piece_to_move = testing.grid[initial.first][initial.last]
-
-    protecting = []
-
-    piece_to_move&.valid_moves&.each do |move|
-      testing.move(initial, piece_to_move, move)
-      testing.update_all_moves(testing)
-
-      protecting << move if !testing.is_check?(testing.white_moves, testing.black_moves, testing.white_king,
-        testing.black_king, piece_to_move.color)
-
-      testing.move(move, piece_to_move, initial)
-      testing.update_all_moves(testing)
-    end
-
-    protecting
+    @checkmate = safe_moves.uniq.flatten.empty?
   end
 end
