@@ -1,7 +1,7 @@
 require("io/console")
 
 class Cursor
-  attr_accessor :cursor_pos, :selected, :board, :valid_moves, :piece, :checkmate
+  attr_accessor :cursor_pos, :selected, :board, :valid_moves, :piece, :checkmate, :stalemate
 
   def initialize(cursor_pos, board)
     @cursor_pos = cursor_pos
@@ -56,7 +56,8 @@ class Cursor
         update_movement
         reset_relevant
         @board.checks?
-        checkmates?(@piece.color)
+        mate_or_stale?(@piece.color, :stale)
+        mate_or_stale?(@piece.color, :mate)
       end
     when :king_side
       @board.castle_handler(current_color, :king, @board.white_moves, @board.black_moves)
@@ -109,8 +110,7 @@ class Cursor
       ghost_board.move(initial, test_piece, move, :test)
       ghost_board.update_all_moves(ghost_board)
 
-      safe << move if !ghost_board.is_check?(ghost_board.white_moves, ghost_board.black_moves, ghost_board.white_king,
-        ghost_board.black_king, test_piece.color)
+      safe << move if !ghost_board.in_check?(ghost_board.white_moves, ghost_board.black_moves, ghost_board.white_king, ghost_board.black_king, test_piece.color)
 
       ghost_board.move(move, test_piece, initial, :test)
       ghost_board.update_all_moves(ghost_board)
@@ -148,21 +148,29 @@ class Cursor
     @selected = false
   end
 
-  def checkmates?(color)
-    return unless @board.check
+  def mate_or_stale?(color, verification)
+    case verification
+    when :mate
+      target_color = (color == :white?) ? :black : :white
+    when :stale
+      target_color = (color == :white?) ? :white : :black
+    end
 
-    target_color = (color == :white?) ? :black : :white
-
-    safe_moves = []
+    @safe_moves = []
     @board.grid.each_with_index do |i, row|
       i.each_with_index do |piece, col|
         next if piece.color != target_color
 
         piece.valid_moves.each do |move|
-          safe_moves += safe_from_check?(@board, [row, col], piece)
+          @safe_moves += safe_from_check?(@board, [row, col], piece)
         end
       end
     end
-    @checkmate = safe_moves.uniq.flatten.empty?
+    case verification
+    when :mate
+      @checkmate = @safe_moves.uniq.flatten.empty? && @board.check
+    when :stale
+      @stalemate = @safe_moves.uniq.flatten.empty? && !@board.check
+    end
   end
 end

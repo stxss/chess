@@ -77,7 +77,14 @@ class Prompts
   def draw
     <<~HEREDOC
 
-      #{"Oops! No winner this time, it's a draw!".rjust(42)}
+      #{"Oops! No winner this time, it's a draw because 50 moves were played and there were no captures or pawn moves!".rjust(42)}
+    HEREDOC
+  end
+
+  def stalemate
+    <<~HEREDOC
+
+      #{"Oops! No winner this time, it's a draw by stalemate!".rjust(42)}
     HEREDOC
   end
 end

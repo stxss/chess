@@ -42,15 +42,17 @@ module Movement
     end
   end
 
-  def is_check?(white_moves, black_moves, white_king, black_king, color)
+  # For when a player wants to move -- used for the pre-move testing for checks/ used defensively
+  def in_check?(white_moves, black_moves, white_king, black_king, color)
     case color
     when :white
-      @check = black_moves&.include?(white_king)
+      black_moves&.include?(white_king)
     when :black
-      @check = white_moves&.include?(black_king)
+      white_moves&.include?(black_king)
     end
   end
 
+  # For when a piece checks the other player / used offensively
   def checks?
     @check = @black_moves&.include?(@white_king) || @white_moves&.include?(@black_king)
   end

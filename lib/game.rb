@@ -42,7 +42,7 @@ class Game
   end
 
   def play
-    until has_winner? || draw?
+    until has_winner? || draw? || stalemate?
       @current_player = @board.turn.odd? ? @display.player1 : @display.player2
       @other_player = @board.turn.odd? ? @display.player2 : @display.player1
 
@@ -65,6 +65,12 @@ class Game
       @display.show
       restart
     end
+
+    if stalemate?
+      @display.change_prompt(@color, @current_player.name, :stalemate)
+      @display.show
+      restart
+    end
   end
 
   private
@@ -84,6 +90,10 @@ class Game
 
   def draw?
     @board.half_counter >= 50
+  end
+
+  def stalemate?
+    @display.cursor.stalemate
   end
 
   def restart

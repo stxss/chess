@@ -41,6 +41,9 @@ class Display
       @current_prompt = Prompts.new.to_move(player)
     when :check
       @current_prompt = Prompts.new.check(color, player)
+    when :stalemate
+      @game_instructions = Prompts.new.empty
+      @current_prompt = Prompts.new.stalemate
     when :draw
       @game_instructions = Prompts.new.empty
       @current_prompt = Prompts.new.draw
