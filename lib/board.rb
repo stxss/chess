@@ -39,19 +39,13 @@ class Board
   end
 
   def pieces_row(row, color)
-    rook = Piece.new(:rook, color)
-    knight = Piece.new(:knight, color)
-    bishop = Piece.new(:bishop, color)
-    queen = Piece.new(:queen, color)
-    king = Piece.new(:king, color)
-
-    @grid[row][0] = rook
-    @grid[row][1] = knight
-    @grid[row][2] = bishop
-    @grid[row][3] = queen
-    @grid[row][4] = king
-    @grid[row][5] = bishop
-    @grid[row][6] = knight
-    @grid[row][7] = rook
+    @grid[row][0] = Piece.new(:rook, color)
+    @grid[row][1] = Piece.new(:knight, color)
+    @grid[row][2] = Piece.new(:bishop, color)
+    @grid[row][3] = Piece.new(:queen, color)
+    @grid[row][4] = Piece.new(:king, color)
+    @grid[row][5] = Piece.new(:bishop, color)
+    @grid[row][6] = Piece.new(:knight, color)
+    @grid[row][7] = Piece.new(:rook, color)
   end
 end
