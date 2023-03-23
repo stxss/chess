@@ -65,19 +65,19 @@ module Movement
   end
 
   def find_king(color)
-    @grid.each_with_index do |i, row|
-      i.each_with_index do |piece, column|
+    @grid.each_with_index do |i, row_index|
+      i.each_with_index do |piece, column_index|
         character = piece.piece
-        return [row, column] if character == PIECES[:king] && piece.color == color
+        return [row_index, column_index] if character == PIECES[:king] && piece.color == color
       end
     end
   end
 
   def all_moves(color, board)
     arr = []
-    @grid.each_with_index do |i, row|
-      i.each_with_index do |piece, column|
-        arr += possible_moves(board, [row, column], piece) if piece.color == color
+    @grid.each_with_index do |i, row_index|
+      i.each_with_index do |piece, column_index|
+        arr += possible_moves(board, [row_index, column_index], piece) if piece.color == color
       end
     end
     arr

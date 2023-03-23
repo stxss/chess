@@ -1,34 +1,20 @@
 class Game
-  attr_accessor :board, :display, :is_winner, :draw, :player1, :player2
-  def initialize(player1 = nil, player2 = nil, turn = 0)
+  attr_accessor :board, :display, :player1, :player2, :color
+
+  def initialize(player1 = nil, player2 = nil)
     @player1 = player1
     @player2 = player2
-    @turn = turn
-    setup
-    play
+    # Intro.new
   end
-
-  private
 
   def setup
-    Intro.new
     create_players
-    @board = Board.new
-    @board.create_scoreboard(@player1, @player2)
-    @board.populate
-    @display = Display.new(@board, @player1, @player2)
+    create_board
+    create_cursor
+    create_display
   end
 
-  def create_players
-    if @player1.nil? && @player2.nil?
-      name1 = create
-      name2 = create(name1)
-      @player1 = Player.new(name1)
-      @player2 = Player.new(name2)
-    end
-  end
-
-  def create(prev_name = nil)
+  def give_name(prev_name = nil)
     loop do
       if !prev_name
         puts "\nPlease, enter a valid name for the first player: "
@@ -42,17 +28,11 @@ class Game
   end
 
   def play
-    until has_winner? || draw? || stalemate?
-      @current_player = @board.turn.odd? ? @display.player1 : @display.player2
-      @other_player = @board.turn.odd? ? @display.player2 : @display.player1
-
-      @display.change_prompt(@color, @other_player.name, :to_move)
-      @display.change_prompt(@color, @other_player.name, :check) if @board.check
-
-      @display.show
-      @display.cursor.ask_input
-
-      @color = @board.turn.odd? ? "black" : "white"
+    until game_ended?
+      set_players
+      set_prompts(@current.name, @other.name)
+      set_display
+      set_color
 
       if @display.cursor.checkmate
         update_score
@@ -60,32 +40,75 @@ class Game
       end
     end
 
-    if draw?
-      @display.change_prompt(@color, @current_player.name, :draw)
-      @display.show
-      restart
-    end
+    end_game_handler(@current.name, @other.name)
+  end
 
-    if stalemate?
-      @display.change_prompt(@color, @current_player.name, :stalemate)
-      @display.show
-      restart
+  def end_game_handler(current, other)
+    if draw?
+      @display.change_prompt(@color, current, :draw)
+    elsif stalemate?
+      @display.change_prompt(@color, current, :stalemate)
     end
+    @display.show
+    restart
   end
 
   private
+
+  def create_players
+    if @player1.nil? && @player2.nil?
+      name1 = give_name
+      name2 = give_name(name1)
+      @player1 = Player.new(name1)
+      @player2 = Player.new(name2)
+    end
+  end
+
+  def create_board
+    @board = Board.new
+    @board.create_scoreboard(@player1, @player2)
+    @board.populate
+  end
+
+  def create_cursor
+    @cursor = Cursor.new([5, 4], @board)
+  end
+
+  def create_display
+    @display = Display.new(@board, @player1, @player2)
+  end
+
+  def set_color
+    @color = @board.turn.odd? ? "black" : "white"
+  end
+
+  def set_display
+    @display.show
+    @display.cursor.ask_input
+  end
+
+  def set_players
+    @current = @board.turn.odd? ? @player1 : @player2
+    @other = @board.turn.odd? ? @player2 : @player1
+  end
+
+  def set_prompts(current, other)
+    @display.change_prompt(@color, other, :to_move)
+    @display.change_prompt(@color, other, :check) if @board.check
+  end
+
+  def game_ended?
+    draw? || stalemate?
+  end
 
   def verify_name(prev_name, input)
     input if /^[a-zA-Z]+$/.match?(input) && input != prev_name
   end
 
   def update_score
-    @other_player.score += 1
-    @display.change_prompt(@color, @other_player.name, :game_end)
+    @other.score += 1
+    @display.change_prompt(@color, @other.name, :game_end)
     @display.show
-  end
-
-  def has_winner?
   end
 
   def draw?
