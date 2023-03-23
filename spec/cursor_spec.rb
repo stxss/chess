@@ -327,5 +327,131 @@ describe Cursor do
         expect(position).to eq([0, 2])
       end
     end
+
+    context "there is a stalemate" do
+      let(:board) { Board.new }
+      subject(:cursor) { described_class.new([5, 4], board) }
+
+      before do
+        board.populate
+        moves = %i[down return up return
+          up up up up left left left left return
+          down down return
+          down down down down right right right return
+          right right right right up up up up return
+          left left left left left left left up up up return
+          down down return
+          right right right right right right right down return
+          left left left left left left left return
+          up right right right right right right right up return
+          down down return
+          down down down return
+          up up return
+          left left left left left left left up up return
+          right right right right right right right return
+          left left left left left left left down return
+          up right up right return
+          right right right return
+          down return
+          left left left up return
+          right return
+          up right return
+          down right return
+          left left return
+          left left return
+          up right right return
+          down down down down down return
+          up up up up left left return
+          up return
+          down down down down down right right return
+          up up up up right right right right return
+          up left left left left left left return
+          right return
+          down right right right return
+          down right return
+          up up left left left left return
+          right right down down return]
+
+        moves.each do |move|
+          cursor.interpret(move)
+        end
+      end
+
+      it "returns true for stalemate" do
+        stalemate = cursor.instance_variable_get(:@stalemate)
+        expect(stalemate).to eq(true)
+      end
+    end
+
+    context "there is a checkmate" do
+      let(:board) { Board.new }
+      subject(:cursor) { described_class.new([5, 4], board) }
+
+      before do
+        board.populate
+        moves = %i[down right return
+          up return
+          up up up up left return
+          down return
+          down down down down right right return
+          up up return
+          up up up up left left left return
+          right right right right down down down down return]
+
+        moves.each do |move|
+          cursor.interpret(move)
+        end
+      end
+
+      it "returns true for checkmate" do
+        checkmate = cursor.instance_variable_get(:@checkmate)
+        expect(checkmate).to eq(true)
+      end
+    end
+
+    context "handles en_passant" do
+      let(:board) { Board.new }
+      subject(:cursor) { described_class.new([5, 4], board) }
+
+      it "does en passant correctly" do
+        board.populate
+        moves = %i[down right return
+          up up return
+          up up up left left left left left return
+          down return
+          right right right right right
+          down down return
+          up return
+          up up left return
+          down down return
+          right return up left return]
+
+        moves.each do |move|
+          cursor.interpret(move)
+        end
+        check_pos = board.grid[3][4]
+        expect(check_pos.symbol).to eq("   ")
+      end
+
+      it "returns true for ep_flag" do
+        board.populate
+        moves = %i[down right return
+          up up return
+          up up up left left left left left return
+          down return
+          right right right right right
+          down down return
+          up return
+          up up left return
+          down down return
+          right return]
+
+        moves.each do |move|
+          cursor.interpret(move)
+        end
+        check_pos = board.grid[3][4]
+        expect(check_pos.ep_flag).to eq(true)
+      end
+    end
   end
 end

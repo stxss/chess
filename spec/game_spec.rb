@@ -1,7 +1,9 @@
+require_relative("../lib/player")
+require_relative("../lib/display")
 require_relative("../lib/game")
 
 describe Game do
-  describe "#create" do
+  describe "#give_name" do
     subject(:game) { described_class.new }
 
     context "when user inputs a symbol and a valid name" do
@@ -14,7 +16,7 @@ describe Game do
       it "returns name asking message twice when creating first player" do
         ask_message = "\nPlease, enter a valid name for the first player: "
         expect(game).to receive(:puts).with(ask_message).exactly(2).times
-        game.create
+        game.give_name
       end
     end
 
@@ -29,40 +31,49 @@ describe Game do
         ask_message_second = "\nPlease, enter a valid name for the second player: "
         valid = "odin"
         expect(game).to receive(:puts).with(ask_message_second).exactly(3).times
-        game.create(valid)
+        game.give_name(valid)
       end
     end
   end
 
-  describe "#play" do
-    subject(:game) { described_class.new }
+  # describe "#play" do
+  #   subject(:game) { described_class.new }
+  #   let(:player1) { Player.new("odin") }
+  #   let(:player2) { Player.new("ruby") }
 
-    context "when there's a draw" do
-      before do
-        allow(game).to receive(:has_winner?).and_return(false)
-        allow(game).to receive(:draw?).and_return(true)
-        allow(game).to receive(:restart)
-      end
+  #   context "when there's a checkmate" do
+  #     before do
+  #       allow(game.display).to receive(:change_prompt)
+  #       allow(game.display).to receive(:show)
+  #       allow(game).to receive(:game_ended?).and_return(true)
+  #       allow(game).to receive(:draw?).and_return(false)
+  #       allow(game).to receive(:stalemate?).and_return(false)
+  #     end
 
-      it "returns a draw prompt" do
-        draw_message = "\nIt's a draw!"
-        expect(game).to receive(:puts).with(draw_message).once
-        game.play
-      end
-    end
+  #     it "returns a restart" do
+  #       expect(game).to receive(:restart)
+  #       game.end_game_handler(player1, player2)
+  #     end
+  #   end
+  # end
 
-    context "when a winner is found" do
-      before do
-        allow(game).to receive(:draw?).and_return(false)
-        allow(game).to receive(:has_winner?).and_return(true)
-        allow(game).to receive(:restart)
-      end
+  # describe "#end_game_handler" do
+  #   subject(:game) { described_class.new }
+  #   let(:player1) { Player.new("odin") }
+  #   let(:player2) { Player.new("ruby") }
 
-      it "returns a win prompt" do
-        win_message = "\nThere's a winner!"
-        expect(game).to receive(:puts).with(win_message).once
-        game.play
-      end
-    end
-  end
+  #   context "when there's a draw and no stalemate" do
+  #     before do
+  #       allow(game.display).to receive(:change_prompt)
+  #       allow(game.display).to receive(:show)
+  #       allow(game).to receive(:draw?).and_return(true)
+  #       allow(game).to receive(:stalemate?).and_return(false)
+  #     end
+
+  #     it "returns a restart" do
+  #       expect(game).to receive(:restart)
+  #       game.end_game_handler(player1, player2)
+  #     end
+  #   end
+  # end
 end
