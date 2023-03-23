@@ -92,4 +92,38 @@ describe Movement do
       end
     end
   end
+
+  describe "#update_piece" do
+    let(:board) { Board.new }
+
+    before do
+      board.populate
+    end
+
+    context "when a pawn" do
+      it "updates correctly" do
+        piece = board.grid[6][0]
+        empty = "   "
+        board.update_piece(piece, [6, 0], [2, 0])
+
+        piece_position = board.grid[2][0]
+        empty_position = board.grid[6][0].symbol
+        expect(piece_position).to eq(piece)
+        expect(empty_position).to eq(empty)
+      end
+    end
+
+    context "when any other piece" do
+      it "updates correctly" do
+        piece = board.grid[7][0]
+        empty = "   "
+        board.update_piece(piece, [7, 0], [5, 0])
+
+        piece_position = board.grid[5][0]
+        empty_position = board.grid[7][0].symbol
+        expect(piece_position).to eq(piece)
+        expect(empty_position).to eq(empty)
+      end
+    end
+  end
 end

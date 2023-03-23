@@ -241,92 +241,6 @@ describe Cursor do
         expect(selected).to be(false)
       end
     end
-  end
-
-  describe "#update_cursor" do
-    let(:board) { Board.new }
-    subject(:cursor) { described_class.new([5, 4], board) }
-
-    context "user presses up" do
-      before do
-        cursor.interpret(:up)
-      end
-
-      it "updates cursor correctly" do
-        position = cursor.instance_variable_get(:@cursor_pos)
-        expect(position).to eq([4, 4])
-      end
-    end
-
-    context "user presses down" do
-      before do
-        cursor.interpret(:down)
-      end
-
-      it "updates cursor correctly" do
-        position = cursor.instance_variable_get(:@cursor_pos)
-        expect(position).to eq([6, 4])
-      end
-    end
-
-    context "user presses left" do
-      before do
-        cursor.interpret(:left)
-      end
-
-      it "updates cursor correctly" do
-        position = cursor.instance_variable_get(:@cursor_pos)
-        expect(position).to eq([5, 3])
-      end
-    end
-
-    context "user presses right" do
-      before do
-        cursor.interpret(:right)
-      end
-
-      it "updates cursor correctly" do
-        position = cursor.instance_variable_get(:@cursor_pos)
-        expect(position).to eq([5, 5])
-      end
-    end
-
-    context "user presses up, left, up, right, right, right, up" do
-      before do
-        cursor.interpret(:up)
-        cursor.interpret(:left)
-        cursor.interpret(:up)
-        cursor.interpret(:right)
-        cursor.interpret(:right)
-        cursor.interpret(:right)
-        cursor.interpret(:up)
-      end
-
-      it "updates cursor correctly" do
-        position = cursor.instance_variable_get(:@cursor_pos)
-        expect(position).to eq([2, 6])
-      end
-    end
-
-    context "user presses left, left, up, up, up, up, up, up, up, up" do
-      before do
-        cursor.interpret(:left)
-        cursor.interpret(:left)
-        cursor.interpret(:up)
-        cursor.interpret(:up)
-        cursor.interpret(:up)
-        cursor.interpret(:up)
-        cursor.interpret(:up)
-        cursor.interpret(:up)
-        cursor.interpret(:up)
-        cursor.interpret(:up)
-      end
-
-      it "updates cursor correctly and then does not go further" do
-        position = cursor.instance_variable_get(:@cursor_pos)
-        expect(position).to eq([0, 2])
-      end
-    end
 
     context "there is a stalemate" do
       let(:board) { Board.new }
@@ -451,6 +365,221 @@ describe Cursor do
         end
         check_pos = board.grid[3][4]
         expect(check_pos.ep_flag).to eq(true)
+      end
+    end
+
+    context "handles castle" do
+      let(:board) { Board.new }
+      subject(:cursor) { described_class.new([5, 4], board) }
+
+      it "castles white king side correctly" do
+        board.populate
+        moves = %i[down right return
+          up return
+          up up up up return
+          down return
+          down down down down right return
+          up return
+          up up up up return
+          down return
+          down down down down down return
+          right up up return
+          up up up up up left return
+          right down down return
+          down down down down down left left return
+          up right return
+          up up up up up up left return
+          right down return
+          king_side]
+
+        moves.each do |move|
+          cursor.interpret(move)
+        end
+
+        expect(board.castles_white).to eq(1)
+        expect(board.castles_black).to eq(0)
+      end
+
+      it "castles black king side correctly" do
+        board.populate
+        moves = %i[down right return
+          up return
+          up up up up return
+          down return
+          down down down down right return
+          up return
+          up up up up return
+          down return
+          down down down down down return
+          right up up return
+          up up up up up left return
+          right down down return
+          down down down down down left left return
+          up right return
+          up up up up up up left return
+          right down return
+          down down down down return
+          up return
+          king_side]
+
+        moves.each do |move|
+          cursor.interpret(move)
+        end
+
+        expect(board.castles_white).to eq(0)
+        expect(board.castles_black).to eq(1)
+      end
+
+      it "castles white queen side correctly" do
+        board.populate
+        moves = %i[down left return
+          up return
+          up up up up return
+          down return
+          down down down down left return
+          up return
+          up up up up return
+          down return
+          down down down down down return
+          right up return
+          up up up up up up return
+          down left return
+          down down down down down down right return
+          left up return
+          up up up up up up return
+          right down return
+          down down down down down down left left return
+          up up left return
+          up up up up return
+          down return
+          queen_side]
+
+        moves.each do |move|
+          cursor.interpret(move)
+        end
+
+        expect(board.castles_white).to eq(1)
+        expect(board.castles_black).to eq(0)
+      end
+
+      it "castles black queen side correctly" do
+        board.populate
+        moves = %i[down left return
+          up return
+          up up up up return
+          down return
+          down down down down left return
+          up return
+          up up up up return
+          down return
+          down down down down down return
+          right up return
+          up up up up up up return
+          down left return
+          down down down down down down right return
+          left up return
+          up up up up up up return
+          right down return
+          down down down down down down left left return
+          up up left return
+          up up up up up right return
+          down down left return
+          down down down return
+          up right right return
+          queen_side]
+
+        moves.each do |move|
+          cursor.interpret(move)
+        end
+
+        expect(board.castles_white).to eq(0)
+        expect(board.castles_black).to eq(1)
+      end
+    end
+  end
+
+  describe "#update_cursor" do
+    let(:board) { Board.new }
+    subject(:cursor) { described_class.new([5, 4], board) }
+
+    context "user presses up" do
+      before do
+        cursor.interpret(:up)
+      end
+
+      it "updates cursor correctly" do
+        position = cursor.instance_variable_get(:@cursor_pos)
+        expect(position).to eq([4, 4])
+      end
+    end
+
+    context "user presses down" do
+      before do
+        cursor.interpret(:down)
+      end
+
+      it "updates cursor correctly" do
+        position = cursor.instance_variable_get(:@cursor_pos)
+        expect(position).to eq([6, 4])
+      end
+    end
+
+    context "user presses left" do
+      before do
+        cursor.interpret(:left)
+      end
+
+      it "updates cursor correctly" do
+        position = cursor.instance_variable_get(:@cursor_pos)
+        expect(position).to eq([5, 3])
+      end
+    end
+
+    context "user presses right" do
+      before do
+        cursor.interpret(:right)
+      end
+
+      it "updates cursor correctly" do
+        position = cursor.instance_variable_get(:@cursor_pos)
+        expect(position).to eq([5, 5])
+      end
+    end
+
+    context "user presses up, left, up, right, right, right, up" do
+      before do
+        cursor.interpret(:up)
+        cursor.interpret(:left)
+        cursor.interpret(:up)
+        cursor.interpret(:right)
+        cursor.interpret(:right)
+        cursor.interpret(:right)
+        cursor.interpret(:up)
+      end
+
+      it "updates cursor correctly" do
+        position = cursor.instance_variable_get(:@cursor_pos)
+        expect(position).to eq([2, 6])
+      end
+    end
+
+    context "user presses left, left, up, up, up, up, up, up, up, up" do
+      before do
+        cursor.interpret(:left)
+        cursor.interpret(:left)
+        cursor.interpret(:up)
+        cursor.interpret(:up)
+        cursor.interpret(:up)
+        cursor.interpret(:up)
+        cursor.interpret(:up)
+        cursor.interpret(:up)
+        cursor.interpret(:up)
+        cursor.interpret(:up)
+      end
+
+      it "updates cursor correctly and then does not go further" do
+        position = cursor.instance_variable_get(:@cursor_pos)
+        expect(position).to eq([0, 2])
       end
     end
   end
