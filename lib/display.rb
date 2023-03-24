@@ -60,7 +60,7 @@ class Display
     @board.grid.each_with_index do |i, row|
       output += " " * 9 + (row - 8).abs.to_s.bold.to_s + " "
       i.each_with_index do |piece, column|
-        to_display = piece.symbol
+        to_display = piece.painted
 
         if valid_move(row, column) && @board.is_empty?([row, column])
           to_display = " \u{25cb} ".fg_color(:dark_green) # Circle symbol

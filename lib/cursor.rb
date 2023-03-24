@@ -124,7 +124,7 @@ class Cursor
 
   def has_piece?(cell)
     cell = @board.grid[cell.first][cell.last]
-    cell.symbol != "   "
+    cell.painted != "   "
   end
 
   def correct_turn?
