@@ -1,14 +1,14 @@
-require_relative("./../movement/directions")
+require_relative("./../movement/movement")
 
 class Pawn
-  include Directions
+  include Movement
 
   attr_accessor :normal_moves, :ep_flag
 
   def movement(board, start_position, piece)
     @board = board
     @start_position = start_position
-    @piece = piece.piece
+
     @color = piece.color
     @jumps_done = piece.made_moves
 

@@ -1,12 +1,11 @@
-require_relative("./../movement/directions")
+require_relative("./../movement/movement")
 
 class Bishop
-  include Directions
+  include Movement
 
   def movement(board, start_position, piece)
     @board = board
     @start_position = start_position
-    @piece = piece.piece
     @color = piece.color
     directions = [MOVE[:up_left], MOVE[:up_right], MOVE[:down_left], MOVE[:down_right]]
 
