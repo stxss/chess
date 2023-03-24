@@ -62,7 +62,7 @@ class Display
       i.each_with_index do |piece, column|
         to_display = piece.painted
 
-        if valid_move(row, column) && @board.is_empty?([row, column])
+        if valid_move(row, column) && @board.empty?([row, column], board: board)
           to_display = " \u{25cb} ".fg_color(:dark_green) # Circle symbol
         end
 
@@ -102,7 +102,7 @@ class Display
   end
 
   def valid_move(row, column)
-    @cursor.valid_moves&.any?([row, column])
+    @cursor.available_moves&.any?([row, column])
   end
 
   def paint(square, color)
