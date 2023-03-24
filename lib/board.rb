@@ -8,6 +8,11 @@ require_relative("./pieces/knight")
 require_relative("./pieces/pawn")
 require_relative("./pieces/empty_square")
 require_relative("./movement/movement")
+require_relative("./movement/castling")
+require_relative("./movement/pieces_moves")
+require_relative("./movement/promotion")
+require_relative("./movement/check_mate_stale")
+require_relative("./movement/update_methods")
 
 class Board
   include Movement
