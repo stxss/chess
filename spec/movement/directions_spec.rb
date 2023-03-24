@@ -1,11 +1,11 @@
 describe Directions do
   describe "#find_moves" do
-    let(:wpawn) { Piece.new(:pawn, :white) { extend Directions } }
-    let(:bqueen) { Piece.new(:queen, :black) { extend Directions } }
-    let(:wknight) { Piece.new(:knight, :white) { extend Directions } }
-    let(:brook) { Piece.new(:rook, :black) { extend Directions } }
-    let(:wking) { Piece.new(:king, :white) { extend Directions } }
-    let(:bbishop) { Piece.new(:bishop, :black) { extend Directions } }
+    let(:wpawn) { Piece.new(:pawn, :white) { extend described_class } }
+    let(:bqueen) { Piece.new(:queen, :black) { extend described_class } }
+    let(:wknight) { Piece.new(:knight, :white) { extend described_class } }
+    let(:brook) { Piece.new(:rook, :black) { extend described_class } }
+    let(:wking) { Piece.new(:king, :white) { extend described_class } }
+    let(:bbishop) { Piece.new(:bishop, :black) { extend described_class } }
 
     let(:board) { Board.new }
 
@@ -34,6 +34,7 @@ describe Directions do
 
       context "when selecting a queen that has one immediate ally to the side, but every other direction is free" do
         let(:empty_board) { Board.new }
+
         it "returns correct possible moves" do
           empty_board.grid[3][2] = Piece.new(:pawn, :black)
           movement = Queen.new.movement(empty_board, [2, 3], bqueen)
@@ -45,6 +46,7 @@ describe Directions do
 
       context "when selecting a knight that that has every direction free" do
         let(:empty_board) { Board.new }
+
         it "returns correct possible moves" do
           movement = Knight.new.movement(empty_board, [4, 4], wknight)
           directions = [[2, 3], [2, 5], [3, 2], [3, 6], [5, 2], [5, 6], [6, 3], [6, 5]]
@@ -54,6 +56,7 @@ describe Directions do
 
       context "when selecting a Rook that has an ally top side and an enemy on the immediate left" do
         let(:empty_board) { Board.new }
+
         it "returns correct possible moves" do
           empty_board.grid[3][3] = Piece.new(:pawn, :black)
           empty_board.grid[4][2] = Piece.new(:pawn, :white)
@@ -65,6 +68,7 @@ describe Directions do
 
       context "when selecting a King with every direction free" do
         let(:empty_board) { Board.new }
+
         it "returns correct possible moves" do
           movement = King.new.movement(empty_board, [4, 3], wking)
           directions = [[3, 3], [5, 3], [4, 2], [4, 4], [3, 2], [3, 4], [5, 2], [5, 4]]
@@ -74,10 +78,14 @@ describe Directions do
 
       context "when selecting a bishop with every only one direction free" do
         let(:empty_board) { Board.new }
-        it "returns correct possible moves" do
+
+        before do
           empty_board.grid[5][2] = Piece.new(:pawn, :black)
           empty_board.grid[5][4] = Piece.new(:pawn, :black)
           empty_board.grid[3][2] = Piece.new(:pawn, :black)
+        end
+
+        it "returns correct possible moves" do
           movement = Bishop.new.movement(empty_board, [4, 3], bbishop)
           directions = [[3, 4], [2, 5], [1, 6], [0, 7]]
           expect(movement).to eq(directions)

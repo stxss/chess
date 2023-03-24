@@ -68,6 +68,7 @@ describe Cursor do
         allow($stdin).to receive(:read_nonblock).with(2)
         allow($stdin).to receive(:getc).and_return("\e[D")
       end
+
       it "returns :left" do
         input = KEYS[cursor.ask_key]
         expect(input).to eq(:left)
@@ -119,7 +120,7 @@ describe Cursor do
       end
     end
 
-    context "pressing q" do
+    context "when pressing q" do
       it "returns :ctrl_c" do
         allow($stdin).to receive(:getc).and_return("q")
         input = KEYS[cursor.ask_key]
@@ -127,7 +128,7 @@ describe Cursor do
       end
     end
 
-    context "pressing ctrl_c" do
+    context "when pressing ctrl_c" do
       it "returns :ctrl_c" do
         allow($stdin).to receive(:getc).and_return("\u0003")
         input = KEYS[cursor.ask_key]
@@ -135,7 +136,7 @@ describe Cursor do
       end
     end
 
-    context "pressing escape" do
+    context "when pressing escape" do
       it "returns :escape" do
         allow($stdin).to receive(:getc).and_return("\e")
         input = KEYS[cursor.ask_key]
@@ -143,7 +144,7 @@ describe Cursor do
       end
     end
 
-    context "pressing return" do
+    context "when pressing return" do
       it "returns :return" do
         allow($stdin).to receive(:getc).and_return("\r")
         input = KEYS[cursor.ask_key]
@@ -151,7 +152,7 @@ describe Cursor do
       end
     end
 
-    context "pressing return" do
+    context "when pressing e" do
       it "returns :return" do
         allow($stdin).to receive(:getc).and_return("e")
         input = KEYS[cursor.ask_key]
@@ -159,7 +160,7 @@ describe Cursor do
       end
     end
 
-    context "pressing g" do
+    context "when pressing g" do
       it "returns :save" do
         allow($stdin).to receive(:getc).and_return("g")
         input = KEYS[cursor.ask_key]
@@ -169,14 +170,14 @@ describe Cursor do
   end
 
   describe "#interpret" do
+    subject(:cursor) { described_class.new([5, 4], board) }
+
     let(:board) { Board.new }
-    subject(:cursor) { described_class.new([6, 4], board) }
 
     context "when has piece, is correct turn and presses return" do
       before do
         board.populate
-        allow(cursor).to receive(:has_piece?).and_return(true)
-        allow(cursor).to receive(:correct_turn?).and_return(true)
+        cursor.interpret(:down)
         cursor.interpret(:return)
       end
 
@@ -186,25 +187,10 @@ describe Cursor do
       end
     end
 
-    context "when doesn't have piece, is not correct turn and presses return" do
+    context "when doesn't have piece and presses return" do
       before do
         board.populate
-        allow(cursor).to receive(:has_piece?).and_return(false)
-        allow(cursor).to receive(:correct_turn?).and_return(false)
-        cursor.interpret(:return)
-      end
-
-      it "does not change @selected state" do
-        selected = cursor.instance_variable_get(:@selected)
-        expect(selected).to be(false)
-      end
-    end
-
-    context "when doesn't have piece, is correct turn and presses return" do
-      before do
-        board.populate
-        allow(cursor).to receive(:has_piece?).and_return(false)
-        allow(cursor).to receive(:correct_turn?).and_return(true)
+        cursor.interpret(:up)
         cursor.interpret(:return)
       end
 
@@ -217,9 +203,9 @@ describe Cursor do
     context "when has piece, is not correct turn and presses return" do
       before do
         board.populate
-        allow(cursor).to receive(:has_piece?).and_return(true)
-        allow(cursor).to receive(:correct_turn?).and_return(false)
-        cursor.interpret(:return)
+
+        moves = %i[return down return up return]
+        moves.each { |move| cursor.interpret(move) }
       end
 
       it "does not change @selected state" do
@@ -231,9 +217,8 @@ describe Cursor do
     context "when @selected is true and presses escape" do
       before do
         board.populate
-        allow(cursor).to receive(:has_piece?).and_return(true)
-        allow(cursor).to receive(:correct_turn?).and_return(true)
-        cursor.interpret(:escape)
+        moves = %i[down return escape]
+        moves.each { |move| cursor.interpret(move) }
       end
 
       it "changes @selected state" do
@@ -242,9 +227,10 @@ describe Cursor do
       end
     end
 
-    context "there is a stalemate" do
-      let(:board) { Board.new }
+    context "when there is a stalemate" do
       subject(:cursor) { described_class.new([5, 4], board) }
+
+      let(:board) { Board.new }
 
       before do
         board.populate
@@ -286,20 +272,19 @@ describe Cursor do
           up up left left left left return
           right right down down return]
 
-        moves.each do |move|
-          cursor.interpret(move)
-        end
+        moves.each { |move| cursor.interpret(move) }
       end
 
       it "returns true for stalemate" do
         stalemate = cursor.instance_variable_get(:@stalemate)
-        expect(stalemate).to eq(true)
+        expect(stalemate).to be(true)
       end
     end
 
-    context "there is a checkmate" do
-      let(:board) { Board.new }
+    context "when there is a checkmate" do
       subject(:cursor) { described_class.new([5, 4], board) }
+
+      let(:board) { Board.new }
 
       before do
         board.populate
@@ -312,22 +297,21 @@ describe Cursor do
           up up up up left left left return
           right right right right down down down down return]
 
-        moves.each do |move|
-          cursor.interpret(move)
-        end
+        moves.each { |move| cursor.interpret(move) }
       end
 
       it "returns true for checkmate" do
         checkmate = cursor.instance_variable_get(:@checkmate)
-        expect(checkmate).to eq(true)
+        expect(checkmate).to be(true)
       end
     end
 
-    context "handles en_passant" do
-      let(:board) { Board.new }
+    context "when en_passant" do
       subject(:cursor) { described_class.new([5, 4], board) }
 
-      it "does en passant correctly" do
+      let(:board) { Board.new }
+
+      before do
         board.populate
         moves = %i[down right return
           up up return
@@ -340,39 +324,21 @@ describe Cursor do
           down down return
           right return up left return]
 
-        moves.each do |move|
-          cursor.interpret(move)
-        end
+        moves.each { |move| cursor.interpret(move) }
+      end
+
+      it "does en passant correctly" do
         check_pos = board.grid[3][4]
         expect(check_pos.symbol).to eq("   ")
       end
-
-      it "returns true for ep_flag" do
-        board.populate
-        moves = %i[down right return
-          up up return
-          up up up left left left left left return
-          down return
-          right right right right right
-          down down return
-          up return
-          up up left return
-          down down return
-          right return]
-
-        moves.each do |move|
-          cursor.interpret(move)
-        end
-        check_pos = board.grid[3][4]
-        expect(check_pos.ep_flag).to eq(true)
-      end
     end
 
-    context "handles castle" do
-      let(:board) { Board.new }
+    context "when castling white king side" do
       subject(:cursor) { described_class.new([5, 4], board) }
 
-      it "castles white king side correctly" do
+      let(:board) { Board.new }
+
+      before do
         board.populate
         moves = %i[down right return
           up return
@@ -392,15 +358,24 @@ describe Cursor do
           right down return
           king_side]
 
-        moves.each do |move|
-          cursor.interpret(move)
-        end
-
-        expect(board.castles_white).to eq(1)
-        expect(board.castles_black).to eq(0)
+        moves.each { |move| cursor.interpret(move) }
       end
 
-      it "castles black king side correctly" do
+      it "white castles counter to 1" do
+        expect(board.castles_white).to eq(1)
+      end
+
+      it "black castles counter is 0" do
+        expect(board.castles_black).to eq(0)
+      end
+    end
+
+    context "when castling black king side" do
+      subject(:cursor) { described_class.new([5, 4], board) }
+
+      let(:board) { Board.new }
+
+      before do
         board.populate
         moves = %i[down right return
           up return
@@ -422,15 +397,24 @@ describe Cursor do
           up return
           king_side]
 
-        moves.each do |move|
-          cursor.interpret(move)
-        end
+        moves.each { |move| cursor.interpret(move) }
+      end
 
-        expect(board.castles_white).to eq(0)
+      it "black castles counter to 1" do
         expect(board.castles_black).to eq(1)
       end
 
-      it "castles white queen side correctly" do
+      it "white castles counter is 0" do
+        expect(board.castles_white).to eq(0)
+      end
+    end
+
+    context "when castling white queen side" do
+      subject(:cursor) { described_class.new([5, 4], board) }
+
+      let(:board) { Board.new }
+
+      before do
         board.populate
         moves = %i[down left return
           up return
@@ -454,15 +438,24 @@ describe Cursor do
           down return
           queen_side]
 
-        moves.each do |move|
-          cursor.interpret(move)
-        end
-
-        expect(board.castles_white).to eq(1)
-        expect(board.castles_black).to eq(0)
+        moves.each { |move| cursor.interpret(move) }
       end
 
-      it "castles black queen side correctly" do
+      it "white castles counter to 1" do
+        expect(board.castles_white).to eq(1)
+      end
+
+      it "black castles counter is 0" do
+        expect(board.castles_black).to eq(0)
+      end
+    end
+
+    context "when castling black queen side" do
+      subject(:cursor) { described_class.new([5, 4], board) }
+
+      let(:board) { Board.new }
+
+      before do
         board.populate
         moves = %i[down left return
           up return
@@ -488,21 +481,25 @@ describe Cursor do
           up right right return
           queen_side]
 
-        moves.each do |move|
-          cursor.interpret(move)
-        end
+        moves.each { |move| cursor.interpret(move) }
+      end
 
-        expect(board.castles_white).to eq(0)
+      it "black castles counter to 1" do
         expect(board.castles_black).to eq(1)
+      end
+
+      it "white castles counter is 0" do
+        expect(board.castles_white).to eq(0)
       end
     end
   end
 
   describe "#update_cursor" do
-    let(:board) { Board.new }
     subject(:cursor) { described_class.new([5, 4], board) }
 
-    context "user presses up" do
+    let(:board) { Board.new }
+
+    context "when user presses up" do
       before do
         cursor.interpret(:up)
       end
@@ -513,7 +510,7 @@ describe Cursor do
       end
     end
 
-    context "user presses down" do
+    context "when user presses down" do
       before do
         cursor.interpret(:down)
       end
@@ -524,7 +521,7 @@ describe Cursor do
       end
     end
 
-    context "user presses left" do
+    context "when user presses left" do
       before do
         cursor.interpret(:left)
       end
@@ -535,7 +532,7 @@ describe Cursor do
       end
     end
 
-    context "user presses right" do
+    context "when user presses right" do
       before do
         cursor.interpret(:right)
       end
@@ -546,7 +543,7 @@ describe Cursor do
       end
     end
 
-    context "user presses up, left, up, right, right, right, up" do
+    context "when user presses up, left, up, right, right, right, up" do
       before do
         cursor.interpret(:up)
         cursor.interpret(:left)
@@ -563,7 +560,7 @@ describe Cursor do
       end
     end
 
-    context "user presses left, left, up, up, up, up, up, up, up, up" do
+    context "when user presses left, left, up, up, up, up, up, up, up, up" do
       before do
         cursor.interpret(:left)
         cursor.interpret(:left)

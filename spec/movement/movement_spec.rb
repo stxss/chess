@@ -1,6 +1,6 @@
 describe Movement do
   describe "#can_move?" do
-    let(:board) { Board.new { extend Movement } }
+    let(:board) { Board.new }
 
     before do
       board.populate
@@ -35,36 +35,36 @@ describe Movement do
   end
 
   describe "#in_range?" do
-    let(:board) { Board.new { extend Movement } }
+    let(:board) { Board.new }
 
     before do
       board.populate
     end
 
     context "when a position is in range" do
-      it "returns true" do
+      it "returns true for [0, 0]" do
         check = board.in_range?([0, 0])
         expect(check).to be(true)
       end
 
-      it "returns true" do
+      it "returns true for [7, 7]" do
         check = board.in_range?([7, 7])
         expect(check).to be(true)
       end
 
-      it "returns true" do
+      it "returns true for [5, 2]" do
         check = board.in_range?([5, 2])
         expect(check).to be(true)
       end
     end
 
     context "when a position is not in range" do
-      it "returns false" do
+      it "returns false for [8, 2]" do
         check = board.in_range?([8, 2])
         expect(check).to be(false)
       end
 
-      it "returns false" do
+      it "returns false for [-1, 4]" do
         check = board.in_range?([-1, 4])
         expect(check).to be(false)
       end
@@ -72,7 +72,7 @@ describe Movement do
   end
 
   describe "#is_empty?" do
-    let(:board) { Board.new { extend Movement } }
+    let(:board) { Board.new }
 
     before do
       board.populate
@@ -101,27 +101,39 @@ describe Movement do
     end
 
     context "when a pawn" do
-      it "updates correctly" do
-        piece = board.grid[6][0]
-        empty = "   "
-        board.update_piece(piece, [6, 0], [2, 0])
+      let(:piece) { board.grid[6][0] }
+      let(:empty) { "   " }
 
+      before do
+        board.update_piece(piece, [6, 0], [2, 0])
+      end
+
+      it "updates the piece correctly" do
         piece_position = board.grid[2][0]
-        empty_position = board.grid[6][0].symbol
         expect(piece_position).to eq(piece)
+      end
+
+      it "updates the previous spot correctly" do
+        empty_position = board.grid[6][0].symbol
         expect(empty_position).to eq(empty)
       end
     end
 
     context "when any other piece" do
-      it "updates correctly" do
-        piece = board.grid[7][0]
-        empty = "   "
-        board.update_piece(piece, [7, 0], [5, 0])
+      let(:piece) { board.grid[7][0] }
+      let(:empty) { "   " }
 
+      before do
+        board.update_piece(piece, [7, 0], [5, 0])
+      end
+
+      it "updates the piece correctly" do
         piece_position = board.grid[5][0]
-        empty_position = board.grid[7][0].symbol
         expect(piece_position).to eq(piece)
+      end
+
+      it "updates the previous spot correctly" do
+        empty_position = board.grid[7][0].symbol
         expect(empty_position).to eq(empty)
       end
     end
