@@ -47,25 +47,23 @@ class Cursor
       update_cursor(MOVE[key])
     when :return
       if !@selected
-        set_initial
         set_playing_piece
-        set_valid_moves
+        set_initial
+        set_movement
         set_selected
-      elsif @selected && @board.can_move?(@current_pos, @valid_moves)
+      elsif @selected && @board.can_move?(@current_pos, @available_moves)
         move_piece
-        update_movement
         reset_relevant
-        @board.checks?
-        mate_or_stale?(@piece.color, :stale)
-        mate_or_stale?(@piece.color, :mate)
+        @board.check?
+        @board.mate_or_stale?(@piece.color)
       end
     when :king_side
-      @board.castle_handler(current_color, :king, @board.white_moves, @board.black_moves)
+      @board.castle_handler(current_color, :king)
     when :queen_side
-      @board.castle_handler(current_color, :queen, @board.white_moves, @board.black_moves)
+      @board.castle_handler(current_color, :queen)
     when :escape
       @selected = false if @selected
-      @valid_moves = nil
+      @available_moves = nil
     when :ctrl_c
       puts "\nThank you for playing Chess! See you next time :D"
       exit
@@ -82,41 +80,16 @@ class Cursor
     @current_pos = new_pos if @board.in_range?(new_pos)
   end
 
+  def set_playing_piece
+    @piece = @board.grid[@current_pos.first][@current_pos.last]
+  end
+
   def set_initial
     @initial_pos = @piece.position
   end
 
-  def set_playing_piece
-    @piece = select_piece(@current_pos)
-  end
-
-  def select_piece(position)
-    @board.grid[position.first][position.last]
-  end
-
-  def set_valid_moves
-    @valid_moves = @board.possible_moves(@board, @current_pos,
-      @piece)&.intersection(safe_from_check?(@board, @initial_pos, @piece))
-  end
-
-  def safe_from_check?(game, initial, piece)
-    ghost_board = Board.new.copy(game)
-
-    ghost_piece = ghost_board.grid[initial.first][initial.last]
-
-    safe = []
-
-    ghost_piece&.valid_moves&.each do |move|
-      ghost_board.move(initial, ghost_piece, move, :ghost)
-      ghost_board.update_all_moves(ghost_board)
-
-      safe << move if !ghost_board.in_check?(ghost_board.white_moves, ghost_board.black_moves, ghost_board.white_king,
-        ghost_board.black_king, ghost_piece.color)
-
-      ghost_board.move(move, ghost_piece, initial, :ghost)
-      ghost_board.update_all_moves(ghost_board)
-    end
-    safe
+  def set_movement
+    @available_moves = @board.valid_movements(@piece, @initial_pos, @current_pos)
   end
 
   def set_selected
@@ -140,38 +113,8 @@ class Cursor
     @board.move(@initial_pos, @piece, @current_pos, :actual)
   end
 
-  def update_movement
-    @board.update_all_moves(@board)
-  end
-
   def reset_relevant
-    @valid_moves = nil
+    @available_moves = nil
     @selected = false
-  end
-
-  def mate_or_stale?(color, verification)
-    case verification
-    when :mate
-      target_color = (color == :white?) ? :black : :white
-    when :stale
-      target_color = (color == :white?) ? :white : :black
-    end
-
-    @safe_moves = []
-    @board.grid.each_with_index do |i, row|
-      i.each_with_index do |piece, col|
-        next if piece.color != target_color
-
-        piece.valid_moves.each do |move|
-          @safe_moves += safe_from_check?(@board, [row, col], piece)
-        end
-      end
-    end
-    case verification
-    when :mate
-      @board.checkmate = @safe_moves.uniq.flatten.empty? && @board.check
-    when :stale
-      @board.stalemate = @safe_moves.uniq.flatten.empty? && !@board.check
-    end
   end
 end
