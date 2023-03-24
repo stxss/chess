@@ -1,6 +1,8 @@
 require("io/console")
+require_relative("./fen")
 
 class Cursor
+  include Fen
   attr_accessor :current_pos, :selected, :board, :available_moves, :piece
 
   def initialize(current_pos, board)
@@ -68,7 +70,9 @@ class Cursor
       puts "\nThank you for playing Chess! See you next time :D"
       exit
     when :save
+      fen_str = to_fen
       puts "\nYour game was saved as {}. Do you want to create a new game? [Y/n]"
+      puts fen_str
       exit
     end
   end

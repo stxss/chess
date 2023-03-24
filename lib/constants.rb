@@ -55,3 +55,23 @@ CASTLE_VARS = {
     queen: [[0, 3], [0, 2], [0, 1]]
   }
 }.freeze
+
+FEN = {
+  white: {
+    king:   "K",
+    queen:  "Q",
+    rook:   "R",
+    bishop: "B",
+    knight: "N",
+    pawn:   "P"
+  },
+  black: {
+    king:   "k",
+    queen:  "q",
+    rook:   "r",
+    bishop: "b",
+    knight: "n",
+    pawn:   "p"
+  },
+  empty: 1
+}
