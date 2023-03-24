@@ -1,76 +1,33 @@
 module Movement
-  def can_move?(following, available)
-    next_slot = @grid[following.first][following.last]
-    valid_move?(available, following) && not_king?(next_slot.piece)
+  def valid_movements(piece, initial, current)
+    @valids = possible_moves(initial, piece)&.intersection(safe_from_check?(initial, piece))
   end
 
-  def move(prev_pos, piece, following, goal)
-    if piece.piece == PIECES[:pawn]
-      piece = promote(piece.color) if to_be_promoted(piece.color, following.first) && goal != :ghost
-    end
-    update_half(following)
-    update_full(@grid[prev_pos.first][prev_pos.last].color)
-    update_turn
-
-    piece.made_moves << [following.first - prev_pos.first, following.last - prev_pos.last]
-    piece.when_jumped << @turn
-    update_piece(piece, prev_pos, following)
-  end
-
-  def in_range?(position)
-    position.first.between?(0, 7) && position.last.between?(0, 7)
-  end
-
-  def is_empty?(position)
-    @grid[position.first][position.last].instance_of?(EmptySquare)
-  end
-
-  def possible_moves(board, cursor_position, piece)
+  def possible_moves(cursor_position, piece)
     case piece.piece
     when PIECES[:king]
-      King.new.movement(board, cursor_position, piece)
+      King.new.movement(self, cursor_position, piece)
     when PIECES[:queen]
-      Queen.new.movement(board, cursor_position, piece)
+      Queen.new.movement(self, cursor_position, piece)
     when PIECES[:rook]
-      Rook.new.movement(board, cursor_position, piece)
+      Rook.new.movement(self, cursor_position, piece)
     when PIECES[:bishop]
-      Bishop.new.movement(board, cursor_position, piece)
+      Bishop.new.movement(self, cursor_position, piece)
     when PIECES[:knight]
-      Knight.new.movement(board, cursor_position, piece)
+      Knight.new.movement(self, cursor_position, piece)
     when PIECES[:pawn]
-      Pawn.new.movement(board, cursor_position, piece)
+      Pawn.new.movement(self, cursor_position, piece)
     end
   end
 
-  # For when a player wants to move -- used for the pre-move testing for checks/ used defensively
-  def in_check?(white_moves, black_moves, white_king, black_king, color)
-    case color
-    when :white
-      black_moves&.include?(white_king)
-    when :black
-      white_moves&.include?(black_king)
-    end
-  end
-
-  # For when a piece checks the other player / used offensively
-  def checks?
-    @check = @black_moves&.include?(@white_king) || @white_moves&.include?(@black_king)
-  end
-
-  def update_all_moves(board)
-    @white_moves = all_moves(:white, board)
-    @white_king = find_king(:white)
-    @black_moves = all_moves(:black, board)
-    @black_king = find_king(:black)
-    update_positions
-  end
-
-  def update_positions
+  def all_moves(color, board)
+    moves = []
     @grid.each_with_index do |i, row_index|
       i.each_with_index do |piece, column_index|
-        piece.position = [row_index, column_index]
+        moves += possible_moves([row_index, column_index], piece) if piece.color == color
       end
     end
+    moves
   end
 
   def find_king(color)
@@ -82,23 +39,25 @@ module Movement
     end
   end
 
-  def all_moves(color, board)
-    moves = []
-    @grid.each_with_index do |i, row_index|
-      i.each_with_index do |piece, column_index|
-        moves += possible_moves(board, [row_index, column_index], piece) if piece.color == color
-      end
-    end
-    moves
+  def can_move?(following, available)
+    next_slot = @grid[following.first][following.last]
+    available.include?(following) && next_slot.piece != PIECES[:king]
   end
 
-  def update_piece(piece, previous, following)
+  def move(prev_pos, piece, following, goal)
     if piece.piece == PIECES[:pawn]
-      handle_ep(piece, previous, following)
+      piece = promote(piece.color) if to_be_promoted(piece.color, following.first) && goal != :ghost
     end
 
-    @grid[following.first][following.last] = piece
-    @grid[previous.first][previous.last] = EmptySquare.new
+    update_half(following)
+    update_full(@grid[prev_pos.first][prev_pos.last].color)
+    update_turn
+
+    piece.made_moves << [following.first - prev_pos.first, following.last - prev_pos.last]
+    piece.when_jumped << @turn
+
+    update_piece(piece, prev_pos, following)
+    update_all_moves(self)
   end
 
   def handle_ep(piece, previous, following)
@@ -111,106 +70,27 @@ module Movement
     @grid[following.first][following.last] = piece
   end
 
-  def castle_handler(color, side, white_moves, black_moves)
-    w_king, b_king = [7, 4], [0, 4]
+  def safe_from_check?(initial, piece)
+    ghost_board = Board.new.copy(self)
 
-    w_rook = (side == :king) ? [7, 7] : [7, 0]
-    b_rook = (side == :king) ? [0, 7] : [0, 0]
-    case color
-    when :white
-      castle(w_king, w_rook, side) if no_moves?(w_king,
-        w_rook) && not_under_attack?(:white, side, black_moves) && !@check && @castles_white < 1
-    when :black
-      castle(b_king, b_rook, side) if no_moves?(b_king,
-        b_rook) && not_under_attack?(:black, side, white_moves) && !@check && @castles_black < 1
+    ghost_piece = ghost_board.grid[initial.first][initial.last]
+
+    safe = []
+
+    ghost_piece&.valid_moves&.each do |move|
+      ghost_board.move(initial, ghost_piece, move, :ghost)
+      ghost_board.update_all_moves(ghost_board)
+
+      safe << move if !ghost_board.check?(ghost_board.white_moves, ghost_board.black_moves, ghost_board.white_king,
+        ghost_board.black_king, ghost_piece.color)
+
+      ghost_board.move(move, ghost_piece, initial, :ghost)
+      ghost_board.update_all_moves(ghost_board)
     end
+    safe
   end
 
-  def no_moves?(k, r)
-    @grid[k.first][k.last].piece == PIECES[:king] && @grid[r.first][r.last].piece == PIECES[:rook] && @grid[k.first][k.last].made_moves.empty? && @grid[r.first][r.last].made_moves.empty?
-  end
-
-  def not_under_attack?(color, side, opponent_moves)
-    if color == :white && side == :king
-      to_verify = [[7, 5], [7, 6]]
-    elsif color == :white && side == :queen
-      to_verify = [[7, 3], [7, 2], [7, 1]]
-    elsif color == :black && side == :king
-      to_verify = [[0, 5], [0, 6]]
-    elsif color == :black && side == :queen
-      to_verify = [[0, 3], [0, 2], [0, 1]]
-    end
-    no_castle_checks?(opponent_moves, to_verify)
-  end
-
-  def no_castle_checks?(opponent, to_verify)
-    castle_checks = []
-    to_verify.each do |square|
-      castle_checks << (is_empty?(square) && opponent.none?(square))
-    end
-    castle_checks.all?(true)
-  end
-
-  def castle(k, r, side)
-    case side
-    when :king
-      @grid[k.first][k.last + 2] = @grid[k.first][k.last]
-      @grid[r.first][r.last - 2] = @grid[r.first][r.last]
-    when :queen
-      @grid[k.first][k.last - 2] = @grid[k.first][k.last]
-      @grid[r.first][r.last + 3] = @grid[r.first][r.last]
-    end
-
-    castled_color = @grid[k.first][k.last].color
-    update_full(castled_color)
-
-    @grid[k.first][k.last] = EmptySquare.new
-    @grid[r.first][r.last] = EmptySquare.new
-
-    @half_counter += 1
-    update_turn
-    (castled_color == :white) ? @castles_white += 1 : @castles_black += 1
-  end
-
-  private
-
-  def valid_move?(available, following)
-    available.include?(following)
-  end
-
-  def not_king?(piece)
-    piece != PIECES[:king]
-  end
-
-  def to_be_promoted(color, row)
-    color == :white && row == 0 || color == :black && row == 7
-  end
-
-  def promote(color)
-    puts "Please select the piece you want to replace your pawn with:"
-    until (piece = gets.chomp) =~ /[1-4]/
-      puts "\nRemember that you must select a number from 1-4, as stipulated by the rules above.\nPlease select the piece you want to replace your pawn with:"
-    end
-
-    piece = case piece
-    in "1" then :queen
-    in "2" then :rook
-    in "3" then :knight
-    in "4" then :bishop
-    end
-
-    Piece.new(piece, color)
-  end
-
-  def update_half(position)
-    is_empty?(position) ? @half_counter += 1 : @half_counter = 0
-  end
-
-  def update_full(color)
-    @full_counter += 1 if color == :black
-  end
-
-  def update_turn
-    @turn += 1
+  def in_range?(position)
+    position.first.between?(0, 7) && position.last.between?(0, 7)
   end
 end
