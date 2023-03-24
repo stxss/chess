@@ -71,28 +71,6 @@ describe Movement do
     end
   end
 
-  describe "#is_empty?" do
-    let(:board) { Board.new }
-
-    before do
-      board.populate
-    end
-
-    context "when a position is empty" do
-      it "returns true" do
-        check = board.is_empty?([5, 3])
-        expect(check).to be(true)
-      end
-    end
-
-    context "when a position is not empty" do
-      it "returns false" do
-        check = board.is_empty?([0, 0])
-        expect(check).to be(false)
-      end
-    end
-  end
-
   describe "#update_piece" do
     let(:board) { Board.new }
 
