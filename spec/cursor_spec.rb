@@ -329,7 +329,7 @@ describe Cursor do
 
       it "does en passant correctly" do
         check_pos = board.grid[3][4]
-        expect(check_pos.symbol).to eq("   ")
+        expect(check_pos.painted).to eq("   ")
       end
     end
 
@@ -505,7 +505,7 @@ describe Cursor do
       end
 
       it "updates cursor correctly" do
-        position = cursor.instance_variable_get(:@cursor_pos)
+        position = cursor.instance_variable_get(:@current_pos)
         expect(position).to eq([4, 4])
       end
     end
@@ -516,7 +516,7 @@ describe Cursor do
       end
 
       it "updates cursor correctly" do
-        position = cursor.instance_variable_get(:@cursor_pos)
+        position = cursor.instance_variable_get(:@current_pos)
         expect(position).to eq([6, 4])
       end
     end
@@ -527,7 +527,7 @@ describe Cursor do
       end
 
       it "updates cursor correctly" do
-        position = cursor.instance_variable_get(:@cursor_pos)
+        position = cursor.instance_variable_get(:@current_pos)
         expect(position).to eq([5, 3])
       end
     end
@@ -538,7 +538,7 @@ describe Cursor do
       end
 
       it "updates cursor correctly" do
-        position = cursor.instance_variable_get(:@cursor_pos)
+        position = cursor.instance_variable_get(:@current_pos)
         expect(position).to eq([5, 5])
       end
     end
@@ -555,7 +555,7 @@ describe Cursor do
       end
 
       it "updates cursor correctly" do
-        position = cursor.instance_variable_get(:@cursor_pos)
+        position = cursor.instance_variable_get(:@current_pos)
         expect(position).to eq([2, 6])
       end
     end
@@ -575,7 +575,7 @@ describe Cursor do
       end
 
       it "updates cursor correctly and then does not go further" do
-        position = cursor.instance_variable_get(:@cursor_pos)
+        position = cursor.instance_variable_get(:@current_pos)
         expect(position).to eq([0, 2])
       end
     end

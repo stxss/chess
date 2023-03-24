@@ -5,17 +5,18 @@ class Piece
   include Movement
   using TextStyles
 
-  attr_accessor :valid_moves, :painted, :color, :piece, :made_moves, :when_jumped, :ep_flag, :enemies
+  attr_accessor :valid_moves, :painted, :color, :piece, :made_moves, :when_jumped, :ep_flag, :enemies, :position
 
   def initialize(piece, color)
+    @position = []
     @valid_moves = []
     @enemies = []
     @color = color
     @piece = PIECES[piece]
     @painted = paint(color)
-    @made_moves = [] # specifically made for en_passant
+    @made_moves = [] # specifically made for en_passant and castling
     @when_jumped = []
-    @ep_flag = false
+    @ep_flag = false # specifically made for en_passant
   end
 
   def paint(color)

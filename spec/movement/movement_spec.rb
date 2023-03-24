@@ -114,7 +114,7 @@ describe Movement do
       end
 
       it "updates the previous spot correctly" do
-        empty_position = board.grid[6][0].symbol
+        empty_position = board.grid[6][0].painted
         expect(empty_position).to eq(empty)
       end
     end
@@ -133,7 +133,7 @@ describe Movement do
       end
 
       it "updates the previous spot correctly" do
-        empty_position = board.grid[7][0].symbol
+        empty_position = board.grid[7][0].painted
         expect(empty_position).to eq(empty)
       end
     end

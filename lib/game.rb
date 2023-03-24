@@ -55,7 +55,7 @@ class Game
   end
 
   def game_ended?
-    draw? || stalemate?
+    fifty_moves? || stalemate?
   end
 
   def verify_name(prev_name, input)
@@ -68,7 +68,7 @@ class Game
     @display.show
   end
 
-  def draw?
+  def fifty_moves?
     @board.half_counter >= 50
   end
 

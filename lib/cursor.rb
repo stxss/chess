@@ -83,11 +83,11 @@ class Cursor
   end
 
   def set_initial
-    @initial_pos = @current_pos
+    @initial_pos = @piece.position
   end
 
   def set_playing_piece
-    @piece = select_piece(@initial_pos)
+    @piece = select_piece(@current_pos)
   end
 
   def select_piece(position)
@@ -102,17 +102,18 @@ class Cursor
   def safe_from_check?(game, initial, piece)
     ghost_board = Board.new.copy(game)
 
-    test_piece = ghost_board.grid[initial.first][initial.last]
+    ghost_piece = ghost_board.grid[initial.first][initial.last]
 
     safe = []
 
-    test_piece&.valid_moves&.each do |move|
-      ghost_board.move(initial, test_piece, move, :test)
+    ghost_piece&.valid_moves&.each do |move|
+      ghost_board.move(initial, ghost_piece, move, :ghost)
       ghost_board.update_all_moves(ghost_board)
 
-      safe << move if !ghost_board.in_check?(ghost_board.white_moves, ghost_board.black_moves, ghost_board.white_king, ghost_board.black_king, test_piece.color)
+      safe << move if !ghost_board.in_check?(ghost_board.white_moves, ghost_board.black_moves, ghost_board.white_king,
+        ghost_board.black_king, ghost_piece.color)
 
-      ghost_board.move(move, test_piece, initial, :test)
+      ghost_board.move(move, ghost_piece, initial, :ghost)
       ghost_board.update_all_moves(ghost_board)
     end
     safe

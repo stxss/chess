@@ -6,7 +6,7 @@ module Movement
 
   def move(prev_pos, piece, following, goal)
     if piece.piece == PIECES[:pawn]
-      piece = promote(piece.color) if to_be_promoted(piece.color, following.first) && goal != :test
+      piece = promote(piece.color) if to_be_promoted(piece.color, following.first) && goal != :ghost
     end
     update_half(following)
     update_full(@grid[prev_pos.first][prev_pos.last].color)
@@ -25,20 +25,20 @@ module Movement
     @grid[position.first][position.last].instance_of?(EmptySquare)
   end
 
-  def possible_moves(board, start_position, piece)
+  def possible_moves(board, cursor_position, piece)
     case piece.piece
     when PIECES[:king]
-      King.new.movement(board, start_position, piece)
+      King.new.movement(board, cursor_position, piece)
     when PIECES[:queen]
-      Queen.new.movement(board, start_position, piece)
+      Queen.new.movement(board, cursor_position, piece)
     when PIECES[:rook]
-      Rook.new.movement(board, start_position, piece)
+      Rook.new.movement(board, cursor_position, piece)
     when PIECES[:bishop]
-      Bishop.new.movement(board, start_position, piece)
+      Bishop.new.movement(board, cursor_position, piece)
     when PIECES[:knight]
-      Knight.new.movement(board, start_position, piece)
+      Knight.new.movement(board, cursor_position, piece)
     when PIECES[:pawn]
-      Pawn.new.movement(board, start_position, piece)
+      Pawn.new.movement(board, cursor_position, piece)
     end
   end
 
@@ -62,6 +62,15 @@ module Movement
     @white_king = find_king(:white)
     @black_moves = all_moves(:black, board)
     @black_king = find_king(:black)
+    update_positions
+  end
+
+  def update_positions
+    @grid.each_with_index do |i, row_index|
+      i.each_with_index do |piece, column_index|
+        piece.position = [row_index, column_index]
+      end
+    end
   end
 
   def find_king(color)
@@ -74,13 +83,13 @@ module Movement
   end
 
   def all_moves(color, board)
-    arr = []
+    moves = []
     @grid.each_with_index do |i, row_index|
       i.each_with_index do |piece, column_index|
-        arr += possible_moves(board, [row_index, column_index], piece) if piece.color == color
+        moves += possible_moves(board, [row_index, column_index], piece) if piece.color == color
       end
     end
-    arr
+    moves
   end
 
   def update_piece(piece, previous, following)

@@ -3,7 +3,7 @@ require_relative("./../movement/directions")
 class Pawn
   include Directions
 
-  attr_accessor :moves, :ep_flag
+  attr_accessor :normal_moves, :ep_flag
 
   def movement(board, start_position, piece)
     @board = board
@@ -15,20 +15,18 @@ class Pawn
     @row = @start_position[0]
     @col = @start_position[1]
 
-    @moves = []
     @moves_w_passant = []
-    @ep_flag = false
 
     case @color
     when :white
       jump1, jump2 = MOVE[:up], [-2, 0]
       enemy_directions = [MOVE[:up_left], MOVE[:up_right]]
-      en_passant?(@color) if conditions_passant?(@color)
     when :black
       jump1, jump2 = MOVE[:down], [2, 0]
       enemy_directions = [MOVE[:down_left], MOVE[:down_right]]
-      en_passant?(@color) if conditions_passant?(@color)
     end
+
+    en_passant?(@color) if conditions_passant?(@color)
 
     directions = if no_immediate_piece?(@color) && moved_once?(@color)
       [jump1]
@@ -39,9 +37,9 @@ class Pawn
     end
 
     piece.enemies = find_moves(:pawn, enemy_directions, :captures)
-    @moves = find_moves(:pawn, directions, :empty) + piece.enemies
+    @normal_moves = find_moves(:pawn, directions, :empty) + piece.enemies
 
-    piece.valid_moves = @ep_flag ? @moves_w_passant + @moves : @moves
+    piece.valid_moves = @ep_flag ? @moves_w_passant + @normal_moves : @normal_moves
   end
 
   def en_passant?(color)

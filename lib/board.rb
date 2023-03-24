@@ -34,6 +34,7 @@ class Board
     pawn_row(1, :black)
     pawn_row(6, :white)
     pieces_row(7, :white)
+    update_positions
   end
 
   private
