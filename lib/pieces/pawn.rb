@@ -39,11 +39,11 @@ class Pawn
     piece.enemies = find_moves(:pawn, enemy_directions, :captures)
     @normal_moves = find_moves(:pawn, directions, :empty) + piece.enemies
 
-    piece.valid_moves = @ep_flag ? @moves_w_passant + @normal_moves : @normal_moves
+    piece.valid_moves = @enemy_ep_flag ? @moves_w_passant + @normal_moves : @normal_moves
   end
 
   def en_passant?(color)
-    passant_enemies(color) if color == :white && @row == 3 || color == :black && @row == 4
+    passant_enemies(color) if (color == :white && @row == 3) || (color == :black && @row == 4)
   end
 
   private
@@ -53,21 +53,11 @@ class Pawn
     w_pawn_start = 6
     b_pawn_start = 1
 
-    case color
-    when :white
-      @row != w_pawn_start
-    when :black
-      @row != b_pawn_start
-    end
+    @row != ((color == :white) ? w_pawn_start : b_pawn_start)
   end
 
   def no_immediate_piece?(color)
-    case color
-    when :white
-      empty?([@row - 1, @col])
-    when :black
-      empty?([@row + 1, @col])
-    end
+    (color == :white) ? empty?([@row - 1, @col]) : empty?([@row + 1, @col])
   end
 
   def conditions_passant?(color)
@@ -78,10 +68,8 @@ class Pawn
       cond1 = empty?([@row + 1, @col - 1]) || empty?([@row + 1, @col + 1])
     end
 
-    if cond1
-      if @col.between?(0, 7)
-        is_pawn?([@row, @col - 1]) || is_pawn?([@row, @col + 1])
-      end
+    if cond1 && @col.between?(0, 7)
+      is_pawn?([@row, @col - 1]) || is_pawn?([@row, @col + 1])
     end
   end
 
@@ -99,27 +87,19 @@ class Pawn
 
     enemy_jumps = @board.grid[@row][col_to_check].made_moves
 
-    case color
-    when :white
-      @moves_w_passant << [@row - 1, col_to_check] if valid_passant?(color, enemy_jumps, [@row, col_to_check])
-    when :black
-      @moves_w_passant << [@row + 1, col_to_check] if valid_passant?(color, enemy_jumps, [@row, col_to_check])
+    if valid_passant?(color, enemy_jumps, [@row, col_to_check])
+      @moves_w_passant << ((color == :white) ? [@row - 1, col_to_check] : [@row + 1, col_to_check])
     end
   end
 
-  def valid_passant?(color, jumps, square)
+  def valid_passant?(color, enemy_jumps, square)
     current_turn = @board.turn
-    enemy_last_turn = @board.grid[square.first][square.last].when_jumped[0]
+    enemy_last_turn = @board.grid[square.first][square.last].when_jumped.first
 
-    @ep_flag = current_turn - enemy_last_turn <= 1
-    @board.grid[square.first][square.last].ep_flag = @ep_flag
+    @enemy_ep_flag = current_turn - enemy_last_turn <= 1
+    @board.grid[square.first][square.last].ep_flag = @enemy_ep_flag
 
-    case color
-    when :white
-      jumps.size == 1 && jumps.first == [2, 0]
-    when :black
-      jumps.size == 1 && jumps.first == [-2, 0]
-    end
+    enemy_jumps.size == 1 && (enemy_jumps.first == ((color == :white) ? [2, 0] : [-2, 0]))
   end
 
   def is_pawn?(position)
