@@ -73,7 +73,17 @@ class Game
   end
 
   def stalemate?
-    @display.cursor.stalemate
+    @board.stalemate
+  end
+
+  def end_game_handler(current, other)
+    if fifty_moves?
+      @display.change_prompt(@color, current, :draw)
+    elsif stalemate?
+      @display.change_prompt(@color, current, :stalemate)
+    end
+    @display.show
+    restart
   end
 
   def restart
