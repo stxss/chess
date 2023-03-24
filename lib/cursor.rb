@@ -1,10 +1,10 @@
 require("io/console")
 
 class Cursor
-  attr_accessor :cursor_pos, :selected, :board, :valid_moves, :piece, :checkmate, :stalemate
+  attr_accessor :current_pos, :selected, :board, :valid_moves, :piece, :checkmate, :stalemate
 
-  def initialize(cursor_pos, board)
-    @cursor_pos = cursor_pos
+  def initialize(current_pos, board)
+    @current_pos = current_pos
     @board = board
     @selected = false
   end
@@ -51,7 +51,7 @@ class Cursor
         set_playing_piece
         set_valid_moves
         set_selected
-      elsif @selected && @board.can_move?(@cursor_pos, @valid_moves)
+      elsif @selected && @board.can_move?(@current_pos, @valid_moves)
         move_piece
         update_movement
         reset_relevant
@@ -78,12 +78,12 @@ class Cursor
   private
 
   def update_cursor(move)
-    new_pos = [@cursor_pos.first + move.first, @cursor_pos.last + move.last]
-    @cursor_pos = new_pos if @board.in_range?(new_pos)
+    new_pos = [@current_pos.first + move.first, @current_pos.last + move.last]
+    @current_pos = new_pos if @board.in_range?(new_pos)
   end
 
   def set_initial
-    @initial_pos = @cursor_pos
+    @initial_pos = @current_pos
   end
 
   def set_playing_piece
@@ -95,7 +95,7 @@ class Cursor
   end
 
   def set_valid_moves
-    @valid_moves = @board.possible_moves(@board, @cursor_pos,
+    @valid_moves = @board.possible_moves(@board, @current_pos,
       @piece)&.intersection(safe_from_check?(@board, @initial_pos, @piece))
   end
 
@@ -119,7 +119,7 @@ class Cursor
   end
 
   def set_selected
-    @selected = has_piece?(@cursor_pos) && correct_turn?
+    @selected = has_piece?(@current_pos) && correct_turn?
   end
 
   def has_piece?(cell)
@@ -128,7 +128,7 @@ class Cursor
   end
 
   def correct_turn?
-    @board.grid[@cursor_pos.first][@cursor_pos.last].color == current_color
+    @board.grid[@current_pos.first][@current_pos.last].color == current_color
   end
 
   def current_color
@@ -136,7 +136,7 @@ class Cursor
   end
 
   def move_piece
-    @board.move(@initial_pos, @piece, @cursor_pos, :actual)
+    @board.move(@initial_pos, @piece, @current_pos, :actual)
   end
 
   def update_movement

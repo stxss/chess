@@ -94,11 +94,11 @@ class Display
   end
 
   def cursor_selected?(row, column)
-    @cursor.cursor_pos == [row, column] && @cursor.selected
+    @cursor.current_pos == [row, column] && @cursor.selected
   end
 
   def cursor_deselected?(row, column)
-    @cursor.cursor_pos == [row, column] && !@cursor.selected
+    @cursor.current_pos == [row, column] && !@cursor.selected
   end
 
   def valid_move(row, column)
