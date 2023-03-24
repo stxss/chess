@@ -169,9 +169,9 @@ class Cursor
     end
     case verification
     when :mate
-      @checkmate = @safe_moves.uniq.flatten.empty? && @board.check
+      @board.checkmate = @safe_moves.uniq.flatten.empty? && @board.check
     when :stale
-      @stalemate = @safe_moves.uniq.flatten.empty? && !@board.check
+      @board.stalemate = @safe_moves.uniq.flatten.empty? && !@board.check
     end
   end
 end

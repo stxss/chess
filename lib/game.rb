@@ -16,7 +16,7 @@ class Game
       set_display
       set_color
 
-      if @display.cursor.checkmate
+      if @board.checkmate
         update_score
         restart
       end

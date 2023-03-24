@@ -276,7 +276,7 @@ describe Cursor do
       end
 
       it "returns true for stalemate" do
-        stalemate = cursor.instance_variable_get(:@stalemate)
+        stalemate = board.instance_variable_get(:@stalemate)
         expect(stalemate).to be(true)
       end
     end
@@ -301,7 +301,7 @@ describe Cursor do
       end
 
       it "returns true for checkmate" do
-        checkmate = cursor.instance_variable_get(:@checkmate)
+        checkmate = board.instance_variable_get(:@checkmate)
         expect(checkmate).to be(true)
       end
     end
