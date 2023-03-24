@@ -44,3 +44,14 @@ PIECES = {
   knight: " \u{265E} ",
   pawn:   " \u{265F} "
 }.freeze
+
+CASTLE_VARS = {
+  white: {
+    king:  [[7, 5], [7, 6]],
+    queen: [[7, 3], [7, 2], [7, 1]]
+  },
+  black: {
+    king:  [[0, 5], [0, 6]],
+    queen: [[0, 3], [0, 2], [0, 1]]
+  }
+}.freeze
