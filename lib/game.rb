@@ -1,30 +1,12 @@
 class Game
   attr_accessor :board, :display, :player1, :player2, :color
 
-  def initialize(player1 = nil, player2 = nil)
+  def initialize(player1: nil, player2: nil, board: Board.new)
     @player1 = player1
     @player2 = player2
-    # Intro.new
-  end
-
-  def setup
-    create_players
-    create_board
-    create_cursor
-    create_display
-  end
-
-  def give_name(prev_name = nil)
-    loop do
-      if !prev_name
-        puts "\nPlease, enter a valid name for the first player: "
-      else
-        puts "\nPlease, enter a valid name for the second player: "
-      end
-      input = gets.chomp
-      verified = verify_name(prev_name, input)
-      return verified if verified
-    end
+    @board = board
+    @cursor = create_cursor
+    @display = create_display
   end
 
   def play
@@ -43,39 +25,14 @@ class Game
     end_game_handler(@current.name, @other.name)
   end
 
-  def end_game_handler(current, other)
-    if draw?
-      @display.change_prompt(@color, current, :draw)
-    elsif stalemate?
-      @display.change_prompt(@color, current, :stalemate)
-    end
-    @display.show
-    restart
-  end
-
   private
 
-  def create_players
-    if @player1.nil? && @player2.nil?
-      name1 = give_name
-      name2 = give_name(name1)
-      @player1 = Player.new(name1)
-      @player2 = Player.new(name2)
-    end
-  end
-
-  def create_board
-    @board = Board.new
-    @board.create_scoreboard(@player1, @player2)
-    @board.populate
-  end
-
   def create_cursor
-    @cursor = Cursor.new([5, 4], @board)
+    Cursor.new([5, 4], @board)
   end
 
   def create_display
-    @display = Display.new(@board, @player1, @player2)
+    Display.new(@board, @player1, @player2)
   end
 
   def set_color
