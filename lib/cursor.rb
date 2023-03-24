@@ -1,7 +1,7 @@
 require("io/console")
 
 class Cursor
-  attr_accessor :current_pos, :selected, :board, :valid_moves, :piece, :checkmate, :stalemate
+  attr_accessor :current_pos, :selected, :board, :available_moves, :piece
 
   def initialize(current_pos, board)
     @current_pos = current_pos
