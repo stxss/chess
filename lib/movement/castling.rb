@@ -1,10 +1,20 @@
 module Movement
-  def castle_handler(color, side)
+  def castle_handler(color = :white, side = :king, purpose: :actual)
     return false if @check
 
     w_king, b_king = [7, 4], [0, 4]
     w_rook = (side == :king) ? [7, 7] : [7, 0]
     b_rook = (side == :king) ? [0, 7] : [0, 0]
+
+    if purpose == :fen
+      arr = []
+      arr << no_moves?(w_king, [7, 7]) && not_under_attack?(:white, :king, @black_moves)
+      arr << no_moves?(w_king, [7, 0]) && not_under_attack?(:white, :queen, @black_moves)
+      arr << no_moves?(b_king, [0, 7]) && not_under_attack?(:black, :king, @black_moves)
+      arr << no_moves?(b_king, [0, 0]) && not_under_attack?(:black, :queen, @black_moves)
+
+      return arr
+    end
 
     case color
     when :white
