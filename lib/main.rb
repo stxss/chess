@@ -1,3 +1,4 @@
+require_relative("fen")
 require_relative("text_styles")
 require_relative("intro")
 require_relative("prompts")
