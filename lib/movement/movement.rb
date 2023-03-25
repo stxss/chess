@@ -89,7 +89,7 @@ module Movement
       ghost_board.move(initial, ghost_piece, move, :ghost)
       ghost_board.update_all_moves(ghost_board)
 
-      safe << move if !ghost_board.check?(ghost_board.white_moves, ghost_board.black_moves, ghost_board.white_king,
+      safe << move if !ghost_board.in_check?(ghost_board.white_moves, ghost_board.black_moves, ghost_board.white_king,
         ghost_board.black_king, ghost_piece.color)
 
       ghost_board.move(move, ghost_piece, initial, :ghost)

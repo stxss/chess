@@ -56,7 +56,7 @@ class Cursor
       elsif @selected && @board.can_move?(@current_pos, @available_moves)
         move_piece
         reset_relevant
-        @board.check?
+        @board.checks?
         @board.mate_or_stale?(@piece.color)
       end
     when :king_side
