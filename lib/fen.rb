@@ -23,6 +23,11 @@ module Fen
     result
   end
 
+  def active_color
+    @board.turn.even? ? " w" : " b"
+  end
+
+  
   # def from_fen()
   #
   # end
