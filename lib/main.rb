@@ -32,9 +32,9 @@ end
 def give_name(prev_name = nil)
   loop do
     if !prev_name
-      puts "\nPlease, enter a valid name for the first player: "
+      puts "\n    Please, enter a valid name for the first player: "
     else
-      puts "\nPlease, enter a valid name for the second player: "
+      puts "\n    Please, enter a valid name for the second player: "
     end
     input = gets.chomp
     verified = verify_name(prev_name, input)

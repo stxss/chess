@@ -20,7 +20,14 @@ class Intro
 
       The player controlling the #{"white".bold.underlined} pieces moves first, followed by the player controlling the #{"black".bold.underlined} pieces.
 
-      The object of the game is to #{"checkmate".bold.italic} the opponent's king, whereby the king is under immediate attack (in "check") and there is no way for it to escape. There are also several ways a game can end in a draw.
+      The goal of the game is to #{"checkmate".bold.italic} the opponent's king, whereby the king is under immediate attack (in "check") and there is no way for it to escape. There are also several ways a game can end in a draw.
+
+      To start a game, choose one of the following options:
+
+        #{"[1]".bold.fg_color(:yellow)} - Play against a computer
+        #{"[2]".bold.fg_color(:yellow)} - Play against a human opponent
+        #{"[3]".bold.fg_color(:yellow)} - Load a game
+        
     HEREDOC
   end
 end
