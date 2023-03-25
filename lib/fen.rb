@@ -41,6 +41,24 @@ module Fen
     output
   end
 
+  def en_passant_targets
+    output = " "
+    @board.grid.each_with_index do |i, row_index|
+      i.each_with_index do |piece, column_index|
+        if piece.ep_flag == true
+          if piece.color == :white
+            output << NAMED_SQUARES[[row_index + 1, column_index]].to_s
+          elsif piece.color == :black
+            output << NAMED_SQUARES[[row_index - 1, column_index]].to_s
+          else
+            next
+          end
+        end
+      end
+    end
+    output = " -" if output == " "
+    output
+  end
   
   # def from_fen()
   #

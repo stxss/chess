@@ -24,8 +24,16 @@ module Movement
     end
   end
 
-  def update_half(position)
-    empty?(position, board: self) ? @half_counter += 1 : @half_counter = 0
+  def update_ep_flags # this and own_ep_check were made specifically to help with the FEN serialization
+    @grid.each_with_index do |i, row_index|
+      i.each_with_index do |piece, column_index|
+        if piece.piece == PIECES[:pawn]
+          own_ep_check(piece, piece.position, piece.color)
+        end
+      end
+    end
+  end
+
   end
 
   def update_full(color)

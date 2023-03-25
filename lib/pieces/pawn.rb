@@ -26,7 +26,7 @@ class Pawn
       enemy_directions = [MOVE[:down_left], MOVE[:down_right]]
     end
 
-    en_passant?(@color) if conditions_passant?(@color)
+    check_passant(@color) if conditions_passant?(@color)
 
     directions = if no_immediate_piece?(@color) && moved_once?(@color)
       [jump1]
@@ -42,7 +42,7 @@ class Pawn
     piece.valid_moves = @enemy_ep_flag ? @moves_w_passant + @normal_moves : @normal_moves
   end
 
-  def en_passant?(color)
+  def check_passant(color)
     passant_enemies(color) if (color == :white && @row == 3) || (color == :black && @row == 4)
   end
 

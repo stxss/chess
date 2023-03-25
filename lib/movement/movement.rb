@@ -58,6 +58,14 @@ module Movement
 
     update_piece(piece, prev_pos, following)
     update_all_moves(self)
+    update_ep_flags
+  end
+
+  def own_ep_check(piece, position, color)
+    own_jumps = piece.made_moves
+    own_last_turn = piece.when_jumped[0]
+
+    @grid[position[0]][position[1]].ep_flag = (own_jumps&.first == ((color == :white) ? [-2, 0] : [2, 0])) && (@turn == own_last_turn)
   end
 
   def handle_ep(piece, previous, following)
