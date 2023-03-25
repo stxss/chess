@@ -8,7 +8,15 @@ require_relative("display")
 require_relative("board")
 require_relative("player")
 require_relative("game")
-require_relative("./movement/movement")
+
+def clear
+  if RUBY_PLATFORM =~ /win32/ || RUBY_PLATFORM =~ /mingw/
+    system("cls")
+  else
+    system("clear")
+  end
+end
+
 
 def create_players
   @players = []

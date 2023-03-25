@@ -79,18 +79,9 @@ class Display
         bg_color = paint(to_display, square_color)
         output += bg_color
       end
-      # moves
       output += "\n"
     end
     output += "            a  b  c  d  e  f  g  h".bold
-  end
-
-  def clear
-    if RUBY_PLATFORM =~ /win32/ || RUBY_PLATFORM =~ /mingw/
-      system("cls")
-    else
-      system("clear")
-    end
   end
 
   def cursor_selected?(row, column)
