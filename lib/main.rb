@@ -17,6 +17,59 @@ def clear
   end
 end
 
+def select_mode
+  loop do
+    user_input = gets.chomp
+    unless user_input.match?(/[1-3]/)
+      puts "Select an option between 1-3!"
+    end
+
+    clear if user_input.match?(/[1-3]/)
+    case user_input
+    when "1"
+      play_computer
+    when "2"
+      play_human
+    when "3"
+      Dir.each_child("saved").each_with_index do |i, idx|
+        puts "#{"[#{idx + 1}]".bold.fg_color(:light_blue)} #{i}"
+      end
+
+      filecount = Dir[File.join("saved", "**", "*")].count { |file| File.file?(file) }
+
+      @chosen_file = ""
+      all_files = Dir.entries("saved").select { |f| !File.directory? f }
+
+      loop do
+        @chosen_file = gets.chomp.to_i
+        break if @chosen_file.between?(1, filecount)
+      end
+
+      selected_file = all_files[@chosen_file - 1]
+      path = "saved/#{selected_file}"
+
+      puts "saved/#{selected_file}"
+      load_game(path)
+
+      load_game
+    end
+  end
+end
+
+def play_computer
+  puts "\n    vs a computer"
+end
+
+def play_human
+  create_players
+  create_board
+  game = Game.new(player1: @players.first, player2: @players.last, board: @board)
+  game.play
+end
+
+def load_game
+  puts "\n  Select the number corresponding to the file to load the game from:\n\n"
+end
 
 def create_players
   @players = []
@@ -54,9 +107,4 @@ end
 
 Intro.new
 
-create_players
-create_board
-
-game = Game.new(player1: @players.first, player2: @players.last, board: @board)
-
-game.play
+select_mode
