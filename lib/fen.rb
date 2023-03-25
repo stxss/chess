@@ -27,6 +27,20 @@ module Fen
     @board.turn.even? ? " w" : " b"
   end
 
+  def castling_rights
+    rights = @board.castle_handler(purpose: :fen)
+
+    return " -" if rights.all?(false)
+
+    output = " "
+    output << "K" if rights[0] && @board.castles_white < 1
+    output << "Q" if rights[1] && @board.castles_white < 1
+    output << "k" if rights[2] && @board.castles_black < 1
+    output << "q" if rights[3] && @board.castles_black < 1
+
+    output
+  end
+
   
   # def from_fen()
   #
