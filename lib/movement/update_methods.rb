@@ -34,6 +34,12 @@ module Movement
     end
   end
 
+  def update_half(piece, following)
+    if empty?(following, board: self) && piece.piece != PIECES[:pawn]
+      @half_counter += 1
+    else
+      @half_counter = 0
+    end
   end
 
   def update_full(color)

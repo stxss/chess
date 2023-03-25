@@ -59,6 +59,15 @@ module Fen
     output = " -" if output == " "
     output
   end
+
+  def half_moves
+    " " + @board.half_counter.to_s
+  end
+
+  def full_moves
+    " " + @board.full_counter.to_s
+  end
+
   
   # def from_fen()
   #

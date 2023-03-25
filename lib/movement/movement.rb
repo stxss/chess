@@ -49,7 +49,7 @@ module Movement
       piece = promote(piece.color) if to_be_promoted(piece.color, following.first) && goal != :ghost
     end
 
-    update_half(following)
+    update_half(piece, following)
     update_full(@grid[prev_pos.first][prev_pos.last].color)
     update_turn
 
