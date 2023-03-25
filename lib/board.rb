@@ -21,7 +21,7 @@ class Board
 
   def initialize
     @grid = Array.new(8) { Array.new(8, EmptySquare.new) }
-    @half_counter, @full_counter, @turn = 0, 0, 0
+    @half_counter, @full_counter, @turn = 0, 1, 0
     @castles_white = 0
     @castles_black = 0
   end
