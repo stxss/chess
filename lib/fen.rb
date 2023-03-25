@@ -82,7 +82,9 @@ module Fen
 
     loop do
       user_filename = gets.chomp.downcase
-      if /^[a-zA-Z]+$/.match?(user_filename) || user_filename == ""
+      # if /^[a-zA-Z]+$/.match?(user_filename) || user_filename == ""
+      if /^[a-zA-Z0-9 _]+$/.match?(user_filename) || user_filename == ""
+
         if File.file?("saved/#{user_filename}.fen")
           puts "\nA file with that name already exists. Please enter another name:"
           next
