@@ -55,7 +55,7 @@ class Game
   end
 
   def game_ended?
-    fifty_moves? || stalemate?
+    fifty_moves? || stalemate? || saved?
   end
 
   def verify_name(prev_name, input)
@@ -76,6 +76,10 @@ class Game
     @board.stalemate
   end
 
+  def saved?
+    @board.saved
+  end
+
   def end_game_handler(current, other)
     if fifty_moves?
       @display.change_prompt(@color, current, :draw)
@@ -87,6 +91,10 @@ class Game
   end
 
   def restart
+    if saved?
+      puts "\nYour game was saved as #{@board.filename}.fen"
+    end
+
     loop do
       puts "\nDo you want to play again? Please enter a valid option. [Y/N]"
       answer = gets.chomp

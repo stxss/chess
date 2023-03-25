@@ -1,5 +1,7 @@
+require "date"
+
 module Fen
-  def to_fen
+  def serialize
     piece_placement + active_color + castling_rights + en_passant_targets + half_moves + full_moves
   end
 
@@ -68,7 +70,34 @@ module Fen
     " " + @board.full_counter.to_s
   end
 
-  
+  def save_file(filename)
+    Dir.mkdir("saved") unless Dir.exist?("saved")
+
+    File.open("saved/#{filename}.fen", "w") { |fen| fen.puts serialize }
+  end
+
+  def create_filename
+    user_filename = nil
+    puts "\nEnter the name of how you want to save the file or press the 'Enter' key for a random filename generation"
+
+    loop do
+      user_filename = gets.chomp.downcase
+      if /^[a-zA-Z]+$/.match?(user_filename) || user_filename == ""
+        if File.file?("saved/#{user_filename}.fen")
+          puts "\nA file with that name already exists. Please enter another name:"
+          next
+        end
+        break
+      end
+    end
+
+    if user_filename == ""
+      d = DateTime.now
+      user_filename = d.strftime("%d_%m_%Y__%H:%M")
+    end
+    user_filename
+  end
+
   # def from_fen()
   #
   # end

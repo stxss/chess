@@ -70,10 +70,10 @@ class Cursor
       puts "\nThank you for playing Chess! See you next time :D"
       exit
     when :save
-      fen_str = to_fen
-      puts "\nYour game was saved as {}. Do you want to create a new game? [Y/n]"
-      puts fen_str
-      exit
+      filename = create_filename
+      save_file(filename)
+      @board.saved = true
+      @board.filename = filename
     end
   end
 

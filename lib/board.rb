@@ -17,13 +17,15 @@ require_relative("./movement/update_methods")
 class Board
   include Movement
   attr_accessor :grid, :player1, :player2, :half_counter, :full_counter, :turn, :castles_white, :castles_black,
-    :white_king, :white_moves, :black_king, :black_moves, :check, :checkmate, :stalemate
+    :white_king, :white_moves, :black_king, :black_moves, :check, :checkmate, :stalemate, :saved, :filename
 
   def initialize
     @grid = Array.new(8) { Array.new(8, EmptySquare.new) }
     @half_counter, @full_counter, @turn = 0, 1, 0
     @castles_white = 0
     @castles_black = 0
+    @saved = false
+    @filename = ""
   end
 
   def copy(board)
