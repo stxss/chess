@@ -9,6 +9,8 @@ require_relative("board")
 require_relative("player")
 require_relative("game")
 
+using TextStyles
+
 def clear
   if RUBY_PLATFORM =~ /win32/ || RUBY_PLATFORM =~ /mingw/
     system("cls")
@@ -31,8 +33,9 @@ def select_mode
     when "2"
       play_human
     when "3"
-      Dir.each_child("saved").each_with_index do |i, idx|
-        puts "#{"[#{idx + 1}]".bold.fg_color(:light_blue)} #{i}"
+      puts "\n  Select the number corresponding to the file to load the game from:\n\n"
+      Dir.each_child("saved").each_with_index do |file, idx|
+        puts "    #{"[#{idx + 1}]".bold.fg_color(:light_blue)} #{file}"
       end
 
       filecount = Dir[File.join("saved", "**", "*")].count { |file| File.file?(file) }
