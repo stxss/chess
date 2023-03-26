@@ -100,7 +100,8 @@ class Game
       answer = gets.chomp
       case answer
       when "Y", "y", "yes".downcase
-        new_game = Game.new(@player1, @player2)
+        new_board = create_board([@player1, @player2])
+        new_game = Game.new(player1: @player1, player2: @player2, board: new_board)
         new_game.play
       when "N", "n", "no".downcase
         puts "Thank you for playing Chess!"

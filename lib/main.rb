@@ -99,10 +99,11 @@ def verify_name(prev_name, input)
   input if /^[a-zA-Z]+$/.match?(input) && input != prev_name
 end
 
-def create_board
+def create_board(players)
   @board = Board.new
-  @board.create_scoreboard(@players.first, @players.last)
+  @board.create_scoreboard(players.first, players.last)
   @board.populate
+  @board
 end
 
 Intro.new
