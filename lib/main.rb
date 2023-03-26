@@ -95,7 +95,7 @@ def from_data(data)
 end
 
 def set_ep_flag(game, flag)
-  return if flag == "-"
+  return [] if flag == "-"
 
   NAMED_SQUARES.key(flag)
 end
