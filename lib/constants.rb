@@ -142,3 +142,18 @@ NAMED_SQUARES = {
   [7, 6] => "g1",
   [7, 7] => "h1"
 }.freeze
+
+TRANSLATE = {
+  "r" => :rook,
+  "n" => :knight,
+  "b" => :bishop,
+  "q" => :queen,
+  "k" => :king,
+  "p" => :pawn,
+  "R" => :rook,
+  "N" => :knight,
+  "B" => :bishop,
+  "Q" => :queen,
+  "K" => :king,
+  "P" => :pawn
+}.freeze

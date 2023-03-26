@@ -48,20 +48,24 @@ class Board
     @castles_black = fen.split[7]
   end
 
-  private
+  def populate(fen)
+    rows = fen.split("/")
 
-  def pawn_row(row, color)
-    @grid[row].map! { Piece.new(:pawn, color) }
+    @grid.each_with_index do |i, row_index|
+      i.each_with_index do |piece, column_index|
+        rows[row_index].gsub!(/[1-8]/) { |num| "1" * num.to_i }
+        break if row_index == 8 || column_index == 8
+
+        next if rows[row_index][column_index].to_i.positive?
+
+        each_row = rows[row_index].chars
+        color = (each_row[column_index]&.upcase == each_row[column_index]) ? :white : :black
+        to_insert = TRANSLATE[each_row[column_index]]
+        @grid[row_index][column_index] = Piece.new(to_insert, color)
+      end
+    end
   end
 
-  def pieces_row(row, color)
-    @grid[row][0] = Piece.new(:rook, color)
-    @grid[row][1] = Piece.new(:knight, color)
-    @grid[row][2] = Piece.new(:bishop, color)
-    @grid[row][3] = Piece.new(:queen, color)
-    @grid[row][4] = Piece.new(:king, color)
-    @grid[row][5] = Piece.new(:bishop, color)
-    @grid[row][6] = Piece.new(:knight, color)
-    @grid[row][7] = Piece.new(:rook, color)
+  def set_ep_target(empty_square)
   end
 end
