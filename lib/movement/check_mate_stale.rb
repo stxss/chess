@@ -14,7 +14,6 @@ module Movement
     @check = @black_moves&.include?(@white_king) || @white_moves&.include?(@black_king)
   end
 
-
   def mate_or_stale?(color)
     safe_moves = []
     @grid.each_with_index do |i, row|

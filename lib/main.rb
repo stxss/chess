@@ -50,11 +50,7 @@ def select_mode
 
       selected_file = all_files[@chosen_file - 1]
       path = "saved/#{selected_file}"
-
-      puts "saved/#{selected_file}"
       load_game(path)
-
-      load_game
     end
   end
 end
