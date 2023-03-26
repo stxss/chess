@@ -69,7 +69,7 @@ class Game
   end
 
   def fifty_moves?
-    @board.half_counter >= 50
+    @board.half_counter.to_i >= 50
   end
 
   def stalemate?

@@ -79,6 +79,13 @@ def create_players
     name2 = give_name(name1)
     @players << Player.new(name1)
     @players << Player.new(name2)
+  else
+    p1 = Player.new(p1_name)
+    p2 = Player.new(p2_name)
+    p1.score = p1_score.to_i
+    p2.score = p2_score.to_i
+    @players << p1
+    @players << p2
   end
 end
 
