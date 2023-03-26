@@ -22,6 +22,7 @@ class Board
   def initialize(starting_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
     @grid = Array.new(8) { Array.new(8, EmptySquare.new) }
     @half_counter, @full_counter, @turn = 0, 1, 0
+    @fen = starting_fen
     read_from_fen(starting_fen)
     @castles_white = 0
     @castles_black = 0
