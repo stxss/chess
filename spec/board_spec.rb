@@ -20,7 +20,8 @@ describe Board do
     let(:wpawn) { Piece.new(:pawn, :white) }
 
     before do
-      board.populate
+      initial_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+      board.populate(initial_fen)
     end
 
     context "when regarding black pieces" do

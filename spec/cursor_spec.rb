@@ -172,11 +172,11 @@ describe Cursor do
   describe "#interpret" do
     subject(:cursor) { described_class.new([5, 4], board) }
 
-    let(:board) { Board.new }
+    let(:board) { Board.new("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") }
 
     context "when has piece, is correct turn and presses return" do
       before do
-        board.populate
+        board.update_all_moves(board)
         cursor.interpret(:down)
         cursor.interpret(:return)
       end
@@ -189,7 +189,7 @@ describe Cursor do
 
     context "when doesn't have piece and presses return" do
       before do
-        board.populate
+        board.update_all_moves(board)
         cursor.interpret(:up)
         cursor.interpret(:return)
       end
@@ -202,7 +202,7 @@ describe Cursor do
 
     context "when has piece, is not correct turn and presses return" do
       before do
-        board.populate
+        board.update_all_moves(board)
 
         moves = %i[return down return up return]
         moves.each { |move| cursor.interpret(move) }
@@ -216,7 +216,7 @@ describe Cursor do
 
     context "when @selected is true and presses escape" do
       before do
-        board.populate
+        board.update_all_moves(board)
         moves = %i[down return escape]
         moves.each { |move| cursor.interpret(move) }
       end
@@ -230,10 +230,10 @@ describe Cursor do
     context "when there is a stalemate" do
       subject(:cursor) { described_class.new([5, 4], board) }
 
-      let(:board) { Board.new }
+      let(:board) { Board.new("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") }
 
       before do
-        board.populate
+        board.update_all_moves(board)
         moves = %i[down return up return
           up up up up left left left left return
           down down return
@@ -284,10 +284,10 @@ describe Cursor do
     context "when there is a checkmate" do
       subject(:cursor) { described_class.new([5, 4], board) }
 
-      let(:board) { Board.new }
+      let(:board) { Board.new("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") }
 
       before do
-        board.populate
+        board.update_all_moves(board)
         moves = %i[down right return
           up return
           up up up up left return
@@ -309,10 +309,10 @@ describe Cursor do
     context "when en_passant" do
       subject(:cursor) { described_class.new([5, 4], board) }
 
-      let(:board) { Board.new }
+      let(:board) { Board.new("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") }
 
       before do
-        board.populate
+        board.update_all_moves(board)
         moves = %i[down right return
           up up return
           up up up left left left left left return
@@ -336,10 +336,10 @@ describe Cursor do
     context "when castling white king side" do
       subject(:cursor) { described_class.new([5, 4], board) }
 
-      let(:board) { Board.new }
+      let(:board) { Board.new("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") }
 
       before do
-        board.populate
+        board.update_all_moves(board)
         moves = %i[down right return
           up return
           up up up up return
@@ -373,10 +373,10 @@ describe Cursor do
     context "when castling black king side" do
       subject(:cursor) { described_class.new([5, 4], board) }
 
-      let(:board) { Board.new }
+      let(:board) { Board.new("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") }
 
       before do
-        board.populate
+        board.update_all_moves(board)
         moves = %i[down right return
           up return
           up up up up return
@@ -412,10 +412,10 @@ describe Cursor do
     context "when castling white queen side" do
       subject(:cursor) { described_class.new([5, 4], board) }
 
-      let(:board) { Board.new }
+      let(:board) { Board.new("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") }
 
       before do
-        board.populate
+        board.update_all_moves(board)
         moves = %i[down left return
           up return
           up up up up return
@@ -453,10 +453,10 @@ describe Cursor do
     context "when castling black queen side" do
       subject(:cursor) { described_class.new([5, 4], board) }
 
-      let(:board) { Board.new }
+      let(:board) { Board.new("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") }
 
       before do
-        board.populate
+        board.update_all_moves(board)
         moves = %i[down left return
           up return
           up up up up return
@@ -497,7 +497,7 @@ describe Cursor do
   describe "#update_cursor" do
     subject(:cursor) { described_class.new([5, 4], board) }
 
-    let(:board) { Board.new }
+    let(:board) { Board.new("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") }
 
     context "when user presses up" do
       before do

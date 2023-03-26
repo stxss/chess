@@ -1,10 +1,6 @@
 describe Movement do
   describe "#can_move?" do
-    let(:board) { Board.new }
-
-    before do
-      board.populate
-    end
+    let(:board) { Board.new("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") }
 
     context "when move is available" do
       it "returns true" do
@@ -35,11 +31,7 @@ describe Movement do
   end
 
   describe "#in_range?" do
-    let(:board) { Board.new }
-
-    before do
-      board.populate
-    end
+    let(:board) { Board.new("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") }
 
     context "when a position is in range" do
       it "returns true for [0, 0]" do
@@ -72,11 +64,7 @@ describe Movement do
   end
 
   describe "#update_piece" do
-    let(:board) { Board.new }
-
-    before do
-      board.populate
-    end
+    let(:board) { Board.new("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") }
 
     context "when a pawn" do
       let(:piece) { board.grid[6][0] }
@@ -125,11 +113,7 @@ describe Movement do
     let(:wking) { Piece.new(:king, :white) { extend described_class } }
     let(:bbishop) { Piece.new(:bishop, :black) { extend described_class } }
 
-    let(:board) { Board.new }
-
-    before do
-      board.populate
-    end
+    let(:board) { Board.new("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") }
 
     context "checks for the possible directions" do
       context "when selecting a pawn at the starting row" do
@@ -151,7 +135,7 @@ describe Movement do
       end
 
       context "when selecting a queen that has one immediate ally to the side, but every other direction is free" do
-        let(:empty_board) { Board.new }
+        let(:empty_board) { Board.new("8/8/8/8/8/8/8/8") }
 
         it "returns correct possible moves" do
           empty_board.grid[3][2] = Piece.new(:pawn, :black)
@@ -163,7 +147,7 @@ describe Movement do
       end
 
       context "when selecting a knight that that has every direction free" do
-        let(:empty_board) { Board.new }
+        let(:empty_board) { Board.new("8/8/8/8/8/8/8/8") }
 
         it "returns correct possible moves" do
           movement = Knight.new.movement(empty_board, [4, 4], wknight)
@@ -173,7 +157,7 @@ describe Movement do
       end
 
       context "when selecting a Rook that has an ally top side and an enemy on the immediate left" do
-        let(:empty_board) { Board.new }
+        let(:empty_board) { Board.new("8/8/8/8/8/8/8/8") }
 
         it "returns correct possible moves" do
           empty_board.grid[3][3] = Piece.new(:pawn, :black)
@@ -185,7 +169,7 @@ describe Movement do
       end
 
       context "when selecting a King with every direction free" do
-        let(:empty_board) { Board.new }
+        let(:empty_board) { Board.new("8/8/8/8/8/8/8/8") }
 
         it "returns correct possible moves" do
           movement = King.new.movement(empty_board, [4, 3], wking)
@@ -195,7 +179,7 @@ describe Movement do
       end
 
       context "when selecting a bishop with every only one direction free" do
-        let(:empty_board) { Board.new }
+        let(:empty_board) { Board.new("8/8/8/8/8/8/8/8") }
 
         before do
           empty_board.grid[5][2] = Piece.new(:pawn, :black)
