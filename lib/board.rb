@@ -43,8 +43,6 @@ class Board
     populate(fen.split[0])
     @half_counter = fen.split[4].to_i
     @full_counter = fen.split[5].to_i
-    set_ep_target(fen.split[3])
-
     @castles_white = fen.split[6]
     @castles_black = fen.split[7]
   end

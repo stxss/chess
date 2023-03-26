@@ -74,18 +74,31 @@ end
 
 def from_data(data)
   info = data.split
-  fen_string = info[0] + info[1] + info[2] + info[3] + info[4] + info[5]
+  fen_string = "#{info[0]} #{info[1]} #{info[2]} #{info[3]} #{info[4]} #{info[5]}"
   create_players(p1_name: info[6], p1_score: info[7], p2_name: info[8], p2_score: info[9])
 
   saved_game = Board.new(fen_string)
   saved_game.create_scoreboard(@players.first, @players.last)
 
   game = Game.new(player1: @players.first, player2: @players.last, board: saved_game)
-
-  game.board.turn = set_turn(info[1], info[5].to_i)
+  game.board.update_positions
   game.board.update_all_moves(saved_game)
+  game.board.turn = set_turn(info[1], info[5].to_i)
+
+  key = set_ep_flag(game, info[3])
+  if key[0] == 5
+    game.board.grid[key[0] - 1][key[1]].ep_flag = true
+  elsif key[0] == 2
+    game.board.grid[key[0] + 1][key[1]].ep_flag = true
+  end
 
   game.play
+end
+
+def set_ep_flag(game, flag)
+  return if flag == "-"
+
+  NAMED_SQUARES.key(flag)
 end
 
 def set_turn(color, full_count)

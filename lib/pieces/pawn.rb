@@ -96,7 +96,12 @@ class Pawn
     current_turn = @board.turn
     enemy_last_turn = @board.grid[square.first][square.last].when_jumped.first
 
-    @enemy_ep_flag = current_turn - enemy_last_turn <= 1
+    if enemy_last_turn.nil?
+      @enemy_ep_flag = @board.grid[square.first][square.last].ep_flag
+      return @enemy_ep_flag
+    else
+      @enemy_ep_flag = current_turn - enemy_last_turn <= 1
+    end
     @board.grid[square.first][square.last].ep_flag = @enemy_ep_flag
 
     enemy_jumps.size == 1 && (enemy_jumps.first == ((color == :white) ? [2, 0] : [-2, 0]))
