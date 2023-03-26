@@ -65,7 +65,4 @@ class Board
       end
     end
   end
-
-  def set_ep_target(empty_square)
-  end
 end
