@@ -2,7 +2,12 @@ require "date"
 
 module Fen
   def serialize
-    piece_placement + active_color + castling_rights + en_passant_targets + half_moves + full_moves
+    fen_string = piece_placement + active_color + castling_rights + en_passant_targets + half_moves + full_moves
+
+    player_info = "#{@board.player1.name}-#{@board.player1.score}\n#{@board.player2.name}-#{@board.player2.score}"
+    movement = ""
+
+    "#{fen_string}\n#{player_info}\n#{movement}"
   end
 
   def piece_placement
@@ -73,19 +78,17 @@ module Fen
   def save_file(filename)
     Dir.mkdir("saved") unless Dir.exist?("saved")
 
-    File.open("saved/#{filename}.fen", "w") { |fen| fen.puts serialize }
+    File.open("saved/#{filename}", "w") { |fen| fen.puts serialize }
   end
 
-  def create_filename
+  def create_filename(player1, player2)
     user_filename = nil
     puts "\nEnter the name of how you want to save the file or press the 'Enter' key for a random filename generation"
 
     loop do
       user_filename = gets.chomp.downcase
-      # if /^[a-zA-Z]+$/.match?(user_filename) || user_filename == ""
       if /^[a-zA-Z0-9 _]+$/.match?(user_filename) || user_filename == ""
-
-        if File.file?("saved/#{user_filename}.fen")
+        if File.file?("saved/#{user_filename}")
           puts "\nA file with that name already exists. Please enter another name:"
           next
         end
@@ -95,12 +98,12 @@ module Fen
 
     if user_filename == ""
       d = DateTime.now
-      user_filename = d.strftime("%d_%m_%Y__%H:%M")
+      date = d.strftime("%d_%m_%Y__%H:%M")
+      user_filename = "#{player1.name} - #{player1.score} vs #{player2.score} - #{player2.name} at #{date}"
     end
     user_filename
   end
 
-  # def from_fen()
-  #
-  # end
+  def from_fen
+  end
 end

@@ -92,7 +92,7 @@ class Game
 
   def restart
     if saved?
-      puts "\nYour game was saved as #{@board.filename}.fen"
+      puts "\nYour game was saved as '#{@board.filename}'"
     end
 
     loop do
