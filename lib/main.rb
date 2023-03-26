@@ -1,4 +1,4 @@
-require_relative("fen")
+require_relative("serialize")
 require_relative("text_styles")
 require_relative("intro")
 require_relative("prompts")

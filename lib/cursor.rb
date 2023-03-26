@@ -1,8 +1,8 @@
 require("io/console")
-require_relative("./fen")
+require_relative("./serialize")
 
 class Cursor
-  include Fen
+  include Serialize
   attr_accessor :current_pos, :selected, :board, :available_moves, :piece
 
   def initialize(current_pos, board)
