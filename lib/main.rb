@@ -62,19 +62,45 @@ end
 
 def play_human
   create_players
-  create_board
+  create_board(@players)
   game = Game.new(player1: @players.first, player2: @players.last, board: @board)
   game.play
 end
 
-def load_game
-  puts "\n  Select the number corresponding to the file to load the game from:\n\n"
+def load_game(path)
+  game_info = File.read(path)
+  from_data(game_info)
 end
 
-def create_players
+def from_data(data)
+  info = data.split
+  fen_string = info[0] + info[1] + info[2] + info[3] + info[4] + info[5]
+  create_players(p1_name: info[6], p1_score: info[7], p2_name: info[8], p2_score: info[9])
+
+  saved_game = Board.new(fen_string)
+  saved_game.create_scoreboard(@players.first, @players.last)
+
+  game = Game.new(player1: @players.first, player2: @players.last, board: saved_game)
+
+  game.board.turn = set_turn(info[1], info[5].to_i)
+  game.board.update_all_moves(saved_game)
+
+  game.play
+end
+
+def set_turn(color, full_count)
+  case color
+  when "w"
+    full_count * 2
+  when "b"
+    full_count * 2 - 1
+  end
+end
+
+def create_players(p1_name: nil, p1_score: nil, p2_name: nil, p2_score: nil)
   @players = []
 
-  if @players.first.nil? && @players.last.nil?
+  if p1_name.nil? && p2_name.nil?
     name1 = give_name
     name2 = give_name(name1)
     @players << Player.new(name1)
