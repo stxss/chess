@@ -148,7 +148,7 @@ end
 def create_board(players)
   @board = Board.new
   @board.create_scoreboard(players.first, players.last)
-  @board.populate
+  @board.update_all_moves(@board)
   @board
 end
 
