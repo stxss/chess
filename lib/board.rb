@@ -53,9 +53,8 @@ class Board
     @grid.each_with_index do |i, row_index|
       i.each_with_index do |piece, column_index|
         rows[row_index].gsub!(/[1-8]/) { |num| "1" * num.to_i }
-        break if row_index == 8 || column_index == 8
 
-        next if rows[row_index][column_index].to_i.positive?
+        next if rows[row_index][column_index] == "1"
 
         each_row = rows[row_index].chars
         color = (each_row[column_index]&.upcase == each_row[column_index]) ? :white : :black

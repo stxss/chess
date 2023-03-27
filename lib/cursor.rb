@@ -93,7 +93,7 @@ class Cursor
   end
 
   def set_movement
-    @available_moves = @board.valid_movements(@piece, @initial_pos, @current_pos)
+    @available_moves = @board.valid_movements(@piece, @initial_pos)
   end
 
   def set_selected

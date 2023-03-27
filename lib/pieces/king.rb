@@ -3,8 +3,6 @@ require_relative("./../movement/movement")
 class King
   include Movement
 
-  attr_accessor :board
-
   def movement(board, start_position, piece)
     @board = board
     @start_position = start_position

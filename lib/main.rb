@@ -29,9 +29,9 @@ def select_mode
     clear if user_input.match?(/[1-3]/)
     case user_input
     when "1"
-      play_computer
+      play(:computer)
     when "2"
-      play_human
+      play(:human)
     when "3"
       puts "\n  Select the number corresponding to the file to load the game from:\n\n"
       Dir.each_child("saved").each_with_index do |file, idx|
@@ -55,12 +55,13 @@ def select_mode
   end
 end
 
-def play_computer
-  puts "\n    vs a computer"
-end
-
-def play_human
-  create_players
+def play(opponent)
+  case opponent
+  when :human
+    create_players
+  when :computer
+    create_players(p2_name: "Computer")
+  end
   create_board(@players)
   game = Game.new(player1: @players.first, player2: @players.last, board: @board)
   game.play

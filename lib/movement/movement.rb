@@ -1,5 +1,5 @@
 module Movement
-  def valid_movements(piece, initial, current)
+  def valid_movements(piece, initial)
     @valids = possible_moves(initial, piece)&.intersection(safe_from_check?(initial, piece))
   end
 

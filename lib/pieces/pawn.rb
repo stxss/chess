@@ -50,8 +50,7 @@ class Pawn
 
   def moved_once?(color)
     # starting pawn rows, column is not relevant for this check
-    w_pawn_start = 6
-    b_pawn_start = 1
+    w_pawn_start, b_pawn_start = 6, 1
 
     @row != ((color == :white) ? w_pawn_start : b_pawn_start)
   end
@@ -93,18 +92,7 @@ class Pawn
   end
 
   def valid_passant?(color, enemy_jumps, square)
-    current_turn = @board.turn
-    enemy_last_turn = @board.grid[square.first][square.last].when_jumped.first
-
-    if enemy_last_turn.nil?
-      @enemy_ep_flag = @board.grid[square.first][square.last].ep_flag
-      return @enemy_ep_flag
-    else
-      @enemy_ep_flag = current_turn - enemy_last_turn <= 1
-    end
-    @board.grid[square.first][square.last].ep_flag = @enemy_ep_flag
-
-    enemy_jumps.size == 1 && (enemy_jumps.first == ((color == :white) ? [2, 0] : [-2, 0]))
+    @enemy_ep_flag = @board.grid[square.first][square.last].ep_flag
   end
 
   def is_pawn?(position)
