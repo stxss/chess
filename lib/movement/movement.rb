@@ -53,8 +53,16 @@ module Movement
     piece.when_jumped << @turn
 
     update_piece(piece, prev_pos, following)
+    annotate_moves(piece.piece, piece.color, prev_pos, following) unless piece.nil?
     update_all_moves(self)
     update_ep_flags
+  end
+
+  def annotate_moves(drawing, color, previous, following)
+    piece = PIECES.key(drawing)
+    fen_piece = FEN[color][piece]
+    capture = @grid[following[0]][following[1]].color != color && !@grid[following[0]][following[1]].instance_of?(EmptySquare)
+    @translated_jumps[@turn] = [fen_piece, previous, capture, following, @check, @checkmate, @stalemate]
   end
 
   def own_ep_check(piece, position, color)
