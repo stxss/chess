@@ -59,6 +59,8 @@ class Cursor
         @board.checks?
         @board.mate_or_stale?(@piece.color)
       end
+    when :ai
+      move_ai
     when :king_side
       @board.castle_handler(current_color, :king)
     when :queen_side
@@ -77,7 +79,25 @@ class Cursor
     end
   end
 
-  private
+  # private
+
+  def move_ai
+    black_pieces = []
+    @board.grid.flatten.each do |piece|
+      black_pieces << piece if piece.color == :black && (piece.enemies.size > 1 || piece.valid_moves.size > 1)
+    end
+
+    @piece = black_pieces.sample
+    set_initial
+    ghost = Board.new.copy(@board)
+    safes = @board.safe_from_check?(@initial_pos, piece, board: ghost)
+    set_movement
+    following = piece.valid_moves.sample
+    if safes.include?(following)
+      @board.move(@initial_pos, @piece, following, :actual)
+    end
+    reset_relevant
+  end
 
   def update_cursor(move)
     new_pos = [@current_pos.first + move.first, @current_pos.last + move.last]

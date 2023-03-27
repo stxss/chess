@@ -41,6 +41,9 @@ class Game
 
   def set_display
     @display.show
+    if @player2.name == "Computer" && @color == "black"
+      return @display.cursor.interpret(:ai)
+    end
     @display.cursor.ask_input
   end
 

@@ -4,6 +4,9 @@ module Movement
   end
 
   def promote(color)
+    if @player2.name == "Computer"
+      return Piece.new(:queen, color)
+    end
     puts "Please select the piece you want to replace your pawn with:"
     until (piece = gets.chomp) =~ /[1-4]/
       puts "\nRemember that you must select a number from 1-4, as stipulated by the rules above.\nPlease select the piece you want to replace your pawn with:"
