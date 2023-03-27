@@ -32,7 +32,7 @@ module Movement
   def find_king(color)
     @grid.flatten.find do |piece|
       piece.piece == PIECES[:king] && piece.color == color
-    end.position
+    end&.position
   end
 
   def can_move?(following, available)
@@ -42,7 +42,7 @@ module Movement
 
   def move(prev_pos, piece, following, goal)
     if piece.piece == PIECES[:pawn]
-      piece = promote(piece.color) if to_be_promoted(piece.color, following.first) && goal != :ghost
+      piece = promote(piece.color) if to_be_promoted(piece.color, following&.first) && goal != :ghost
     end
 
     update_half(piece, following)
@@ -74,8 +74,8 @@ module Movement
     @grid[following.first][following.last] = piece
   end
 
-  def safe_from_check?(initial, piece)
-    ghost_board = Board.new.copy(self)
+  def safe_from_check?(initial, piece, board: self)
+    ghost_board = Board.new.copy(board)
 
     ghost_piece = ghost_board.grid[initial.first][initial.last]
 

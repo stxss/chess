@@ -5,7 +5,6 @@ class Game
     @player1 = player1
     @player2 = player2
     @board = board
-    @cursor = create_cursor
     @display = create_display
   end
 
@@ -13,8 +12,8 @@ class Game
     until game_ended?
       set_players
       set_prompts(@current.name, @other.name)
-      set_display
       set_color
+      set_display
 
       if @board.checkmate
         update_score
@@ -26,10 +25,6 @@ class Game
   end
 
   private
-
-  def create_cursor
-    Cursor.new([5, 4], @board)
-  end
 
   def create_display
     Display.new(@board, @player1, @player2)
@@ -53,8 +48,8 @@ class Game
   end
 
   def set_prompts(current, other)
-    @display.change_prompt(@color, other, :to_move)
     @display.change_prompt(@color, other, :check) if @board.check
+    @display.change_prompt(@color, other, :to_move)
   end
 
   def game_ended?

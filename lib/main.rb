@@ -113,8 +113,8 @@ end
 def create_players(p1_name: nil, p1_score: nil, p2_name: nil, p2_score: nil)
   @players = []
 
-  p1_name ? @players << Player.new(p1_name) : @players << Player.new(give_name)
-  p2_name ? @players << Player.new(p2_name) : @players << Player.new(give_name(p1_name))
+  @players << (Player.new(p1_name || give_name))
+  @players << (Player.new(p2_name || give_name(p1_name)))
 
   @players.first.score = p1_score.to_i
   @players.last.score = p2_score.to_i

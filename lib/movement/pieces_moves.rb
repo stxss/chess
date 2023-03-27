@@ -45,6 +45,9 @@ module Movement
   end
 
   def empty?(square, board: @board)
+    return if square.nil?
+    return if !in_range?(square)
+
     board.grid[square[0]][square[1]].instance_of?(EmptySquare)
   end
 end

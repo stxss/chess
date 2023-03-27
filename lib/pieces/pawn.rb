@@ -77,6 +77,9 @@ class Pawn
     col_to_check = @col + 1 if enemy?(color, [@row, @col + 1])
 
     if enemy?(color, [@row, @col - 1]) && enemy?(color, [@row, @col + 1])
+      return if !is_pawn?([@row, @col - 1])
+      return if !is_pawn?([@row, @col + 1])
+
       jump_left = @board.grid[@row][@col - 1].when_jumped[0]
       jump_right = @board.grid[@row][@col + 1].when_jumped[0]
       col_to_check = (jump_left > jump_right) ? @col - 1 : @col + 1
