@@ -105,15 +105,16 @@ class Display
     jumps = @board.translated_jumps
     jumps.each_with_index do |jump, index|
       memo = jump[1]
+
       piece = memo[0] unless memo[0] == "p" || memo[0] == "P"
       where_to = NAMED_SQUARES[memo[3]]
       capture = "x" if memo[2]
       if capture == "x" && (memo[0] == "p" || memo[0] == "P")
         from_where = NAMED_SQUARES[memo[1]][0]
       end
-      check = "+" if memo[0][4] && !memo[0][5]
-      checkmate = "#" if memo[0][5]
-      stalemate = "1/2-1/2" if memo[0][6]
+      check = "+" if memo[4] && !memo[5]
+      checkmate = "#" if memo[5]
+      stalemate = "1/2-1/2" if memo[6]
       output << "#{from_where}#{piece}#{capture}#{where_to}#{check}#{checkmate}#{stalemate}"
     end
     print_moves(output)
@@ -138,16 +139,6 @@ class Display
         row = 3
       end
     end
-
-    if @board.check && !@board.checkmate && final_print.last[3]
-      final_print.last[3] += "+"
-    elsif @board.check && !@board.checkmate && final_print.first[3]
-      final_print.first[3] += "+"
-    end
-    # final_print.last[3] += "+"
-    final_print.last[3] += "#" if @board.checkmate
-    final_print.last[3] += "1/2-1/2" if @board.stalemate
-
 
     final_print.each do |el|
       system(el[1])

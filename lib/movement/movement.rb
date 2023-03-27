@@ -53,7 +53,6 @@ module Movement
     piece.when_jumped << @turn
 
     update_piece(piece, prev_pos, following)
-    annotate_moves(piece.piece, piece.color, prev_pos, following) unless piece.nil?
     update_all_moves(self)
     update_ep_flags
   end
