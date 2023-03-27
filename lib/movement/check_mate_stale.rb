@@ -11,7 +11,7 @@ module Movement
 
   # For when a piece checks the other player / used offensively
   def checks?
-    @check = @black_moves&.include?(@white_king) || @white_moves&.include?(@black_king)
+    @black_moves&.include?(@white_king) || @white_moves&.include?(@black_king)
   end
 
   def mate_or_stale?(color)

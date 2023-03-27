@@ -48,8 +48,8 @@ class Display
       @game_instructions = Prompts.new.empty
       @current_prompt = Prompts.new.draw
     when :game_end
-      @game_instructions = Prompts.new.empty
       @current_prompt = Prompts.new.game_end(player)
+      @game_instructions = Prompts.new.empty
     end
   end
 

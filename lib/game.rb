@@ -16,6 +16,7 @@ class Game
       set_display
 
       if @board.checkmate
+        @display.show
         update_score
         restart
       end
