@@ -230,47 +230,12 @@ describe Cursor do
     context "when there is a stalemate" do
       subject(:cursor) { described_class.new([5, 4], board) }
 
-      let(:board) { Board.new("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") }
+      let(:board) { Board.new("2Q2bnr/4p1pq/5pkr/7p/7P/4P3/PPPP1PP1/RNB1KBNR w KQ - 1 10") }
 
       before do
         board.update_all_moves(board)
-        moves = %i[down return up return
-          up up up up left left left left return
-          down down return
-          down down down down right right right return
-          right right right right up up up up return
-          left left left left left left left up up up return
-          down down return
-          right right right right right right right down return
-          left left left left left left left return
-          up right right right right right right right up return
-          down down return
-          down down down return
-          up up return
-          left left left left left left left up up return
-          right right right right right right right return
-          left left left left left left left down return
-          up right up right return
-          right right right return
-          down return
-          left left left up return
-          right return
-          up right return
-          down right return
-          left left return
-          left left return
-          up right right return
-          down down down down down return
-          up up up up left left return
-          up return
-          down down down down down right right return
-          up up up up right right right right return
-          up left left left left left left return
-          right return
-          down right right right return
-          down right return
-          up up left left left left return
-          right right down down return]
+        moves = %i[up up up up up left left return
+          down down right right return]
 
         moves.each { |move| cursor.interpret(move) }
       end

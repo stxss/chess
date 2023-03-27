@@ -113,19 +113,11 @@ end
 def create_players(p1_name: nil, p1_score: nil, p2_name: nil, p2_score: nil)
   @players = []
 
-  if p1_name.nil? && p2_name.nil?
-    name1 = give_name
-    name2 = give_name(name1)
-    @players << Player.new(name1)
-    @players << Player.new(name2)
-  else
-    p1 = Player.new(p1_name)
-    p2 = Player.new(p2_name)
-    p1.score = p1_score.to_i
-    p2.score = p2_score.to_i
-    @players << p1
-    @players << p2
-  end
+  p1_name ? @players << Player.new(p1_name) : @players << Player.new(give_name)
+  p2_name ? @players << Player.new(p2_name) : @players << Player.new(give_name(p1_name))
+
+  @players.first.score = p1_score.to_i
+  @players.last.score = p2_score.to_i
 end
 
 def give_name(prev_name = nil)

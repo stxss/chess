@@ -22,21 +22,17 @@ module Movement
 
   def all_moves(color, board)
     moves = []
-    @grid.each_with_index do |i, row_index|
-      i.each_with_index do |piece, column_index|
-        moves += possible_moves([row_index, column_index], piece) if piece.color == color
-      end
+    update_positions
+    @grid.flatten.each do |piece|
+      moves += possible_moves(piece.position, piece) if piece.color == color
     end
     moves
   end
 
   def find_king(color)
-    @grid.each_with_index do |i, row_index|
-      i.each_with_index do |piece, column_index|
-        character = piece.piece
-        return [row_index, column_index] if character == PIECES[:king] && piece.color == color
-      end
-    end
+    @grid.flatten.find do |piece|
+      piece.piece == PIECES[:king] && piece.color == color
+    end.position
   end
 
   def can_move?(following, available)
