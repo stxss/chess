@@ -59,10 +59,13 @@ class Cursor
         @board.checks?
         @board.mate_or_stale?(@piece.color)
 
-        @board.annotate_moves(@piece.piece, @piece.color, following_color, @piece.position, @current_pos) unless @piece.nil? || @board.promo || @board.pass_through
-
-        reset_relevant
-        @board.update_moves_when_check if @board.check
+        if @board.promo || @board.pass_through
+          reset_relevant
+          @board.update_moves_when_check if @board.check
+        else
+          @board.annotate_moves(@piece.piece, @piece.color, following_color, @piece.position, @current_pos) if @piece
+          @board.promo, @board.pass_through = false, false
+        end
       end
     when :ai
       move_ai

@@ -33,6 +33,7 @@ module Movement
     to_annotate = NAMED_SQUARES[following].to_s + "="
     to_annotate += (color == :white) ? letter.upcase : letter
 
+    @promo = true
     annotate_moves(promotion: to_annotate)
     Piece.new(piece, color)
   end

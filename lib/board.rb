@@ -30,8 +30,8 @@ class Board
     @saved = false
     @filename = ""
     @translated_jumps = {}
-    @promo = true # this one is made specifically to avoid bugs with the annotation
-    @pass_through = true # this one is made specifically to avoid bugs with the annotation
+    @promo = false # this one is made specifically to avoid bugs with the annotation
+    @pass_through = false # this one is made specifically to avoid bugs with the annotation
   end
 
   def copy(board)
