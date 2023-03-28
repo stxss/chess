@@ -106,6 +106,18 @@ class Display
     jumps.each_with_index do |jump, index|
       memo = jump[1]
 
+      case memo[0]
+      when "0-0", "0-0-0"
+        output << memo[0]
+        next
+      when :promotion
+        output << memo[1]
+        next
+      when :passant
+        output << memo[1]
+        next
+      end
+
       piece = memo[0] unless memo[0] == "p" || memo[0] == "P"
       where_to = NAMED_SQUARES[memo[3]]
       capture = "x" if memo[2]
@@ -114,8 +126,10 @@ class Display
       end
       check = "+" if memo[4] && !memo[5]
       checkmate = "#" if memo[5]
-      stalemate = "1/2-1/2" if memo[6]
-      output << "#{from_where}#{piece}#{capture}#{where_to}#{check}#{checkmate}#{stalemate}"
+
+      output << "#{from_where}#{piece}#{capture}#{where_to}#{check}#{checkmate}"
+
+      output[-1] = "1/2-1/2" if memo[6]
     end
     print_moves(output)
   end

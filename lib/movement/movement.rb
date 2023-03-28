@@ -60,7 +60,7 @@ module Movement
 
   def move(prev_pos, piece, following, goal)
     if piece.piece == PIECES[:pawn]
-      piece = promote(piece.color) if to_be_promoted(piece.color, following&.first) && goal != :ghost
+      piece = promote(piece.color, following) if to_be_promoted(piece.color, following&.first) && goal != :ghost
     end
 
     update_half(piece, following)
@@ -75,7 +75,18 @@ module Movement
     update_ep_flags
   end
 
-  def annotate_moves(drawing, color, previous, following)
+  def annotate_moves(drawing = nil, color = nil, following_color = nil, previous = nil, following = nil, castle: nil, passant: nil, promotion: nil)
+    case castle
+    when :king
+      return @translated_jumps[@turn] = ["0-0", @check, @checkmate, @stalemate]
+    when :queen
+      return @translated_jumps[@turn] = ["0-0-0", @check, @checkmate, @stalemate]
+    end
+
+    return @translated_jumps[@turn] = [:passant, passant.to_s, @check, @checkmate, @stalemate] if passant
+
+    return @translated_jumps[@turn] = [:promotion, promotion.to_s, @check, @checkmate, @stalemate] if promotion
+
     piece = PIECES.key(drawing)
     fen_piece = FEN[color][piece]
 

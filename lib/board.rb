@@ -18,7 +18,7 @@ require_relative("./movement/update_methods")
 class Board
   include Movement
   attr_accessor :grid, :player1, :player2, :half_counter, :full_counter, :turn, :castles_white, :castles_black,
-    :white_king, :white_moves, :black_king, :black_moves, :check, :checkmate, :stalemate, :saved, :filename, :translated_jumps
+    :white_king, :white_moves, :black_king, :black_moves, :check, :checkmate, :stalemate, :saved, :filename, :translated_jumps, :promo, :pass_through
 
   def initialize(starting_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
     @grid = Array.new(8) { Array.new(8, EmptySquare.new) }
@@ -30,7 +30,8 @@ class Board
     @saved = false
     @filename = ""
     @translated_jumps = {}
-    @check, @stalemate, @checkmate = false, false, false
+    @promo = true # this one is made specifically to avoid bugs with the annotation
+    @pass_through = true # this one is made specifically to avoid bugs with the annotation
   end
 
   def copy(board)

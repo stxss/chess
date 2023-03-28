@@ -3,7 +3,7 @@ module Movement
     color == :white && row == 0 || color == :black && row == 7
   end
 
-  def promote(color)
+  def promote(color, following)
     if @player2.name == "Computer"
       return Piece.new(:queen, color)
     end
@@ -19,6 +19,21 @@ module Movement
     in "4" then :bishop
     end
 
+    letter = case piece
+    when :queen
+      "q"
+    when :rook
+      "r"
+    when :knight
+      "n"
+    when :bishop
+      "b"
+    end
+
+    to_annotate = NAMED_SQUARES[following].to_s + "="
+    to_annotate += (color == :white) ? letter.upcase : letter
+
+    annotate_moves(promotion: to_annotate)
     Piece.new(piece, color)
   end
 end

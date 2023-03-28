@@ -45,9 +45,11 @@ module Movement
     when :king
       @grid[k.first][k.last + 2] = @grid[k.first][k.last]
       @grid[r.first][r.last - 2] = @grid[r.first][r.last]
+      annotate_moves(castle: :king)
     when :queen
       @grid[k.first][k.last - 2] = @grid[k.first][k.last]
       @grid[r.first][r.last + 3] = @grid[r.first][r.last]
+      annotate_moves(castle: :queen)
     end
 
     castled_color = @grid[k.first][k.last].color
