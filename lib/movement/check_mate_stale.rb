@@ -3,15 +3,15 @@ module Movement
   def in_check?(white_moves, black_moves, white_king, black_king, color)
     case color
     when :white
-      black_moves&.include?(white_king)
+      @check = black_moves&.include?(white_king)
     when :black
-      white_moves&.include?(black_king)
+      @check = white_moves&.include?(black_king)
     end
   end
 
   # For when a piece checks the other player / used offensively
   def checks?
-    @black_moves&.include?(@white_king) || @white_moves&.include?(@black_king)
+    @check = @black_moves&.include?(@white_king) || @white_moves&.include?(@black_king)
   end
 
   def mate_or_stale?(color)

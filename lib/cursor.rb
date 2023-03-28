@@ -56,8 +56,9 @@ class Cursor
       elsif @selected && @board.can_move?(@current_pos, @available_moves)
         move_piece
         reset_relevant
-        @board.check = board.checks?
+        @board.checks?
         @board.mate_or_stale?(@piece.color)
+        @board.update_moves_when_check if @board.check
         @board.annotate_moves(@piece.piece, @piece.color, @piece.position, @current_pos) unless @piece.nil?
       end
     when :ai

@@ -29,6 +29,24 @@ module Movement
     moves
   end
 
+  def update_moves_when_check
+    @grid.each_with_index do |i, row_index|
+      i.each_with_index do |piece, column_index|
+        next if piece.piece == "   "
+
+        piece.valid_moves = safe_from_check?([row_index, column_index], piece)
+        p piece
+        p piece.valid_moves
+        p safe_from_check?([row_index, column_index], piece)
+        # sleep(5)
+        p piece.valid_moves
+        # if !piece.valid_moves&.intersection(safe_from_check?([row_index, column_index], piece))
+
+        # end
+      end
+    end
+  end
+
   def find_king(color)
     @grid.flatten.find do |piece|
       piece.piece == PIECES[:king] && piece.color == color
