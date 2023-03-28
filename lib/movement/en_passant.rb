@@ -7,19 +7,23 @@ module Movement
   end
 
   def handle_ep(piece, previous, following)
-
     departure = NAMED_SQUARES[previous][0]
     destination = NAMED_SQUARES[following]
     pass = "#{departure}x#{destination}"
-    @pass_through = true
-    annotate_moves(passant: pass)
 
     case piece.color
     when :white
-      @grid[following.first + 1][following.last] = EmptySquare.new if @grid[following.first + 1][following.last].ep_flag
+        if @grid[following.first + 1][following.last].ep_flag
+            @grid[following.first + 1][following.last] = EmptySquare.new
+            @pass_through = true
+        end
     when :black
-      @grid[following.first - 1][following.last] = EmptySquare.new if @grid[following.first - 1][following.last].ep_flag
+        if @grid[following.first - 1][following.last].ep_flag
+          @grid[following.first - 1][following.last] = EmptySquare.new
+          @pass_through = true
+        end
     end
+    annotate_moves(passant: pass)
     @grid[following.first][following.last] = piece
   end
 end
