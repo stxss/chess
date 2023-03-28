@@ -91,11 +91,12 @@ class Cursor
     @piece = black_pieces.sample
     set_initial
     ghost = Board.new.copy(@board)
-    safes = @board.safe_from_check?(@initial_pos, piece, board: ghost)
+    following = @piece.valid_moves.sample
     set_movement
-    following = piece.valid_moves.sample
+    safes = @board.safe_from_check?(@initial_pos, piece, board: ghost)
     if safes.include?(following)
-      @board.move(@initial_pos, @piece, following, :actual)
+
+      @board.move(@initial_pos, @piece, safes.sample, :actual)
     end
     reset_relevant
   end
