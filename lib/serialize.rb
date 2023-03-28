@@ -1,11 +1,12 @@
 require "date"
+require "json"
 
 module Serialize
   def serialize
     fen_string = piece_placement + active_color + castling_rights + en_passant_targets + half_moves + full_moves
 
     player_info = "#{@board.player1.name} #{@board.player1.score}\n#{@board.player2.name} #{@board.player2.score}"
-    movement = ""
+    movement = @board.translated_jumps.to_json
 
     castles = "#{@board.castles_white} #{@board.castles_black}"
 
