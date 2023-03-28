@@ -38,7 +38,6 @@ class Pawn
 
     piece.enemies = find_moves(:pawn, enemy_directions, :captures)
     @normal_moves = find_moves(:pawn, directions, :empty) + piece.enemies
-
     piece.valid_moves = @enemy_ep_flag ? @moves_w_passant + @normal_moves : @normal_moves
   end
 

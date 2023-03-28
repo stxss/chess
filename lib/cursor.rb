@@ -63,7 +63,7 @@ class Cursor
           @board.annotate_moves(@piece.piece, @piece.color, following_color, @piece.position, @current_pos) if @piece
           @board.promo, @board.pass_through = false, false
         end
-        
+
         reset_relevant
         @board.update_moves_when_check if @board.check
       end
@@ -86,8 +86,6 @@ class Cursor
       @board.filename = filename
     end
   end
-
-  # private
 
   def move_ai
     black_pieces = []
@@ -112,6 +110,8 @@ class Cursor
     @board.annotate_moves(@piece.piece, :black, following_color, @initial_pos, following) unless @piece.nil?
     reset_relevant
   end
+
+  private
 
   def update_cursor(move)
     new_pos = [@current_pos.first + move.first, @current_pos.last + move.last]

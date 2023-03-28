@@ -35,14 +35,6 @@ module Movement
         next if piece.piece == "   "
 
         piece.valid_moves = safe_from_check?([row_index, column_index], piece)
-        p piece
-        p piece.valid_moves
-        p safe_from_check?([row_index, column_index], piece)
-        # sleep(5)
-        p piece.valid_moves
-        # if !piece.valid_moves&.intersection(safe_from_check?([row_index, column_index], piece))
-
-        # end
       end
     end
   end

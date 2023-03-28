@@ -27,12 +27,11 @@ class Display
       #{display}
 
       #{@player1.name.rjust(22)} - #{@player1.score}
-      #{moves}
 
       #{@current_prompt}
       #{@game_instructions}
     HEREDOC
-    # pp @board
+    moves
   end
 
   def change_prompt(color, player, status)
@@ -157,7 +156,6 @@ class Display
     final_print.each do |el|
       system(el[1])
       puts "#{el[0]}. #{el[2]} #{el[3]}"
-      # puts final_print
 
       system("tput cup 0 0")
       print ""
@@ -167,10 +165,8 @@ class Display
       system("tput cup 15 0")
       puts "\n"
     else
-      system("tput cup 30 0")
+      system("tput cup 32 0")
     end
-    # print "" # end on this as the line above returns true to the display
-    # puts "" # end on this as the line above returns true to the display
     new_arr.join(" ")
   end
 end
