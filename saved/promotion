@@ -1,4 +1,5 @@
-rnbqkbnr/pp3p1P/2ppp3/8/8/8/PPPPP1PP/RNBQKBNR w KQkq - 0 5
+rnbqkbnr/2pppppP/p7/8/1p6/8/PPPPPP1P/RNBQKBNR w KQkq - 0 5
 Ruby 0
 Odin 0
 0 0
+{"1":["P",[4,6],null,[4,6],false,false,false],"2":["p",[2,0],null,[2,0],false,false,false],"3":["P",[3,6],null,[3,6],false,false,false],"4":["p",[2,1],null,[2,1],false,false,false],"5":["P",[2,6],null,[2,6],false,false,false],"6":["p",[3,1],null,[3,1],false,false,false],"7":["P",[1,7],true,[1,7],false,false,false],"8":["p",[4,1],null,[4,1],false,false,false]}

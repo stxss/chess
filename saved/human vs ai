@@ -1,4 +1,5 @@
-rn1qkbnr/ppp1pppp/3p4/8/8/2N1P2b/PPPP1PPP/R1BQKBNR w KQkq - 2 3
+r1bqkbnr/p1ppp1pp/2n2p2/1p6/4P3/2P2Q2/PP1P1PPP/RNB1KBNR w KQkq b6 0 4
 Human 0
 Computer 0
 0 0
+{"1":["P",[4,4],null,[4,4],false,false,false],"2":["n",[0,1],null,[2,2],false,false,false],"3":["P",[5,2],null,[5,2],false,false,false],"4":["p",[1,5],null,[2,5],false,false,false],"5":["Q",[5,5],null,[5,5],false,false,false],"6":["p",[1,1],null,[3,1],false,false,false]}
