@@ -78,25 +78,10 @@ module Movement
   def annotate_moves(drawing, color, previous, following)
     piece = PIECES.key(drawing)
     fen_piece = FEN[color][piece]
-    capture = @grid[following[0]][following[1]].color != color && !@grid[following[0]][following[1]].instance_of?(EmptySquare)
+
+    capture = following_color != color && following_color && !empty?(following, board: self)
+
     @translated_jumps[@turn] = [fen_piece, previous, capture, following, @check, @checkmate, @stalemate]
-  end
-
-  def own_ep_check(piece, position, color)
-    own_jumps = piece.made_moves
-    own_last_turn = piece.when_jumped[0]
-
-    @grid[position[0]][position[1]].ep_flag = (own_jumps&.first == ((color == :white) ? [-2, 0] : [2, 0])) && (@turn == own_last_turn)
-  end
-
-  def handle_ep(piece, previous, following)
-    case piece.color
-    when :white
-      @grid[following.first + 1][following.last] = EmptySquare.new if @grid[following.first + 1][following.last].ep_flag
-    when :black
-      @grid[following.first - 1][following.last] = EmptySquare.new if @grid[following.first - 1][following.last].ep_flag
-    end
-    @grid[following.first][following.last] = piece
   end
 
   def safe_from_check?(initial, piece, board: self)
