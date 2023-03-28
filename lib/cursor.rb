@@ -92,19 +92,24 @@ class Cursor
   def move_ai
     black_pieces = []
     @board.grid.flatten.each do |piece|
-      black_pieces << piece if piece.color == :black && (piece.enemies.size > 1 || piece.valid_moves.size > 1)
+      black_pieces << piece if piece.color == :black && piece.valid_moves.size >= 1
     end
-
+    return if !@piece
     @piece = black_pieces.sample
     set_initial
+    set_movement
     ghost = Board.new.copy(@board)
     following = @piece.valid_moves.sample
-    set_movement
     safes = @board.safe_from_check?(@initial_pos, piece, board: ghost)
-    if safes.include?(following)
+    following_color = @board.grid[following.first][following.last].color
 
-      @board.move(@initial_pos, @piece, safes.sample, :actual)
+    if safes.include?(following)
+      @board.move(@initial_pos, @piece, following, :actual)
     end
+
+    @board.checks?
+    @board.mate_or_stale?(:black)
+    @board.annotate_moves(@piece.piece, :black, following_color, @initial_pos, following) unless @piece.nil?
     reset_relevant
   end
 
