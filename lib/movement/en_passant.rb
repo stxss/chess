@@ -23,6 +23,7 @@ module Movement
         @pass_through = true
       end
     end
+
     annotate_moves(passant: pass)
     @grid[following.first][following.last] = piece
   end

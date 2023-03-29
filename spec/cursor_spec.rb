@@ -1,4 +1,6 @@
+require_relative("./../lib/constants")
 require_relative("./../lib/cursor")
+require_relative("./../lib/board")
 
 describe Cursor do
   describe "#ask_key" do

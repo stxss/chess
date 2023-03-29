@@ -5,7 +5,7 @@ module Movement
 
   def promote(color, following)
     @promo = true
-    if @player2.name == "Computer" && color == :black
+    if @player2&.name == "Computer" && color == :black
       annotate_moves(promotion: "#{NAMED_SQUARES[following]}=q")
       return Piece.new(:queen, color)
     end

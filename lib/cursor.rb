@@ -109,10 +109,10 @@ class Cursor
 
     @board.checks?
     @board.mate_or_stale?(:black)
-    reset_relevant
     unless @board.promo || @board.pass_through
       @board.annotate_moves(@piece.piece, :black, following_color, @piece.position, following, disambig: disambig) unless @piece.nil?
     end
+    reset_relevant
   end
 
   private

@@ -25,6 +25,7 @@ class Board
     @half_counter, @full_counter, @turn = 0, 1, 0
     @fen = starting_fen
     read_from_fen(starting_fen)
+    @check, @checkmate, @stalemate = false, false, false
     @castles_white = 0
     @castles_black = 0
     @saved = false
@@ -47,6 +48,7 @@ class Board
     populate(fen.split[0])
     @half_counter = fen.split[4].to_i
     @full_counter = fen.split[5].to_i
+    @turn = (fen.split[1] == "w") ? @full_counter * 2 : @full_counter * 2 - 1
     @castles_white = fen.split[6]
     @castles_black = fen.split[7]
   end

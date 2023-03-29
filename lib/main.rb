@@ -84,7 +84,6 @@ def from_data(data)
   game = Game.new(player1: @players.first, player2: @players.last, board: saved_game)
   game.board.update_positions
   game.board.update_all_moves(saved_game)
-  game.board.turn = set_turn(info[1], info[5].to_i)
   game.board.translated_jumps = JSON.parse(info[12])
 
   key = set_ep_flag(game, info[3])
@@ -101,15 +100,6 @@ def set_ep_flag(game, flag)
   return [] if flag == "-"
 
   NAMED_SQUARES.key(flag)
-end
-
-def set_turn(color, full_count)
-  case color
-  when "w"
-    full_count * 2
-  when "b"
-    full_count * 2 - 1
-  end
 end
 
 def create_players(p1_name: nil, p1_score: nil, p2_name: nil, p2_score: nil)
