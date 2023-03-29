@@ -466,14 +466,3 @@ describe Cursor do
     end
   end
 end
-
-
-def ask_for_number_with_input(*input_numbers)
-  input = StringIO.new(input_numbers.join("\n") + "\n")
-  output = StringIO.new
-
-  example = Example.new(input: input, output: output)
-  expect(example.ask_for_number).to be true
-
-  output.string
-end
