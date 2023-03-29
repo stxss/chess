@@ -99,7 +99,7 @@ class Cursor
     set_movement
     ghost = Board.new.copy(@board)
     safes = @board.safe_from_check?(@initial_pos, @piece, board: ghost)
-    following = safes.compact.first
+    following = safes.compact.sample
     following_color = @board.grid[following&.first][following&.last].color
 
     disambig = @board.disambiguation(@piece, following)
@@ -110,7 +110,7 @@ class Cursor
     @board.checks?
     @board.mate_or_stale?(:black)
     unless @board.promo || @board.pass_through
-      @board.annotate_moves(@piece.piece, :black, following_color, @piece.position, following, disambig: disambig) unless @piece.nil?
+      @board.annotate_moves(@piece.piece, :black, following_color, @initial_pos, following, disambig: disambig) unless @piece.nil?
     end
     reset_relevant
   end
