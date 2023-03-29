@@ -169,6 +169,22 @@ describe Cursor do
         expect(input).to eq(:save)
       end
     end
+
+    context "when pressing x" do
+      it "returns :king_side" do
+        allow($stdin).to receive(:getc).and_return("x")
+        input = KEYS[cursor.ask_key]
+        expect(input).to eq(:king_side)
+      end
+    end
+
+    context "when pressing z" do
+      it "returns :queen_side" do
+        allow($stdin).to receive(:getc).and_return("z")
+        input = KEYS[cursor.ask_key]
+        expect(input).to eq(:queen_side)
+      end
+    end
   end
 
   describe "#interpret" do
@@ -249,19 +265,13 @@ describe Cursor do
     end
 
     context "when there is a checkmate" do
-      subject(:cursor) { described_class.new([5, 4], board) }
+      subject(:cursor) { described_class.new([0, 3], board) }
 
-      let(:board) { Board.new("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") }
+      let(:board) { Board.new("rnbqkbnr/pppp1ppp/4p3/8/6P1/5P2/PPPPP2P/RNBQKBNR b KQkq g3 0 2") }
 
       before do
         board.update_all_moves(board)
-        moves = %i[down right return
-          up return
-          up up up up left return
-          down return
-          down down down down right right return
-          up up return
-          up up up up left left left return
+        moves = %i[return
           right right right right down down down down return]
 
         moves.each { |move| cursor.interpret(move) }
@@ -274,22 +284,16 @@ describe Cursor do
     end
 
     context "when en_passant" do
-      subject(:cursor) { described_class.new([5, 4], board) }
+      subject(:cursor) { described_class.new([3, 5], board) }
 
-      let(:board) { Board.new("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") }
+      let(:board) { Board.new("rnbqkbnr/1ppppp1p/p7/5Pp1/8/8/PPPPP1PP/RNBQKBNR w KQkq g6 0 3") }
 
       before do
         board.update_all_moves(board)
-        moves = %i[down right return
-          up up return
-          up up up left left left left left return
-          down return
-          right right right right right
-          down down return
-          up return
-          up up left return
-          down down return
-          right return up left return]
+        moves = %i[
+          return
+          up right return
+        ]
 
         moves.each { |move| cursor.interpret(move) }
       end
@@ -303,27 +307,12 @@ describe Cursor do
     context "when castling white king side" do
       subject(:cursor) { described_class.new([5, 4], board) }
 
-      let(:board) { Board.new("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") }
+      let(:board) { Board.new("rnbqk2r/ppppp1bp/5ppn/8/8/5PPN/PPPPP1BP/RNBQK2R w KQkq - 4 5") }
 
       before do
         board.update_all_moves(board)
-        moves = %i[down right return
-          up return
-          up up up up return
-          down return
-          down down down down right return
-          up return
-          up up up up return
-          down return
-          down down down down down return
-          right up up return
-          up up up up up left return
-          right down down return
-          down down down down down left left return
-          up right return
-          up up up up up up left return
-          right down return
-          king_side]
+
+        moves = %i[king_side]
 
         moves.each { |move| cursor.interpret(move) }
       end
@@ -340,29 +329,11 @@ describe Cursor do
     context "when castling black king side" do
       subject(:cursor) { described_class.new([5, 4], board) }
 
-      let(:board) { Board.new("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") }
+      let(:board) { Board.new("rnbqk2r/ppppp1bp/5ppn/8/8/5PPN/PPPPP1BP/RNBQ1RK1 b kq - 5 5") }
 
       before do
         board.update_all_moves(board)
-        moves = %i[down right return
-          up return
-          up up up up return
-          down return
-          down down down down right return
-          up return
-          up up up up return
-          down return
-          down down down down down return
-          right up up return
-          up up up up up left return
-          right down down return
-          down down down down down left left return
-          up right return
-          up up up up up up left return
-          right down return
-          down down down down return
-          up return
-          king_side]
+        moves = %i[king_side]
 
         moves.each { |move| cursor.interpret(move) }
       end
@@ -379,31 +350,11 @@ describe Cursor do
     context "when castling white queen side" do
       subject(:cursor) { described_class.new([5, 4], board) }
 
-      let(:board) { Board.new("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") }
+      let(:board) { Board.new("r3kbnr/pbqppppp/npp5/8/8/NPP5/PBQPPPPP/R3KBNR w KQkq - 6 6") }
 
       before do
         board.update_all_moves(board)
-        moves = %i[down left return
-          up return
-          up up up up return
-          down return
-          down down down down left return
-          up return
-          up up up up return
-          down return
-          down down down down down return
-          right up return
-          up up up up up up return
-          down left return
-          down down down down down down right return
-          left up return
-          up up up up up up return
-          right down return
-          down down down down down down left left return
-          up up left return
-          up up up up return
-          down return
-          queen_side]
+        moves = %i[queen_side]
 
         moves.each { |move| cursor.interpret(move) }
       end
@@ -420,33 +371,11 @@ describe Cursor do
     context "when castling black queen side" do
       subject(:cursor) { described_class.new([5, 4], board) }
 
-      let(:board) { Board.new("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") }
+      let(:board) { Board.new("r3kbnr/pbqppppp/npp5/8/8/NPP5/PBQPPPPP/2KR1BNR b kq - 7 6") }
 
       before do
         board.update_all_moves(board)
-        moves = %i[down left return
-          up return
-          up up up up return
-          down return
-          down down down down left return
-          up return
-          up up up up return
-          down return
-          down down down down down return
-          right up return
-          up up up up up up return
-          down left return
-          down down down down down down right return
-          left up return
-          up up up up up up return
-          right down return
-          down down down down down down left left return
-          up up left return
-          up up up up up right return
-          down down left return
-          down down down return
-          up right right return
-          queen_side]
+        moves = %i[queen_side]
 
         moves.each { |move| cursor.interpret(move) }
       end
@@ -512,13 +441,9 @@ describe Cursor do
 
     context "when user presses up, left, up, right, right, right, up" do
       before do
-        cursor.interpret(:up)
-        cursor.interpret(:left)
-        cursor.interpret(:up)
-        cursor.interpret(:right)
-        cursor.interpret(:right)
-        cursor.interpret(:right)
-        cursor.interpret(:up)
+        moves = %i[up left up right right right up]
+
+        moves.each { |move| cursor.interpret(move) }
       end
 
       it "updates cursor correctly" do
@@ -529,16 +454,9 @@ describe Cursor do
 
     context "when user presses left, left, up, up, up, up, up, up, up, up" do
       before do
-        cursor.interpret(:left)
-        cursor.interpret(:left)
-        cursor.interpret(:up)
-        cursor.interpret(:up)
-        cursor.interpret(:up)
-        cursor.interpret(:up)
-        cursor.interpret(:up)
-        cursor.interpret(:up)
-        cursor.interpret(:up)
-        cursor.interpret(:up)
+        moves = %i[left left up up up up up up up up]
+
+        moves.each { |move| cursor.interpret(move) }
       end
 
       it "updates cursor correctly and then does not go further" do
@@ -547,4 +465,15 @@ describe Cursor do
       end
     end
   end
+end
+
+
+def ask_for_number_with_input(*input_numbers)
+  input = StringIO.new(input_numbers.join("\n") + "\n")
+  output = StringIO.new
+
+  example = Example.new(input: input, output: output)
+  expect(example.ask_for_number).to be true
+
+  output.string
 end

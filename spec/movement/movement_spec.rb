@@ -1,3 +1,13 @@
+require_relative("./../../lib/movement/movement")
+require_relative("./../../lib/movement/castling")
+require_relative("./../../lib/movement/check_mate_stale")
+require_relative("./../../lib/movement/en_passant")
+require_relative("./../../lib/movement/pieces_moves")
+require_relative("./../../lib/movement/promotion")
+require_relative("./../../lib/movement/update_methods")
+require_relative("./../../lib/board")
+require_relative("./../../lib/constants")
+
 describe Movement do
   describe "#can_move?" do
     let(:board) { Board.new("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") }
@@ -101,6 +111,79 @@ describe Movement do
       it "updates the previous spot correctly" do
         empty_position = board.grid[7][0].painted
         expect(empty_position).to eq(empty)
+      end
+    end
+  end
+
+  describe "#promote" do
+    context "when promoting to queen" do
+      let(:board) { Board.new("8/P7/8/8/8/8/8/8 w KQkq - 0 1") }
+
+      before do
+        board.update_all_moves(board)
+        to_queen = board.grid[1][0]
+        allow(board).to receive(:puts).with("Please select the piece you want to replace your pawn with:")
+        allow(board).to receive(:gets).and_return("1")
+        board.move([1, 0], to_queen, [0, 0], :actual)
+      end
+
+      it "promotes successfuly" do
+        piece = board.grid[0][0]
+        expect(piece.piece).to eq(PIECES[:queen])
+      end
+    end
+
+    context "when promoting to rook" do
+      let(:board) { Board.new("8/P7/8/8/8/8/8/8 w KQkq - 0 1") }
+
+      before do
+        board.update_all_moves(board)
+        to_rook = board.grid[1][0]
+        allow(board).to receive(:puts).with("Please select the piece you want to replace your pawn with:")
+
+        allow(board).to receive(:gets).and_return("2")
+        board.move([1, 0], to_rook, [0, 0], :actual)
+      end
+
+      it "promotes successfuly" do
+        piece = board.grid[0][0]
+        expect(piece.piece).to eq(PIECES[:rook])
+      end
+    end
+
+    context "when promoting to knight" do
+      let(:board) { Board.new("8/P7/8/8/8/8/8/8 w KQkq - 0 1") }
+
+      before do
+        board.update_all_moves(board)
+        to_knight = board.grid[1][0]
+        allow(board).to receive(:puts).with("Please select the piece you want to replace your pawn with:")
+
+        allow(board).to receive(:gets).and_return("3")
+        board.move([1, 0], to_knight, [0, 0], :actual)
+      end
+
+      it "promotes successfuly" do
+        piece = board.grid[0][0]
+        expect(piece.piece).to eq(PIECES[:knight])
+      end
+    end
+
+    context "when promoting to bishop" do
+      let(:board) { Board.new("8/P7/8/8/8/8/8/8 w KQkq - 0 1") }
+
+      before do
+        board.update_all_moves(board)
+        to_bishop = board.grid[1][0]
+        allow(board).to receive(:puts).with("Please select the piece you want to replace your pawn with:")
+
+        allow(board).to receive(:gets).and_return("4")
+        board.move([1, 0], to_bishop, [0, 0], :actual)
+      end
+
+      it "promotes successfuly" do
+        piece = board.grid[0][0]
+        expect(piece.piece).to eq(PIECES[:bishop])
       end
     end
   end
