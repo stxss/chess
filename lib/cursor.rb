@@ -55,13 +55,13 @@ class Cursor
         set_selected
       elsif @selected && @board.can_move?(@current_pos, @available_moves)
         following_color = @board.grid[@current_pos.first][@current_pos.last].color
+        disambig = @board.disambiguation(@piece, @current_pos)
         move_piece
         @board.checks?
         @board.mate_or_stale?(@piece.color)
 
         unless @board.promo || @board.pass_through
-          @board.annotate_moves(@piece.piece, @piece.color, following_color, @piece.position, @current_pos) if @piece
-          @board.promo, @board.pass_through = false, false
+          @board.annotate_moves(@piece.piece, @piece.color, following_color, @initial_pos, @current_pos, disambig: disambig) if @piece
         end
 
         reset_relevant
@@ -88,6 +88,7 @@ class Cursor
   end
 
   def move_ai
+    @board.update_moves_when_check if @board.check
     black_pieces = []
     @board.grid.flatten.each do |piece|
       black_pieces << piece if piece.color == :black && piece.valid_moves.size >= 1
@@ -97,18 +98,21 @@ class Cursor
     set_initial
     set_movement
     ghost = Board.new.copy(@board)
-    following = @piece.valid_moves.sample
-    safes = @board.safe_from_check?(@initial_pos, piece, board: ghost)
-    following_color = @board.grid[following.first][following.last].color
+    safes = @board.safe_from_check?(@initial_pos, @piece, board: ghost)
+    following = safes.compact.first
+    following_color = @board.grid[following&.first][following&.last].color
 
+    disambig = @board.disambiguation(@piece, following)
     if safes.include?(following)
       @board.move(@initial_pos, @piece, following, :actual)
     end
 
     @board.checks?
     @board.mate_or_stale?(:black)
-    @board.annotate_moves(@piece.piece, :black, following_color, @initial_pos, following) unless @piece.nil?
     reset_relevant
+    unless @board.promo || @board.pass_through
+      @board.annotate_moves(@piece.piece, :black, following_color, @piece.position, following, disambig: disambig) unless @piece.nil?
+    end
   end
 
   private
@@ -154,5 +158,7 @@ class Cursor
   def reset_relevant
     @available_moves = nil
     @selected = false
+    @board.promo = false
+    @board.pass_through = false
   end
 end

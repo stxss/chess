@@ -13,15 +13,15 @@ module Movement
 
     case piece.color
     when :white
-        if @grid[following.first + 1][following.last].ep_flag
-            @grid[following.first + 1][following.last] = EmptySquare.new
-            @pass_through = true
-        end
+      if @grid[following.first + 1][following.last].ep_flag
+        @grid[following.first + 1][following.last] = EmptySquare.new
+        @pass_through = true
+      end
     when :black
-        if @grid[following.first - 1][following.last].ep_flag
-          @grid[following.first - 1][following.last] = EmptySquare.new
-          @pass_through = true
-        end
+      if @grid[following.first - 1][following.last].ep_flag
+        @grid[following.first - 1][following.last] = EmptySquare.new
+        @pass_through = true
+      end
     end
     annotate_moves(passant: pass)
     @grid[following.first][following.last] = piece

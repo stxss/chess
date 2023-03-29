@@ -107,13 +107,19 @@ class Display
 
       case memo[0]
       when "0-0", "0-0-0"
-        output << memo[0]
+        check = "+" if memo[1] && !memo[2]
+        checkmate = "#" if memo[2]
+        output << "#{memo[0]}#{check}#{checkmate}"
         next
       when :promotion
-        output << memo[1]
+        check = "+" if memo[2] && !memo[3]
+        checkmate = "#" if memo[3]
+        output << "#{memo[1]}#{check}#{checkmate}"
         next
       when :passant
-        output << memo[1]
+        check = "+" if memo[2] && !memo[3]
+        checkmate = "#" if memo[3]
+        output << "#{memo[1]}#{check}#{checkmate}"
         next
       end
 
@@ -123,10 +129,12 @@ class Display
       if capture == "x" && (memo[0] == "p" || memo[0] == "P")
         from_where = NAMED_SQUARES[memo[1]][0]
       end
+
+      disambiguation = memo[7] if memo[7]
       check = "+" if memo[4] && !memo[5]
       checkmate = "#" if memo[5]
 
-      output << "#{from_where}#{piece}#{capture}#{where_to}#{check}#{checkmate}"
+      output << "#{piece}#{from_where}#{disambiguation}#{capture}#{where_to}#{check}#{checkmate}"
 
       output[-1] = "1/2-1/2" if memo[6]
     end

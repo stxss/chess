@@ -4,7 +4,9 @@ module Movement
   end
 
   def promote(color, following)
-    if @player2.name == "Computer"
+    @promo = true
+    if @player2.name == "Computer" && color == :black
+      annotate_moves(promotion: "#{NAMED_SQUARES[following]}=q")
       return Piece.new(:queen, color)
     end
     puts "Please select the piece you want to replace your pawn with:"
@@ -33,7 +35,6 @@ module Movement
     to_annotate = NAMED_SQUARES[following].to_s + "="
     to_annotate += (color == :white) ? letter.upcase : letter
 
-    @promo = true
     annotate_moves(promotion: to_annotate)
     Piece.new(piece, color)
   end

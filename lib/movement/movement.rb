@@ -67,24 +67,42 @@ module Movement
     update_ep_flags
   end
 
-  def annotate_moves(drawing = nil, color = nil, following_color = nil, previous = nil, following = nil, castle: nil, passant: nil, promotion: nil)
+  def annotate_moves(drawing = nil, color = nil, following_color = nil, previous = nil, following = nil, castle: nil, passant: nil, promotion: nil, disambig: nil)
     case castle
     when :king
-      return @translated_jumps[@turn] = ["0-0", @check, @checkmate, @stalemate]
+      return @translated_jumps[@turn + 1] = ["0-0", @check, @checkmate, @stalemate]
     when :queen
-      return @translated_jumps[@turn] = ["0-0-0", @check, @checkmate, @stalemate]
+      return @translated_jumps[@turn + 1] = ["0-0-0", @check, @checkmate, @stalemate]
     end
 
     return @translated_jumps[@turn] = [:passant, passant.to_s, @check, @checkmate, @stalemate] if passant
 
-    return @translated_jumps[@turn] = [:promotion, promotion.to_s, @check, @checkmate, @stalemate] if promotion
+    return @translated_jumps[@turn + 1] = [:promotion, promotion.to_s, @check, @checkmate, @stalemate] if promotion
 
     piece = PIECES.key(drawing)
     fen_piece = FEN[color][piece]
 
     capture = following_color != color && following_color && !empty?(following, board: self)
 
-    @translated_jumps[@turn] = [fen_piece, previous, capture, following, @check, @checkmate, @stalemate]
+    @translated_jumps[@turn] = [fen_piece, previous, capture, following, @check, @checkmate, @stalemate, disambig]
+  end
+
+  def disambiguation(piece, following)
+    output = ""
+    @grid.each_with_index do |i, row_index|
+      i.each_with_index do |other, column_index|
+        next if other.instance_of?(EmptySquare)
+        next if other.piece == PIECES[:pawn] || piece.piece == PIECES[:pawn]
+        next if other.piece != piece.piece
+        next if other.color != piece.color
+        next if other.position == piece.position
+
+        if piece.valid_moves.include?(following) && other.valid_moves.include?(following)
+          output = NAMED_SQUARES[piece.position][0]
+        end
+      end
+    end
+    output
   end
 
   def safe_from_check?(initial, piece, board: self)
