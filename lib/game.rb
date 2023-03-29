@@ -11,8 +11,8 @@ class Game
   def play
     until game_ended?
       set_players
-      set_prompts(@current.name, @other.name)
       set_color
+      set_prompts(@current.name, @other.name)
       set_display
 
       if @board.checkmate
@@ -49,8 +49,8 @@ class Game
   end
 
   def set_prompts(current, other)
+    @display.change_prompt(@color, other, :to_move) unless @board.check
     @display.change_prompt(@color, other, :check) if @board.check
-    @display.change_prompt(@color, other, :to_move)
   end
 
   def game_ended?
