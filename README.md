@@ -1,7 +1,7 @@
 # TOP Chess - @stxss
 This is the Final Project in the Ruby Chapter from [The Odin Project](https://www.theodinproject.com/lessons/ruby-mastermind)
 
-[![Run on Repl.it](https://repl.it/badge/github/@stxss/Mastermind-by-stxss-1?v=1)](https://replit.com/@stxss/Mastermind-by-stxss-1)
+I chose not to host this on repl.it as it is very tedious, slow and ugly on there, as it has a lot of problems supporting colors. So just cloning this onto your machine is way better and faster. Thanks!
 
 <br>
 
@@ -32,7 +32,7 @@ As the goal was to make this game in the CLI, mouse movements wouldn't be accept
 Here's a simple quick demo of a game of a human against the computer
 
 ## How to Play
-You can either play it here on [repl.it]() or clone this repo on your local machine. (Just beware that you'll probably want to zoom your terminal in, as the unicode chess pieces are pretty small and there's really no way of making them bigger)
+You can clone this repo on your local machine. (Just beware that you'll probably want to zoom your terminal in, as the unicode chess pieces are pretty small and there's really no way of making them bigger)
 
 ## Pre-requisites
 ruby >= 3.1.2
@@ -43,6 +43,7 @@ bundler >= 2.3.7
  - Clone this repository on your machine. If you don't know how to, check out the [instructions](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository).
  - Navigate into the project's root directory `cd chess`
  - Run `bundle install`
+
 
 ## Play!
  - Run ruby `lib/main.rb` and enjoy!
