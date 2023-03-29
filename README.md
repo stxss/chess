@@ -1,7 +1,7 @@
 # TOP Chess - @stxss
 This is the Final Project in the Ruby Chapter from [The Odin Project](https://www.theodinproject.com/lessons/ruby-mastermind)
 
-I chose not to host this on repl.it as it is very tedious, slow and ugly on there, as it has a lot of problems supporting colors. So just cloning this onto your machine is way better and faster. Thanks!
+I chose not to encourage you to go on repl.it as it is very tedious, slow and ugly on there, as it has a lot of problems supporting colors. So just cloning this onto your machine is way better and faster. But if you still want to check it out there, you can click [here](https://replit.com/@stxss/Chess).
 
 <br>
 
