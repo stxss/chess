@@ -42,6 +42,6 @@ bundler >= 2.3.7
 
 
 ## Play!
- - Run ruby `lib/main.rb` and enjoy!
+ - Run `ruby lib/main.rb` and enjoy!
 
 
