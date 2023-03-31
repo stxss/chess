@@ -3,8 +3,6 @@ This is the Final Project in the Ruby Chapter from [The Odin Project](https://ww
 
 I chose not to encourage you to go on repl.it as it is very tedious, slow and ugly on there, as it has a lot of problems supporting colors. So just cloning this onto your machine is way better and faster. But if you still want to check it out there, you can click [here](https://replit.com/@stxss/Chess).
 
-<br>
-
 ## Simple Demo
 <img src="./demos/human_vs_human.gif"><br>
 
@@ -13,8 +11,6 @@ This was the toughest project so far, as the objective was to create a chess gam
 At first I thought that I could make a simple chess game by prompting the user to write the square names and play like that, but I wanted the game to be more interactive than that.
 
 As the goal was to make this game in the CLI, mouse movements wouldn't be accepted. So, I dediced to rely on the keystrokes, assigning 3 possible ways to move around the board, a selection and de-selection pieces, promoting numbers, castling keys and options to quit and/or save.
-
-<br>
 
 ## Project requirements
 **Two Players** - pretty basic to setup
@@ -46,6 +42,6 @@ bundler >= 2.3.7
 
 
 ## Play!
- - Run ruby `lib/main.rb` and enjoy!
+ - Run `ruby lib/main.rb` and enjoy!
 
 
