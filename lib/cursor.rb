@@ -99,8 +99,8 @@ class Cursor
     set_movement
     ghost = Board.new.copy(@board)
     safes = @board.safe_from_check?(@initial_pos, @piece, board: ghost)
-    following = safes.compact.sample
-    following_color = @board.grid[following&.first][following&.last].color
+    following = safes&.compact&.sample
+    following_color = @board.grid[following&.first][following&.last].color if following
 
     disambig = @board.disambiguation(@piece, following)
     if safes.include?(following)
